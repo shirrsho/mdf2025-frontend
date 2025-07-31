@@ -1,0 +1,3 @@
+{
+  "{src,apps,libs,test}/**/*.{ts,tsx,js,jsx}": ["pnpm format:fix", "git add ."]
+}

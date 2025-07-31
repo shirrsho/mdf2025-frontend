@@ -1,0 +1,1 @@
+export { BreadCumbHeading } from './BreadCumbHeading';

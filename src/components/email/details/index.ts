@@ -1,0 +1,1 @@
+export { MailHistoryDetails } from './MailHistoryDetails';
