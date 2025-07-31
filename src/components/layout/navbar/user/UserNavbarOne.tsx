@@ -39,7 +39,7 @@ export const UserNavbarOne: React.FC = () => {
                 </button>
               </div>
               <Link href={'/'} className='flex-shrink-0'>
-                <Image
+                {/* <Image
                   src={
                     resolvedTheme === 'dark' ? '/logo-white.png' : '/logo.png'
                   }
@@ -47,7 +47,8 @@ export const UserNavbarOne: React.FC = () => {
                   height={500}
                   width={500}
                   className='h-auto max-w-16 md:max-w-24 lg:max-w-28'
-                />
+                /> */}
+                MDF2025
               </Link>
             </div>
             <div className='hidden md:flex md:space-x-4 lg:space-x-8'>

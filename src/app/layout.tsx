@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { Providers } from '@/providers';
 import { LogoLoader } from '@/components/common';
 import './globals.css';
+import { UserNavbarOne } from '@/components/layout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,7 +37,11 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-background dark`}>
         <Providers>
-          <Suspense fallback={<LogoLoader />}>{children}</Suspense>
+          <Suspense fallback={<LogoLoader />}>
+          <div className='z-10'>
+                    <UserNavbarOne />
+                  </div>{children}
+                  </Suspense>
         </Providers>
       </body>
     </html>
