@@ -26,9 +26,9 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         }}
         className='!hidden overflow-y-auto border-r border-gray-200 bg-background-100 dark:border-gray-700 dark:bg-background-dark-100 md:!block'
         trigger={null}
-        collapsedWidth={0}
-        collapsible
-        collapsed={collapsed}
+        // collapsedWidth={0}
+        // collapsible
+        // collapsed={collapsed}
       >
         <AdminMenu />
       </Sider>

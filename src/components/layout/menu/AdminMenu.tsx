@@ -14,6 +14,10 @@ import {
   FileText,
   LockKeyhole,
   UserIcon,
+  Briefcase,
+  Building,
+  DollarSign,
+  Settings,
 } from 'lucide-react';
 import { useAdminLayoutContext } from '@/contexts';
 
@@ -42,10 +46,40 @@ export const AdminMenu = () => {
       icon: <UserIcon />,
     },
     {
-      label: <Link href='/admin/template'>Template</Link>,
-      key: 'template',
+      label: <Link href='/admin/companies'>Companies</Link>,
+      key: 'companies',
+      icon: <Building />,
+    },
+    {
+      label: <Link href='/admin/participants'>Participants</Link>,
+      key: 'participants',
+      icon: <FileText />,
+    },
+    {
+      label: <Link href='/admin/jobs'>Jobs</Link>,
+      key: 'jobs',
+      icon: <Briefcase />,
+    },
+    {
+      label: <Link href='/admin/webinars'>Webinars</Link>,
+      key: 'webinars',
       icon: <MonitorPlay />,
     },
+    {
+      label: <Link href='/admin/users'>Payments</Link>,
+      key: 'payments',
+      icon: <DollarSign />,
+    },
+    {
+      label: <Link href='/admin/settings'>Settings</Link>,
+      key: 'settings',
+      icon: <Settings />,
+    },
+    // {
+    //   label: <Link href='/admin/template'>Template</Link>,
+    //   key: 'template',
+    //   icon: <MonitorPlay />,
+    // },
   ];
 
   return (

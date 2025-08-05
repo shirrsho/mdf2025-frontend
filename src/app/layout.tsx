@@ -31,16 +31,14 @@ export default function RootLayout({
     <html lang='en' className='dark'>
       <head>
         <link rel='icon' href='/logo.png' />
-        <meta name='description' content='Future Bangladesh' />
+        <meta name='description' content='Marketron Digital Dair 2025' />
         <link rel='apple-touch-icon' href='/logo.png' />
         <link rel='manifest' href='/manifest.json' />
       </head>
       <body className={`${inter.className} bg-background dark`}>
         <Providers>
           <Suspense fallback={<LogoLoader />}>
-          <div className='z-10'>
-                    <UserNavbarOne />
-                  </div>{children}
+          {children}
                   </Suspense>
         </Providers>
       </body>

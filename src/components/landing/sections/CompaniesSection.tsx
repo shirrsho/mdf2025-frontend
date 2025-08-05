@@ -87,8 +87,7 @@ export const CompaniesSection: React.FC = () => {
           {companies.map((company, index) => (
             <Card
               key={index}
-              className='border-background-200 bg-background-200 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer'
-              bodyStyle={{ padding: '24px' }}
+              className='!p-[24px] border-background-200 bg-background-200 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer'
             >
               <div className='space-y-4'>
                 {/* Company Header */}

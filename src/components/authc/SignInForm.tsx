@@ -44,8 +44,8 @@ export const SignInForm: React.FC = () => {
   return (
     <>
       {isloggedin === false && (
-        <div className='flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-          <div className='rounded-md bg-white px-10 py-6 sm:mx-auto sm:w-full sm:max-w-sm'>
+        <div className='flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-background'>
+          <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 sm:mx-auto sm:w-full sm:max-w-sm shadow-lg'>
             <Form
               form={form}
               onFinish={onSubmit}
@@ -53,7 +53,7 @@ export const SignInForm: React.FC = () => {
               className='space-y-5'
             >
               <div className=''>
-                <div className='mb-3 flex w-full flex-col content-center justify-center space-y-2'>
+                <div className='mb-6 flex w-full flex-col content-center justify-center space-y-3'>
                   <Image
                     src='/logo.png'
                     alt='logo image'
@@ -61,15 +61,15 @@ export const SignInForm: React.FC = () => {
                     width={130}
                     className='mx-auto'
                   />
-                  <h2 className='text-center text-2xl font-semibold'>
+                  <h2 className='text-center text-2xl font-semibold text-white'>
                     Sign in to your Account
                   </h2>
-                  <p className='text-center text-sm text-gray-500'>
+                  <p className='text-center text-sm text-gray-400'>
                     Use your email to log in to your account
                   </p>
                 </div>
                 <Form.Item
-                  label='Email'
+                  label={<span className='text-gray-300'>Email</span>}
                   name={'email'}
                   rules={[{ required: true, message: 'Email is required' }]}
                 >
@@ -77,18 +77,20 @@ export const SignInForm: React.FC = () => {
                     size='large'
                     placeholder='Enter your email'
                     type='email'
+                    className='bg-background-200 border-background-100 text-white placeholder-gray-500'
                   />
                 </Form.Item>
               </div>
               <div className='relative'>
                 <Form.Item
-                  label='Password'
+                  label={<span className='text-gray-300'>Password</span>}
                   name={'password'}
                   rules={[{ required: true, message: 'Password is required' }]}
                 >
                   <Input.Password
                     size='large'
                     placeholder='Enter your password'
+                    className='bg-background-200 border-background-100 text-white placeholder-gray-500'
                   />
                 </Form.Item>
               </div>
@@ -100,10 +102,10 @@ export const SignInForm: React.FC = () => {
                   className='flex flex-row'
                   valuePropName='checked'
                 >
-                  <Checkbox className='!text-gray1'>Remember me</Checkbox>
+                  <Checkbox className='text-gray-300'>Remember me</Checkbox>
                 </Form.Item>
                 <Link
-                  className='text-blue-600 hover:underline'
+                  className='text-primary hover:text-primary-400 hover:underline'
                   href={`/forgotpassword?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
                 >
                   Forgot Password?
@@ -111,19 +113,23 @@ export const SignInForm: React.FC = () => {
               </div>
 
               <Form.Item>
-                <Button htmlType='submit' type='primary' className='w-full'>
+                <Button 
+                  htmlType='submit' 
+                  type='primary' 
+                  className='w-full bg-primary border-primary hover:bg-primary-400 h-10'
+                >
                   Submit
                 </Button>
               </Form.Item>
             </Form>
 
-            <p className='mt-4 text-center text-sm text-gray-700'>
-              {'Create an account '}
+            <p className='mt-6 text-center text-sm text-gray-400'>
+              {"Don't have an account? "}
               <Link
                 href={`/signup?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-                className='font-medium text-blue-600 hover:underline'
+                className='font-medium text-primary hover:text-primary-400 hover:underline'
               >
-                Signup
+                Sign up
               </Link>
             </p>
           </div>

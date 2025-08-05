@@ -16,6 +16,7 @@ import {
   ActionButton,
   TableTopButton,
   EmptyState,
+  Loader,
 } from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import { CreateUserForm } from '../form';
@@ -73,7 +74,7 @@ export const UserList = () => {
 
   const columns: ColumnsType<IUser> = [
     {
-      title: 'নাম',
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
     },
@@ -90,7 +91,10 @@ export const UserList = () => {
       render: (record) => (
         <div className='flex flex-row gap-1'>
           <ActionButton.Edit onClick={() => onEdit(record)} />
-          <ActionButton.Delete size='small' onClick={() => onDelete(record.id)} />
+          <ActionButton.Delete
+            size='small'
+            onClick={() => onDelete(record.id)}
+          />
         </div>
       ),
     },
@@ -98,14 +102,16 @@ export const UserList = () => {
 
   return (
     <div className='min-h-screen bg-background-100 px-4 py-6 sm:px-6 lg:px-8'>
-      <div className='mx-auto max-w-7xl'>
+      <div className='mx-auto w-full max-w-7xl'>
         <div className='flex w-full flex-row justify-between'>
           <div className='flex w-[50%] flex-row'>
-            <h1 className='mb-6 text-3xl font-bold text-white'>তথ্য</h1>
+            <h1 className='mb-6 text-3xl font-bold text-white'>
+              People with Auth Access
+            </h1>
           </div>
           <div className='flex w-full flex-row justify-end gap-x-1'>
             <TableTopButton
-              text='যোগ করুন'
+              text='Add User'
               icon={<Plus />}
               onClick={() => {
                 setIsEditing(false);
@@ -114,11 +120,25 @@ export const UserList = () => {
             />
           </div>
         </div>
-        {data?.count === 0 ? (
-          <EmptyState message={'No User Yet'} description={`Add first user`} />
-        ) : (
-          <div className='mt-[20px]'>
-            <div className='mb-[55px] overflow-x-auto'>
+
+        {/* Content area that grows to fill available space */}
+        <div className=''>
+          {/* Pagination always at bottom */}
+          {/* <div className='flex justify-center border-t border-background-200 pt-4'> */}
+          <AppPaginationOne
+            pageSize={limit}
+            pageNo={page}
+            total={data?.count || 0}
+            setPageNo={setPage}
+            setPageSize={setLimit}
+          />
+          {/* </div> */}
+          {isLoading ? (
+            <div className='flex flex-1 items-center justify-center'>
+              <Loader />
+            </div>
+          ) : (
+            <div className='flex-1 overflow-x-auto'>
               <Table
                 scroll={{ x: true }}
                 columns={columns}
@@ -129,15 +149,8 @@ export const UserList = () => {
                 className='rounded-md border shadow-sm'
               />
             </div>
-            <AppPaginationOne
-              pageSize={limit}
-              pageNo={page}
-              total={data?.count || 0}
-              setPageNo={setPage}
-              setPageSize={setLimit}
-            />
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <Drawer
         title={

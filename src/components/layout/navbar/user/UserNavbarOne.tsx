@@ -78,7 +78,7 @@ export const UserNavbarOne: React.FC = () => {
         <Drawer
           title={
             <Image
-              src={resolvedTheme === 'dark' ? '/logo-white.png' : '/logo.png'}
+              src={'/logo.png'}
               alt='logo'
               height={40}
               width={100}

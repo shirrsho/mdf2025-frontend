@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin', '/dashboard', '/*?*'],
     },
-    sitemap: 'https://lms.marketron.com/sitemap.xml',
+    sitemap: 'https://mdf.marketron.com/sitemap.xml',
   };
 }
