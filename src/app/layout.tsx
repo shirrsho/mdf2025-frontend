@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import { Providers } from '@/providers';
 import { LogoLoader } from '@/components/common';
 import './globals.css';
-import { UserNavbarOne } from '@/components/layout';
 
 const inter = Inter({ subsets: ['latin'] });
 

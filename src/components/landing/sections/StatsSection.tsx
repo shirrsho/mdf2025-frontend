@@ -76,7 +76,7 @@ export const StatsSection: React.FC = () => {
             Award-Winning Platform
           </h3>
           <p className='mx-auto max-w-2xl text-gray-300'>
-            Recognized as the "Best Digital Recruitment Platform 2024" by TechRecruitment Awards 
+            Recognized as the &quot;Best Digital Recruitment Platform 2024&quot; by TechRecruitment Awards
             and featured in Forbes as a game-changer in the hiring industry.
           </p>
         </div>

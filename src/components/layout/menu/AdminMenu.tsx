@@ -5,14 +5,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu } from 'antd';
 import {
-  Mail,
   MonitorPlay,
   PieChartIcon,
-  File,
-  Workflow,
-  History,
   FileText,
-  LockKeyhole,
   UserIcon,
   Briefcase,
   Building,
@@ -74,12 +69,7 @@ export const AdminMenu = () => {
       label: <Link href='/admin/settings'>Settings</Link>,
       key: 'settings',
       icon: <Settings />,
-    },
-    // {
-    //   label: <Link href='/admin/template'>Template</Link>,
-    //   key: 'template',
-    //   icon: <MonitorPlay />,
-    // },
+    }
   ];
 
   return (

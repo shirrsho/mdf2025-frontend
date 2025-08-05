@@ -15,7 +15,6 @@ import {
   AppPaginationOne,
   ActionButton,
   TableTopButton,
-  EmptyState,
   Loader,
 } from '@/components/common';
 import { handleErrorToast } from '@/utils';

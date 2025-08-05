@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
 import { Drawer } from 'antd';
 import { Menu } from 'lucide-react';
 import { DarkModeToggle } from '@/components/common';
@@ -13,7 +12,6 @@ import { NotificationBar } from './notification';
 export const UserNavbarOne: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState('/');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
