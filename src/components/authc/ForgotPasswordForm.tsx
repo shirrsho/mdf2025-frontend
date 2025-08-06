@@ -33,25 +33,33 @@ export const ForgotPasswordForm: React.FC<object> = () => {
   };
 
   return (
-    <div className='space-y-6 bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10'>
+    <div className='space-y-6 bg-background-300 border border-background-200 px-8 py-10 shadow-lg sm:rounded-lg sm:px-12'>
       <Form form={form} onFinish={onFinish} layout='vertical'>
-        <div className='mb-3 flex flex-col items-center space-y-4'>
-          <div className='rounded-full bg-green-50 p-3'>
-            <div className='rounded-full bg-green-100 p-3'>
-              <Key className='h-8 w-8' />
+        <div className='mb-6 flex flex-col items-center space-y-4'>
+          <div className='rounded-full bg-primary/20 p-3'>
+            <div className='rounded-full bg-primary/30 p-3'>
+              <Key className='h-8 w-8 text-primary' />
             </div>
           </div>
-          <Title level={2}>Forgot Password</Title>
-          <Text type='secondary'>
+          <Title level={2} className='!text-white !mb-2'>
+            Forgot Password
+          </Title>
+          <Text className='text-gray-400 text-center'>
             Please enter your email address to reset your password
           </Text>
         </div>
         <Form.Item
           name='email'
-          label='Email'
+          label={<span className='text-gray-300'>Email</span>}
           rules={[{ required: true, message: 'Please enter your email' }]}
         >
-          <Input type='email' autoComplete='email' size='large' />
+          <Input 
+            type='email' 
+            autoComplete='email' 
+            size='large'
+            className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+            placeholder='Enter your email address'
+          />
         </Form.Item>
         <Form.Item>
           <Button
@@ -60,6 +68,7 @@ export const ForgotPasswordForm: React.FC<object> = () => {
             htmlType='submit'
             loading={loading}
             block
+            className='bg-primary border-primary hover:bg-primary-400 h-12'
           >
             Reset Password
           </Button>
@@ -67,9 +76,9 @@ export const ForgotPasswordForm: React.FC<object> = () => {
       </Form>
       <Link
         href={`/signin?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-        className='flex items-center justify-center'
+        className='flex items-center justify-center text-gray-400 hover:text-primary transition-colors'
       >
-        <MoveLeft className='mr-1' />
+        <MoveLeft className='mr-2 h-4 w-4' />
         Back to sign in
       </Link>
     </div>

@@ -48,23 +48,23 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
 
   return (
     <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-      <div className='rounded-md bg-white px-10 py-6 sm:mx-auto sm:w-full sm:max-w-sm'>
+      <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
         <Form form={form} onFinish={onSubmit} layout='vertical'>
           <div className='max-w-md'>
-            <div className='mb-3 flex flex-col items-center space-y-4'>
-              <div className='rounded-full bg-green-50 p-3'>
-                <div className='rotate-180 rounded-full bg-green-100 p-3'>
-                  <Key className='h-8 w-8' />
+            <div className='mb-6 flex flex-col items-center space-y-4'>
+              <div className='rounded-full bg-primary/20 p-3'>
+                <div className='rotate-180 rounded-full bg-primary/30 p-3'>
+                  <Key className='h-8 w-8 text-primary' />
                 </div>
               </div>
-              <h2 className='text-2xl font-semibold'>Set New Password</h2>
-              <p className='px-2 text-center text-[14px] text-gray-500'>
-                {`  Your new password must be different to previously used passwords.`}
+              <h2 className='text-2xl font-semibold text-white'>Set New Password</h2>
+              <p className='px-2 text-center text-sm text-gray-400'>
+                {`Your new password must be different to previously used passwords.`}
               </p>
             </div>
             <div className='relative'>
               <Form.Item
-                label='New password'
+                label={<span className='text-gray-300'>New password</span>}
                 name='password'
                 rules={[
                   { required: true, message: 'Please enter your password' },
@@ -74,13 +74,13 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
                 <Input.Password
                   placeholder='Password'
                   size='large'
-                  className='mt-2 block w-full rounded-md border bg-white px-4 py-2 text-gray-700 focus:border-[#036c3c] focus:outline-none focus:ring-0'
+                  className='mt-2 block w-full rounded-md border border-background-100 bg-background-200 px-4 py-2 text-white placeholder-gray-500 focus:border-primary focus:outline-none focus:ring-0'
                 />
               </Form.Item>
             </div>
             <div className='relative'>
               <Form.Item
-                label='Confirm Password'
+                label={<span className='text-gray-300'>Confirm Password</span>}
                 name='confirmPassword'
                 dependencies={['password']}
                 rules={[
@@ -100,7 +100,7 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
                 <Input.Password
                   placeholder='Confirm Password'
                   size='large'
-                  className='mt-2 block w-full rounded-md border bg-white px-4 py-2 text-gray-700 focus:border-[#036c3c] focus:outline-none focus:ring-0'
+                  className='mt-2 block w-full rounded-md border border-background-100 bg-background-200 px-4 py-2 text-white placeholder-gray-500 focus:border-primary focus:outline-none focus:ring-0'
                 />
               </Form.Item>
             </div>
@@ -110,18 +110,18 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
               type='primary'
               htmlType='submit'
               size='large'
-              className='w-full transform cursor-pointer rounded-md px-4 tracking-wide text-white transition-colors duration-200 hover:bg-green-600 focus:bg-gray-600 focus:outline-none'
+              className='w-full transform cursor-pointer rounded-md bg-primary border-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
             >
               Set Password
             </Button>
           </Form.Item>
         </Form>
-        <p className='mt-4 text-center text-sm text-gray-700'>
+        <p className='mt-6 text-center text-sm text-gray-400'>
           <Link
             href={`/signin?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-            className='flex items-center justify-center font-medium text-gray-500 hover:text-gray-700 hover:underline'
+            className='flex items-center justify-center font-medium text-gray-400 hover:text-primary transition-colors hover:underline'
           >
-            <ArrowLeft className='mr-1 mt-1 h-4 w-4' /> Back to sign in
+            <ArrowLeft className='mr-2 h-4 w-4' /> Back to sign in
           </Link>
         </p>
       </div>

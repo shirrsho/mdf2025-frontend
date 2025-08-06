@@ -82,7 +82,7 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
 
   return (
     <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-      <div className='rounded-md bg-white px-10 py-6 sm:mx-auto sm:w-full sm:max-w-sm'>
+      <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
         <Form
           form={form}
           onFinish={onSubmit}
@@ -90,14 +90,14 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
           className='space-y-5'
         >
           <div className='max-w-md'>
-            <div className='mb-3 flex flex-col items-center space-y-4'>
-              <div className='rounded-full bg-green-50 p-3'>
-                <div className='rounded-full bg-green-100 p-3'>
-                  <Mail className='h-8 w-8' />
+            <div className='mb-6 flex flex-col items-center space-y-4'>
+              <div className='rounded-full bg-primary/20 p-3'>
+                <div className='rounded-full bg-primary/30 p-3'>
+                  <Mail className='h-8 w-8 text-primary' />
                 </div>
               </div>
-              <h2 className='text-2xl font-semibold'>Check your email</h2>
-              <p className='text-center text-[12px]'>
+              <h2 className='text-2xl font-semibold text-white'>Check your email</h2>
+              <p className='text-center text-sm text-gray-400'>
                 We have sent a verification code to {email}
               </p>
             </div>
@@ -119,7 +119,7 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
                       type='text'
                       maxLength={1}
                       size='large'
-                      className='mt-2 flex w-1/4 items-center justify-center rounded-md border bg-white px-2 py-2 text-center text-3xl font-semibold text-[#036c3c] focus:border-2 focus:border-[#036c3c] focus:outline-none focus:ring-0'
+                      className='mt-2 flex w-1/4 items-center justify-center rounded-md border border-background-100 bg-background-200 px-2 py-2 text-center text-3xl font-semibold text-white focus:border-2 focus:border-primary focus:outline-none focus:ring-0'
                       onChange={(e) => handleInputChange(e, index + 1)}
                       onPaste={handlePaste}
                     />
@@ -128,26 +128,27 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
               ))}
             </div>
 
-            <p className='text-red-500'>{errors}</p>
+            <p className='text-red-400'>{errors}</p>
           </div>
           <input
             type='submit'
             value='Submit'
-            className='my-6 w-full transform cursor-pointer rounded-md bg-[#036c3c] px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-green-600 focus:bg-gray-600 focus:outline-none'
+            className='my-6 w-full transform cursor-pointer rounded-md bg-primary border-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
           />
         </Form>
 
-        <div className='relative my-6 flex w-full items-center justify-center border border-t'>
-          <div className='absolute bg-gray-100 px-5 text-black'>Or</div>
+        <div className='relative my-6 flex w-full items-center justify-center'>
+          <div className='w-full border-t border-background-200'></div>
+          <div className='absolute bg-background-300 px-3 text-gray-400 text-sm'>Or</div>
         </div>
 
-        <p className='mt-4 text-center text-sm text-gray-700'>
-          {'Create an account '}
+        <p className='mt-4 text-center text-sm text-gray-400'>
+          {"Don't have an account? "}
           <Link
             href={`/signup?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-            className='font-medium text-blue-600 hover:underline'
+            className='font-medium text-primary hover:text-primary-400 hover:underline'
           >
-            Signup
+            Sign up
           </Link>
         </p>
       </div>

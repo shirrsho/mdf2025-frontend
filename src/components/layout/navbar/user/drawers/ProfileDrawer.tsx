@@ -8,6 +8,7 @@ import { logout, useGetUser } from '@/apis';
 import { LOGIN_PATH } from '@/constants';
 import { isBangla } from '@/utils';
 import { AppImage } from '@/components/common';
+import { Role } from '@/enums';
 
 export const ProfileDrawerOne: React.FC = () => {
   const { data } = useGetUser();
@@ -24,7 +25,7 @@ export const ProfileDrawerOne: React.FC = () => {
 
   const menuItems = [
     {
-      href: '/dashboard',
+      href: data?.user?.rolePermission === Role.ADMIN ? '/admin/dashboard' : data?.user?.rolePermission === Role.COMPANY ? '/c/dashboard' : 'p/dashboard',
       label: 'Dashboard',
       icon: (
         <Cog className='mr-3 h-5 w-5 text-paragraph dark:text-paragraph-dark' />
@@ -65,7 +66,7 @@ export const ProfileDrawerOne: React.FC = () => {
           </div>
         )}
         <span
-          className={`hidden pr-2 text-sm font-medium text-background-dark dark:text-background md:inline ${isBangla(data?.user?.name) ? '!font-bangla' : ''}`}
+          className={`hidden pr-2 text-sm font-medium text-white dark:text-white md:inline ${isBangla(data?.user?.name) ? '!font-bangla' : ''}`}
         >
           {data?.user?.name?.split(' ')[0]}
         </span>
@@ -84,13 +85,13 @@ export const ProfileDrawerOne: React.FC = () => {
           >
             {data?.user?.name}
           </p>
-          <Link
+          {/* <Link
             href={`/my-profile`}
             className='text-xs text-primary hover:underline dark:text-primary-dark'
             onClick={() => setIsOpen(false)}
           >
             View Profile
-          </Link>
+          </Link> */}
         </div>
         <div className='border-t border-background dark:border-background-dark'>
           {menuItems.map((item, index) => (
