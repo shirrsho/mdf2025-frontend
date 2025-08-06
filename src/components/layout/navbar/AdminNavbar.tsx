@@ -44,34 +44,6 @@ export const AdminNavbar = () => {
         >
           Log Out
         </Button>
-        {/* <Space size='large'>
-          <div className='h-[40px] rounded-[6px] bg-background-100 dark:bg-background-dark-100'>
-            <div className='flex h-[40px] flex-row items-center justify-center gap-2 px-[10px]'>
-              <Avatar
-                size='small'
-                src={
-                  data?.user?.imageUrl
-                    ? `${process.env.NEXT_PUBLIC_BUCKET_URI}/${data?.user?.imageUrl}`
-                    : null
-                }
-                icon={data?.user?.imageUrl ? null : <CircleUserRound />}
-              />
-              <div className='font-poppins hidden text-[13px] font-medium leading-[20px] text-heading dark:text-gray-200 md:block'>
-                {data?.user?.name ?? (
-                  <Link href={`${redirectPath}`} className='dark:text-blue-400'>
-                    Login
-                  </Link>
-                )}
-              </div>
-              {data?.user ? (
-                <Dropdown menu={{ items }}>
-                  <ChevronDown className='dark:text-gray-200' />
-                </Dropdown>
-              ) : null}
-            </div>
-          </div>
-          <DarkModeToggle />
-        </Space> */}
       </div>
     </div>
   );

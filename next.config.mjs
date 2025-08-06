@@ -16,6 +16,14 @@ const nextConfig = {
         source: '/admin',
         destination: '/admin/dashboard',
       },
+      {
+        source: '/c',
+        destination: '/c/dashboard',
+      },
+      {
+        source: '/p',
+        destination: '/p/dashboard',
+      },
     ];
   },
   images: {

@@ -36,12 +36,20 @@ export const UserList = () => {
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
 
-  const handleSubmit = async (values: IUser) => {
+  const handleSubmit = async (values: any) => {
     try {
       if (values.id) {
         await updateUser.mutateAsync(values);
         toast.success('User updated successfully');
       } else {
+        // if(values?.rolePermissions?.includes(Role.COMPANY)) {
+        //   values.role = [Role.COMPANY];
+        // }
+        // else if(values?.rolePermissions?.includes(Role.ADMIN)) {
+        //   values.role = [Role.ADMIN];
+        // } else {
+        //   values.role = [Role.USER];
+        // }
         await createUser.mutateAsync(values);
         toast.success('User created successfully');
       }

@@ -8,16 +8,11 @@ import {
   MonitorPlay,
   PieChartIcon,
   FileText,
-  UserIcon,
   Briefcase,
   Building,
-  DollarSign,
-  Settings,
 } from 'lucide-react';
-import { useAdminLayoutContext } from '@/contexts';
 
-export const AdminMenu = () => {
-  const { collapsed } = useAdminLayoutContext();
+export const CompanyMenu = () => {
   const [selectedKey, setSelectedKey] = useState<string[]>(['dashboard']);
   const router = useRouter();
   const pathName = usePathname();
@@ -31,44 +26,29 @@ export const AdminMenu = () => {
 
   const menuItems = [
     {
-      label: <Link href='/admin/dashboard'>Dashboard</Link>,
+      label: <Link href='/c/dashboard'>Dashboard</Link>,
       key: 'dashboard',
       icon: <PieChartIcon />,
     },
     {
-      label: <Link href='/admin/users'>Users</Link>,
-      key: 'users',
-      icon: <UserIcon />,
-    },
-    {
-      label: <Link href='/admin/companies'>Companies</Link>,
-      key: 'companies',
+      label: <Link href='/c/profile'>Profile</Link>,
+      key: 'profile',
       icon: <Building />,
     },
     {
-      label: <Link href='/admin/participants'>Participants</Link>,
-      key: 'participants',
-      icon: <FileText />,
-    },
-    {
-      label: <Link href='/admin/jobs'>Jobs</Link>,
+      label: <Link href='/c/jobs'>Jobs</Link>,
       key: 'jobs',
       icon: <Briefcase />,
     },
     {
-      label: <Link href='/admin/webinars'>Webinars</Link>,
+      label: <Link href='/c/webinars'>Webinars</Link>,
       key: 'webinars',
       icon: <MonitorPlay />,
     },
     {
-      label: <Link href='/admin/users'>Payments</Link>,
-      key: 'payments',
-      icon: <DollarSign />,
-    },
-    {
-      label: <Link href='/admin/settings'>Settings</Link>,
-      key: 'settings',
-      icon: <Settings />,
+      label: <Link href='/c/applications'>Applications</Link>,
+      key: 'applications',
+      icon: <FileText />,
     }
   ];
 
@@ -78,9 +58,9 @@ export const AdminMenu = () => {
         <div className='flex h-[80px] w-full flex-col items-center justify-center border-b-[2px] border-b-background-200 hover:cursor-pointer'>
           <Image
             src='/logo.png'
-            className={`object-contain ${collapsed ? 'h-[48px] w-[40px]' : 'h-[48px] w-[96px]'}`}
+            className={`object-contain h-[48px] w-[96px]`}
             onClick={() => {
-              router.push('/admin');
+              router.push('/c/dashboard');
             }}
             style={{
               transition: 'width 0.5s ease-in-out',
@@ -93,7 +73,7 @@ export const AdminMenu = () => {
         <Menu
           items={menuItems}
           style={{
-            width: collapsed ? 80 : 220,
+            width: 220,
             transition: 'width 0.5s ease-in-out',
             margin: '10px',
             border: '0px solid #E5E5E5',

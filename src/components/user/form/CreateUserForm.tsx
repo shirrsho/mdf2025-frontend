@@ -24,9 +24,16 @@ export const CreateUserForm: React.FC<ICreateUserForm> = ({
         >
           <Form.Item name='id' hidden />
           <Form.Item
-            label='নাম'
+            label='Name'
             name='name'
             rules={[{ required: true, message: 'Name is required' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='Email'
+            name='email'
+            rules={[{ required: true, message: 'Email is required' }]}
           >
             <Input />
           </Form.Item>
@@ -40,7 +47,7 @@ export const CreateUserForm: React.FC<ICreateUserForm> = ({
 
           <Space className='w-full justify-center'>
             <Button type='primary' htmlType='submit' className='py-3 text-lg'>
-              সাবমিট করুন
+              Submit
             </Button>
           </Space>
         </Form>

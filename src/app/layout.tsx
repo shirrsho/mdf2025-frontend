@@ -34,11 +34,9 @@ export default function RootLayout({
         <link rel='apple-touch-icon' href='/logo.png' />
         <link rel='manifest' href='/manifest.json' />
       </head>
-      <body className={`${inter.className} bg-background dark`}>
+      <body className={`${inter.className} dark bg-background`}>
         <Providers>
-          <Suspense fallback={<LogoLoader />}>
-          {children}
-                  </Suspense>
+          <Suspense fallback={<LogoLoader />}>{children}</Suspense>
         </Providers>
       </body>
     </html>

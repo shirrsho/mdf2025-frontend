@@ -3,14 +3,15 @@ import React from 'react';
 import { Drawer, Layout } from 'antd';
 import { X } from 'lucide-react';
 import { useAdminLayoutContext } from '@/contexts';
-import { AdminMenu, AdminNavbar } from '@/components/layout';
+import { AdminNavbar } from '@/components/layout';
 import { withRole } from '@/libs';
 import { Role } from '@/enums';
+import { CompanyMenu } from '@/components/layout/menu';
 
 const { Sider } = Layout;
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const { collapsed, drawer, setDrawer } = useAdminLayoutContext();
+const CompanyLayout = ({ children }: { children: React.ReactNode }) => {
+  const { drawer, setDrawer } = useAdminLayoutContext();
 
   return (
     <div className='relative'>
@@ -22,7 +23,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           maxWidth: '350px',
           overflowX: 'hidden',
           overflowY: 'auto',
-          width: collapsed ? 0 : 220,
+          width: 220,
           height: '100vh',
           transition: 'width 0.5s ease-in-out',
         }}
@@ -32,7 +33,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         // collapsible
         // collapsed={collapsed}
       >
-        <AdminMenu />
+        <CompanyMenu />
       </Sider>
       <Drawer
         placement='left'
@@ -43,12 +44,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         width={250}
         className='!bg-background-100 dark:!bg-background-dark-100'
       >
-        <AdminMenu />
+        <CompanyMenu />
       </Drawer>
       <div
-        className={`ml-[0px] ${
-          collapsed ? 'md:ml-[0px]' : 'md:ml-[200px]'
-        } relative transition-[margin-left] duration-500 ease-in-out`}
+        className={`ml-[0px] md:ml-[200px] relative transition-[margin-left] duration-500 ease-in-out`}
       >
         <AdminNavbar />
         <div className='min-h-screen w-full rounded-tl-[10px] p-4 md:p-6'>
@@ -59,4 +58,4 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default withRole(AdminLayout, [Role.ADMIN])
+export default withRole(CompanyLayout, [Role.COMPANY])

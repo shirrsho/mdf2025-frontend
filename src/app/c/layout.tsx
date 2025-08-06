@@ -1,6 +1,6 @@
 import { AdminLayoutContextProvider } from '@/contexts';
-import AdminLayout from './Adminlayout';
 import { RouteGuard } from '@/providers';
+import Companylayout from './Companylayout';
 export default function AdminRootLayout({
   children,
 }: {
@@ -9,7 +9,7 @@ export default function AdminRootLayout({
   return (
     <AdminLayoutContextProvider>
       <RouteGuard>
-        <AdminLayout>{children}</AdminLayout>
+        <Companylayout>{children}</Companylayout>
       </RouteGuard>
     </AdminLayoutContextProvider>
   );

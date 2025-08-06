@@ -1,7 +1,7 @@
 import { AdminLayoutContextProvider } from '@/contexts';
-import AdminLayout from './Adminlayout';
 import { RouteGuard } from '@/providers';
-export default function AdminRootLayout({
+import Participantlayout from './Participantlayout';
+export default function ParticipantRootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ export default function AdminRootLayout({
   return (
     <AdminLayoutContextProvider>
       <RouteGuard>
-        <AdminLayout>{children}</AdminLayout>
+        <Participantlayout>{children}</Participantlayout>
       </RouteGuard>
     </AdminLayoutContextProvider>
   );
