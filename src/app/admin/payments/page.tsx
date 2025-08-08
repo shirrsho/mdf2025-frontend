@@ -1,8 +1,8 @@
 import React from 'react';
-import { TemplateList } from '@/components/template';
+import { PaymentList } from '@/components/payment';
 
 const TemplatePage = () => {
-  return <TemplateList />;
+  return <PaymentList/>
 };
 
 export default TemplatePage;

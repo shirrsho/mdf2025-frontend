@@ -1,8 +1,8 @@
 import React from 'react';
-import { TemplateList } from '@/components/template';
+import { WebinarList } from '@/components/webinar';
 
 const TemplatePage = () => {
-  return <TemplateList />;
+  return <WebinarList/>
 };
 
 export default TemplatePage;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { TemplateList } from '@/components/template';
+import { JobList } from '@/components/job';
 
 const TemplatePage = () => {
-  return <TemplateList />;
+  return <JobList/>
 };
 
 export default TemplatePage;

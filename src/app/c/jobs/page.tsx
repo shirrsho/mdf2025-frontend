@@ -1,7 +1,8 @@
+import { JobList } from '@/components/job';
 import React from 'react';
 
 const DashboardPage = () => {
-  return <div>jobs</div>;
+  return <JobList/>
 };
 
 export default DashboardPage;

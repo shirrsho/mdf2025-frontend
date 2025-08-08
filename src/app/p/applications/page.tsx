@@ -1,7 +1,8 @@
+import { ApplicationList } from '@/components/application';
 import React from 'react';
 
 const DashboardPage = () => {
-  return <div>applications</div>;
+  return <ApplicationList/>
 };
 
 export default DashboardPage;

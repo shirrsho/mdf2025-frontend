@@ -1,7 +1,8 @@
+import { WebinarList } from '@/components/webinar';
 import React from 'react';
 
 const DashboardPage = () => {
-  return <div>webinars</div>;
+  return <WebinarList/>
 };
 
 export default DashboardPage;
