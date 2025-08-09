@@ -5,10 +5,12 @@ import { CreateCompanyForm } from './CreateCompanyForm';
 
 interface ICreateCompanyFormId {
   companyId?: string;
+  mode: 'admin' | 'company';
 }
 
 export const CreateCompanyFormId: React.FC<ICreateCompanyFormId> = ({
   companyId,
+  mode,
 }) => {
   const { data: companyData, isLoading } = useGetCompanyById(companyId);
 
@@ -22,5 +24,11 @@ export const CreateCompanyFormId: React.FC<ICreateCompanyFormId> = ({
     );
   }
 
-  return <CreateCompanyForm initialData={companyData} isEdit={!!companyId} />;
+  return (
+    <CreateCompanyForm
+      mode={mode}
+      initialData={companyData}
+      isEdit={!!companyId}
+    />
+  );
 };

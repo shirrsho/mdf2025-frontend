@@ -90,7 +90,7 @@ export const SignInForm: React.FC = () => {
                   <Input.Password
                     size='large'
                     placeholder='Enter your password'
-                    className='border-background-100 bg-background-200 text-white placeholder-gray-500'
+                    // className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                   />
                 </Form.Item>
               </div>

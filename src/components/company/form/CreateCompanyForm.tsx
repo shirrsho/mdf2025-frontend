@@ -27,11 +27,13 @@ const { Title, Text } = Typography;
 interface CreateCompanyFormProps {
   initialData?: ICompany;
   isEdit?: boolean;
+  mode: 'admin' | 'company';
 }
 
 export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   initialData,
   isEdit = false,
+  mode,
 }) => {
   const [form] = Form.useForm();
   const router = useRouter();
@@ -44,24 +46,12 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   const handleSubmit = async (values: any) => {
     setIsLoading(true);
     try {
-      const formData = new FormData();
-
-      // Append all form fields to FormData
-      Object.keys(values).forEach((key) => {
-        if (values[key] !== undefined && values[key] !== null) {
-          formData.append(key, values[key]);
-        }
-      });
-
-      // Append logo file if selected
-      if (logoFile) {
-        formData.append('logo', logoFile);
-      }
+      let c = null;
 
       if (isEdit && initialData?.id) {
-        await updateCompany.mutateAsync({
+        c = await updateCompany.mutateAsync({
           id: initialData.id,
-          data: formData,
+          ...values,
         });
         notification.success({
           message: 'Success',
@@ -69,7 +59,7 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
           placement: 'topRight',
         });
       } else {
-        await createCompany.mutateAsync(formData);
+        c = await createCompany.mutateAsync(values);
         notification.success({
           message: 'Success',
           description: 'Company created successfully!',
@@ -77,7 +67,9 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
         });
       }
 
-      router.push('/admin/companies');
+      router.push(
+        mode == 'admin' ? `/admin/companies/${c?.id}` : `/c/institute/${c?.id}`
+      );
     } catch (error) {
       handleErrorToast(error);
     } finally {
@@ -377,9 +369,14 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
                 <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-900 dark:text-primary-400'>
                   3
                 </span>
-                Contact Information
+                <div>
+                  Contact Information
+                  <span className='text-xs text-gray-400'>
+                    {' '}
+                    Will not be shown publicly
+                  </span>
+                </div>
               </Title>
-
               <Row gutter={[24, 16]}>
                 <Col xs={24} lg={12}>
                   <Form.Item

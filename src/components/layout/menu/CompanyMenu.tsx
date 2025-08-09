@@ -36,8 +36,8 @@ export const CompanyMenu = () => {
       icon: <PieChartIcon />,
     },
     {
-      label: <Link href='/c/profile'>Profile</Link>,
-      key: 'profile',
+      label: <Link href='/c/institute'>My Institute</Link>,
+      key: 'institute',
       icon: <Building />,
     },
     {

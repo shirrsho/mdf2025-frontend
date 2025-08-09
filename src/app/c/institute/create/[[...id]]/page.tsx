@@ -6,7 +6,7 @@ const CreateCompany = ({ params }: OptionsalParamsType) => {
   const companyId = params.id?.[0];
   return (
     <div className='min-h-screen'>
-      <CreateCompanyFormId mode='admin' companyId={companyId} />
+      <CreateCompanyFormId mode='company' companyId={companyId} />
     </div>
   );
 };
