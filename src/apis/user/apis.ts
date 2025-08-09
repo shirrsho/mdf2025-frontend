@@ -30,6 +30,17 @@ export const getUserById = async (id?: number | string, queryParams = {}) => {
   return response.data;
 };
 
+export const getUserByCompanyId = async (
+  id?: number | string,
+  queryParams = {}
+) => {
+  if (!id) return null;
+  const response = await axios.get(`${USER}/company/${id}`, {
+    params: queryParams,
+  });
+  return response.data;
+};
+
 export const createUser = async (value: any) => {
   const response = await axios.post(`${USER}/adduser`, value);
   return response.data;

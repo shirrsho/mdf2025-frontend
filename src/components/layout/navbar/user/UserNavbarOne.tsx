@@ -74,14 +74,7 @@ export const UserNavbarOne: React.FC = () => {
         </div>
 
         <Drawer
-          title={
-            <Image
-              src={'/logo.png'}
-              alt='logo'
-              height={40}
-              width={100}
-            />
-          }
+          title={<Image src={'/logo.png'} alt='logo' height={40} width={100} />}
           placement='left'
           onClose={() => setIsDrawerOpen(false)}
           open={isDrawerOpen}

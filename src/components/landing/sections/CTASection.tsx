@@ -10,7 +10,7 @@ const benefits = [
   'Real-time chat with recruiters',
   'AI-powered job matching',
   'Professional networking opportunities',
-  'Career development resources'
+  'Career development resources',
 ];
 
 export const CTASection: React.FC = () => {
@@ -27,8 +27,8 @@ export const CTASection: React.FC = () => {
                   <span className='text-primary'> Career Journey?</span>
                 </h2>
                 <p className='text-lg text-gray-300'>
-                  Join the Digital Job Fair 2025 and connect with your future employer. 
-                  Registration is free and takes less than 2 minutes.
+                  Join the Digital Job Fair 2025 and connect with your future
+                  employer. Registration is free and takes less than 2 minutes.
                 </p>
               </div>
 
@@ -45,10 +45,10 @@ export const CTASection: React.FC = () => {
               {/* CTA Buttons */}
               <div className='flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0'>
                 <Link href='/signup'>
-                  <Button 
-                    type='primary' 
-                    size='large' 
-                    className='bg-primary border-primary hover:bg-primary-400 w-full sm:w-auto'
+                  <Button
+                    type='primary'
+                    size='large'
+                    className='w-full border-primary bg-primary hover:bg-primary-400 sm:w-auto'
                     icon={<ArrowRight className='h-4 w-4' />}
                     iconPosition='end'
                   >
@@ -56,9 +56,9 @@ export const CTASection: React.FC = () => {
                   </Button>
                 </Link>
                 <Link href='/signin'>
-                  <Button 
-                    size='large' 
-                    className='border-white text-white hover:bg-white hover:text-background w-full sm:w-auto'
+                  <Button
+                    size='large'
+                    className='w-full border-white text-white hover:bg-white hover:text-background sm:w-auto'
                   >
                     Already Have Account?
                   </Button>
@@ -100,7 +100,7 @@ export const CTASection: React.FC = () => {
                       <div className='h-2 w-3/4 rounded bg-gray-700'></div>
                     </div>
                   </div>
-                  
+
                   <div className='rounded-lg bg-background-300 p-4'>
                     <div className='mb-3 flex items-center space-x-3'>
                       <div className='h-8 w-8 rounded-full bg-green-500'></div>

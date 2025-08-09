@@ -2,11 +2,7 @@
 import React from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { handleErrorToast } from '@/utils';
-import {
-  useCreateJob,
-  useGetJobById,
-  useUpdateJob,
-} from '@/apis';
+import { useCreateJob, useGetJobById, useUpdateJob } from '@/apis';
 import { toast } from 'react-toastify';
 import { IJob } from '@/interfaces';
 import { useRouter } from 'next/navigation';
@@ -15,9 +11,7 @@ interface ICreateJobForm {
   jobId?: string;
 }
 
-export const CreateJobFormId: React.FC<ICreateJobForm> = ({
-  jobId,
-}) => {
+export const CreateJobFormId: React.FC<ICreateJobForm> = ({ jobId }) => {
   const [form] = Form.useForm();
   const router = useRouter();
 

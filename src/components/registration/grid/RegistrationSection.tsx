@@ -64,7 +64,10 @@ export const RegistrationSection = () => {
             <>
               <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                 {data?.data?.map((registration) => (
-                  <RegistrationCard key={registration.id} registration={registration} />
+                  <RegistrationCard
+                    key={registration.id}
+                    registration={registration}
+                  />
                 ))}
               </div>
               <AppPagination total={data?.count || 0} />

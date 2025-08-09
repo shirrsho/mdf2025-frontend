@@ -12,4 +12,5 @@ export interface IUser {
   isverified: boolean;
   providerId: string;
   createdAt: string;
+  companyId?: string;
 }

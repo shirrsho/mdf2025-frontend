@@ -73,17 +73,17 @@ export const AdminMenu = () => {
       label: <Link href='/admin/settings'>Settings</Link>,
       key: 'settings',
       icon: <Settings />,
-    }
+    },
   ];
 
   return (
     <div className='flex h-full min-h-[100vh] w-full flex-col items-center justify-between bg-background-100'>
-      <div className='flex w-full flex-col items-center justify-between h-full'>
+      <div className='flex h-full w-full flex-col items-center justify-between'>
         <div>
           <div className='flex h-[80px] w-full flex-col items-center justify-center border-b-[2px] border-b-background-200 hover:cursor-pointer'>
             <Image
               src='/logo.png'
-              className={`object-contain h-[48px] w-[96px]`}
+              className={`h-[48px] w-[96px] object-contain`}
               onClick={() => {
                 router.push('/admin');
               }}
@@ -108,16 +108,16 @@ export const AdminMenu = () => {
             mode='inline'
           />
         </div>
-        <div 
-          className='flex w-full items-center justify-center gap-2 py-3 text-gray-400 hover:bg-gray-600 hover:cursor-pointer transition-colors duration-200 border-t border-gray-500'
+        <div
+          className='flex w-full items-center justify-center gap-2 border-t border-gray-500 py-3 text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-600'
           onClick={async () => {
             await logout();
             router.push(redirectPath);
             window.location.reload();
           }}
         >
-          <LogOut size={16} rotate={180}/>
-          <span className="font-medium">Logout</span>
+          <LogOut size={16} rotate={180} />
+          <span className='font-medium'>Logout</span>
         </div>
       </div>
     </div>

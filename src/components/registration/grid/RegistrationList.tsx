@@ -162,7 +162,11 @@ export const RegistrationList = () => {
       title: 'নাম',
       dataIndex: 'registrationName',
       key: 'registrationName',
-      filterIcon: getFilterValue('registrationName') ? <CheckCircle /> : <Search />,
+      filterIcon: getFilterValue('registrationName') ? (
+        <CheckCircle />
+      ) : (
+        <Search />
+      ),
       filterDropdown: (
         <TableFilterSearch
           onSearch={(value) => updateFilter('registrationName', value)}

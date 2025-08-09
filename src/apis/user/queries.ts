@@ -6,6 +6,7 @@ import {
   deleteUser,
   getAllUsers,
   getUserById,
+  getUserByCompanyId,
   getUserCount,
   getUserOption,
   updateUser,
@@ -48,6 +49,17 @@ export const useGetUserById = (id?: number | string, queryParams = {}) => {
   return useQuery({
     queryKey: [GET_USER_BY_ID, id, queryParams],
     queryFn: async () => await getUserById(id, queryParams),
+    staleTime: STALE_TIME,
+  });
+};
+
+export const useGetUserByCompanyId = (
+  companyId?: number | string,
+  queryParams = {}
+) => {
+  return useQuery({
+    queryKey: [GET_USER_BY_ID, companyId, queryParams],
+    queryFn: async () => await getUserByCompanyId(companyId, queryParams),
     staleTime: STALE_TIME,
   });
 };

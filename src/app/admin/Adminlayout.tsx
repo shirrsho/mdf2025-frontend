@@ -59,4 +59,4 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default withRole(AdminLayout, [Role.ADMIN])
+export default withRole(AdminLayout, [Role.ADMIN]);

@@ -12,15 +12,15 @@ import {
   notification,
   Divider,
   Typography,
-  Space
+  Space,
 } from 'antd';
 import { Upload as UploadIcon, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCreateCompany, useUpdateCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
+import { AppQuillInput } from '@/components/common/forms/inputs/TiptapInput';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;
 
@@ -31,7 +31,7 @@ interface CreateCompanyFormProps {
 
 export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   initialData,
-  isEdit = false
+  isEdit = false,
 }) => {
   const [form] = Form.useForm();
   const router = useRouter();
@@ -61,7 +61,7 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
       if (isEdit && initialData?.id) {
         await updateCompany.mutateAsync({
           id: initialData.id,
-          data: formData
+          data: formData,
         });
         notification.success({
           message: 'Success',
@@ -94,7 +94,9 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
 
   const validateURL = (rule: any, value: string) => {
     if (value && !value.match(/^https?:\/\/.+/)) {
-      return Promise.reject('Please enter a valid URL starting with http:// or https://');
+      return Promise.reject(
+        'Please enter a valid URL starting with http:// or https://'
+      );
     }
     return Promise.resolve();
   };
@@ -107,129 +109,180 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background-100 dark:bg-background-dark-100 py-8">
-      <div className="max-w-4xl mx-auto px-6">
+    <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
+      <div className='mx-auto max-w-4xl px-6'>
         {/* Header */}
-        <div className="mb-8">
+        <div className='mb-8'>
           <Button
-            icon={<ArrowLeft className="w-4 h-4" />}
+            icon={<ArrowLeft className='h-4 w-4' />}
             onClick={() => router.back()}
-            className="mb-4 text-paragraph dark:text-paragraph-dark hover:text-heading dark:hover:text-heading-dark border-background-200 dark:border-background-dark-300 hover:border-background-300 dark:hover:border-background-dark-200"
+            className='mb-4 border-background-200 text-paragraph hover:border-background-300 hover:text-heading dark:border-background-dark-300 dark:text-paragraph-dark dark:hover:border-background-dark-200 dark:hover:text-heading-dark'
           >
             Back to Companies
           </Button>
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <div>
-              <Title level={2} className="mb-2 text-heading dark:text-heading-dark">
+              <Title
+                level={2}
+                className='mb-2 text-heading dark:text-heading-dark'
+              >
                 {isEdit ? 'Edit Company' : 'Add New Company'}
               </Title>
-              <Text className="text-paragraph dark:text-paragraph-dark text-lg">
-                {isEdit 
-                  ? 'Update company information and details' 
-                  : 'Register a new company for the job fair'
-                }
+              <Text className='text-lg text-paragraph dark:text-paragraph-dark'>
+                {isEdit
+                  ? 'Update company information and details'
+                  : 'Register a new company for the job fair'}
               </Text>
             </div>
           </div>
         </div>
 
-        <Card className="shadow-lg border-0 bg-white dark:bg-background-dark-200">
+        <Card className='border-0 bg-white shadow-lg dark:bg-background-dark-200'>
           <Form
             form={form}
-            layout="vertical"
+            layout='vertical'
             onFinish={handleSubmit}
             initialValues={initialData}
-            className="space-y-6"
+            className='space-y-6'
           >
             {/* Basic Information Section */}
             <div>
-              <Title level={4} className="text-heading dark:text-heading-dark mb-6 flex items-center">
-                <span className="w-8 h-8 bg-primary-100 dark:bg-primary-dark-200 text-primary-600 dark:text-primary-dark-300 rounded-full flex items-center justify-center text-sm font-semibold mr-3">1</span>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-dark-200 dark:text-primary-dark-300'>
+                  1
+                </span>
                 Basic Information
               </Title>
-              
+
               <Row gutter={[24, 16]}>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="name"
-                    label={<span className="text-heading dark:text-heading-dark font-medium">Company Name</span>}
+                    name='name'
+                    label={
+                      <span className='font-medium text-heading dark:text-heading-dark'>
+                        Company Name
+                      </span>
+                    }
                     rules={[
                       { required: true, message: 'Please enter company name' },
-                      { min: 2, message: 'Company name must be at least 2 characters' }
+                      {
+                        min: 2,
+                        message: 'Company name must be at least 2 characters',
+                      },
                     ]}
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="e.g. Tech Solutions Inc."
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='e.g. Tech Solutions Inc.'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="industry"
-                    label={<span className="text-heading dark:text-heading-dark font-medium">Industry</span>}
-                    rules={[{ required: true, message: 'Please enter industry' }]}
+                    name='industry'
+                    label={
+                      <span className='font-medium text-heading dark:text-heading-dark'>
+                        Industry
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'Please enter industry' },
+                    ]}
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="e.g. Information Technology"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='e.g. Information Technology'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24}>
                   <Form.Item
-                    name="description"
-                    label={<span className="text-heading dark:text-heading-dark font-medium">Company Description</span>}
+                    name='description'
+                    label={
+                      <span className='font-medium text-heading dark:text-heading-dark'>
+                        Company Description
+                      </span>
+                    }
                     rules={[
-                      { required: true, message: 'Please enter company description' },
-                      { min: 50, message: 'Description should be at least 50 characters' }
+                      {
+                        required: true,
+                        message: 'Please enter company description',
+                      },
+                      {
+                        min: 50,
+                        message: 'Description should be at least 50 characters',
+                      },
                     ]}
                   >
-                    <TextArea
+                    {/* <TextArea
                       rows={4}
                       placeholder="Describe your company, mission, and what makes it unique..."
                       className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
-                    />
+                    /> */}
+                    <AppQuillInput placeholder='Describe your company, mission, and what makes it unique...' />
                   </Form.Item>
                 </Col>
               </Row>
             </div>
 
-            <Divider className="my-8 border-background-200 dark:border-background-dark-300" />
+            <Divider className='my-8 border-background-200 dark:border-background-dark-300' />
 
             {/* Company Details Section */}
             <div>
-              <Title level={4} className="text-heading dark:text-heading-dark mb-6 flex items-center">
-                <span className="w-8 h-8 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center text-sm font-semibold mr-3">2</span>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-900 dark:text-primary-400'>
+                  2
+                </span>
                 Company Details
               </Title>
-              
+
               <Row gutter={[24, 16]}>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="location"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Location</span>}
-                    rules={[{ required: true, message: 'Please enter company location' }]}
+                    name='location'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Location
+                      </span>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter company location',
+                      },
+                    ]}
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="e.g. San Francisco, CA"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='e.g. San Francisco, CA'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="size"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Company Size</span>}
-                    rules={[{ required: true, message: 'Please select company size' }]}
+                    name='size'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Company Size
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'Please select company size' },
+                    ]}
                   >
-                    <Select 
-                      size="large" 
-                      placeholder="Select company size"
-                      className="rounded-lg"
+                    <Select
+                      size='large'
+                      placeholder='Select company size'
+                      className='rounded-lg'
                     >
                       <Option value={CompanySize.STARTUP}>
                         <Space>
@@ -266,36 +319,44 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="website"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Website URL</span>}
+                    name='website'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Website URL
+                      </span>
+                    }
                     rules={[
                       { required: true, message: 'Please enter website URL' },
-                      { validator: validateURL }
+                      { validator: validateURL },
                     ]}
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="https://www.company.com"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='https://www.company.com'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="logo"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Company Logo</span>}
+                    name='logo'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Company Logo
+                      </span>
+                    }
                   >
                     <Upload
-                      accept="image/*"
+                      accept='image/*'
                       showUploadList={false}
                       onChange={handleLogoChange}
                       beforeUpload={() => false}
-                      className="w-full"
+                      className='w-full'
                     >
-                      <Button 
-                        icon={<UploadIcon className="w-4 h-4" />} 
-                        size="large"
-                        className="w-full h-12 border-dashed border-background-200 dark:border-background-dark-300 hover:border-primary text-paragraph dark:text-paragraph-dark hover:text-primary bg-white dark:bg-background-dark-100"
+                      <Button
+                        icon={<UploadIcon className='h-4 w-4' />}
+                        size='large'
+                        className='h-12 w-full border-dashed border-background-200 bg-white text-paragraph hover:border-primary hover:text-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-paragraph-dark'
                       >
                         {logoFile ? logoFile.name : 'Upload Logo (Optional)'}
                       </Button>
@@ -305,65 +366,86 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
               </Row>
             </div>
 
-            <Divider className="my-8" />
+            <Divider className='my-8' />
 
             {/* Contact Information Section */}
             <div>
-              <Title level={4} className="text-heading dark:text-heading-dark mb-6 flex items-center">
-                <span className="w-8 h-8 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center text-sm font-semibold mr-3">3</span>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-900 dark:text-primary-400'>
+                  3
+                </span>
                 Contact Information
               </Title>
-              
+
               <Row gutter={[24, 16]}>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="contactEmail"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Contact Email</span>}
+                    name='contactEmail'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Contact Email
+                      </span>
+                    }
                     rules={[
                       { required: true, message: 'Please enter contact email' },
-                      { validator: validateEmail }
+                      { validator: validateEmail },
                     ]}
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="contact@company.com"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='contact@company.com'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="contactNumber"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Contact Number</span>}
+                    name='contactNumber'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Contact Number
+                      </span>
+                    }
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="+1 (555) 123-4567"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='+1 (555) 123-4567'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="contactPersonName"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Contact Person Name</span>}
+                    name='contactPersonName'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Contact Person Name
+                      </span>
+                    }
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="John Smith"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='John Smith'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={12}>
                   <Form.Item
-                    name="contactPersonDesignation"
-                    label={<span className="text-paragraph dark:text-paragraph-dark font-medium">Contact Person Designation</span>}
+                    name='contactPersonDesignation'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Contact Person Designation
+                      </span>
+                    }
                   >
-                    <Input 
-                      size="large" 
-                      placeholder="HR Manager"
-                      className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
+                    <Input
+                      size='large'
+                      placeholder='HR Manager'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
@@ -371,21 +453,21 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
             </div>
 
             {/* Submit Buttons */}
-            <Divider className="my-8 border-background-200 dark:border-background-dark-300" />
-            <div className="flex justify-end space-x-4 pt-6">
+            <Divider className='my-8 border-background-200 dark:border-background-dark-300' />
+            <div className='flex justify-end space-x-4 pt-6'>
               <Button
-                size="large"
+                size='large'
                 onClick={() => router.back()}
-                className="px-8 h-12 border-background-200 dark:border-background-dark-300 text-paragraph dark:text-paragraph-dark hover:text-heading dark:hover:text-heading-dark hover:border-background-300 dark:hover:border-background-dark-200 bg-white dark:bg-background-dark-100"
+                className='h-12 border-background-200 bg-white px-8 text-paragraph hover:border-background-300 hover:text-heading dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-paragraph-dark dark:hover:border-background-dark-200 dark:hover:text-heading-dark'
               >
                 Cancel
               </Button>
               <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
+                type='primary'
+                htmlType='submit'
+                size='large'
                 loading={isLoading}
-                className="px-8 h-12 bg-primary hover:bg-primary-600 border-primary hover:border-primary-600 font-medium text-white"
+                className='h-12 border-primary bg-primary px-8 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
               >
                 {isEdit ? '✅ Update Company' : '🚀 Create Company'}
               </Button>

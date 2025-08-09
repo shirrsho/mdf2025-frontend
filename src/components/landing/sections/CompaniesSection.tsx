@@ -11,8 +11,9 @@ const companies = [
     location: 'San Francisco, CA',
     employees: '1,000-5,000',
     openPositions: 45,
-    description: 'Leading software development company specializing in AI and machine learning solutions.',
-    tags: ['Remote Work', 'Flexible Hours', 'Stock Options']
+    description:
+      'Leading software development company specializing in AI and machine learning solutions.',
+    tags: ['Remote Work', 'Flexible Hours', 'Stock Options'],
   },
   {
     name: 'Global Finance Inc',
@@ -21,8 +22,9 @@ const companies = [
     location: 'New York, NY',
     employees: '5,000+',
     openPositions: 32,
-    description: 'International financial services company with operations in over 50 countries.',
-    tags: ['Health Benefits', 'Career Growth', 'Bonus Program']
+    description:
+      'International financial services company with operations in over 50 countries.',
+    tags: ['Health Benefits', 'Career Growth', 'Bonus Program'],
   },
   {
     name: 'Healthcare Innovations',
@@ -31,8 +33,9 @@ const companies = [
     location: 'Boston, MA',
     employees: '500-1,000',
     openPositions: 28,
-    description: 'Revolutionary healthcare technology company improving patient care worldwide.',
-    tags: ['Mission Driven', 'R&D Focus', 'Flexible Schedule']
+    description:
+      'Revolutionary healthcare technology company improving patient care worldwide.',
+    tags: ['Mission Driven', 'R&D Focus', 'Flexible Schedule'],
   },
   {
     name: 'Green Energy Co',
@@ -41,8 +44,9 @@ const companies = [
     location: 'Austin, TX',
     employees: '200-500',
     openPositions: 18,
-    description: 'Sustainable energy solutions provider focused on renewable energy infrastructure.',
-    tags: ['Environmental Impact', 'Innovation', 'Work-Life Balance']
+    description:
+      'Sustainable energy solutions provider focused on renewable energy infrastructure.',
+    tags: ['Environmental Impact', 'Innovation', 'Work-Life Balance'],
   },
   {
     name: 'DataDriven Analytics',
@@ -51,8 +55,9 @@ const companies = [
     location: 'Seattle, WA',
     employees: '100-500',
     openPositions: 22,
-    description: 'Advanced analytics and business intelligence solutions for enterprise clients.',
-    tags: ['Cutting Edge Tech', 'Learning Budget', 'Remote First']
+    description:
+      'Advanced analytics and business intelligence solutions for enterprise clients.',
+    tags: ['Cutting Edge Tech', 'Learning Budget', 'Remote First'],
   },
   {
     name: 'Creative Design Studio',
@@ -61,9 +66,10 @@ const companies = [
     location: 'Los Angeles, CA',
     employees: '50-200',
     openPositions: 15,
-    description: 'Award-winning design studio creating exceptional digital experiences.',
-    tags: ['Creative Freedom', 'Modern Office', 'Team Events']
-  }
+    description:
+      'Award-winning design studio creating exceptional digital experiences.',
+    tags: ['Creative Freedom', 'Modern Office', 'Team Events'],
+  },
 ];
 
 export const CompaniesSection: React.FC = () => {
@@ -73,12 +79,13 @@ export const CompaniesSection: React.FC = () => {
         {/* Section Header */}
         <div className='mb-16 text-center'>
           <h2 className='mb-4 text-3xl font-bold text-white lg:text-4xl'>
-            Top Companies 
+            Top Companies
             <span className='text-primary'> Hiring Now</span>
           </h2>
           <p className='mx-auto max-w-3xl text-lg text-gray-300'>
-            Discover opportunities with industry-leading companies across various sectors. 
-            From startups to Fortune 500 companies, find the perfect match for your career.
+            Discover opportunities with industry-leading companies across
+            various sectors. From startups to Fortune 500 companies, find the
+            perfect match for your career.
           </p>
         </div>
 
@@ -87,7 +94,7 @@ export const CompaniesSection: React.FC = () => {
           {companies.map((company, index) => (
             <Card
               key={index}
-              className='!p-[24px] border-background-200 bg-background-200 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer'
+              className='cursor-pointer border-background-200 bg-background-200 !p-[24px] transition-all duration-300 hover:border-primary/30 hover:shadow-lg'
             >
               <div className='space-y-4'>
                 {/* Company Header */}
@@ -121,7 +128,7 @@ export const CompaniesSection: React.FC = () => {
                 </div>
 
                 {/* Description */}
-                <p className='text-sm text-gray-300 line-clamp-2'>
+                <p className='line-clamp-2 text-sm text-gray-300'>
                   {company.description}
                 </p>
 
@@ -130,7 +137,7 @@ export const CompaniesSection: React.FC = () => {
                   {company.tags.map((tag, tagIndex) => (
                     <Tag
                       key={tagIndex}
-                      className='border-primary/30 bg-primary/10 text-primary text-xs'
+                      className='border-primary/30 bg-primary/10 text-xs text-primary'
                     >
                       {tag}
                     </Tag>
@@ -162,8 +169,9 @@ export const CompaniesSection: React.FC = () => {
             Are You a Company Looking to Hire?
           </h3>
           <p className='mb-6 text-gray-300'>
-            Join our platform and connect with thousands of qualified candidates. 
-            Post jobs, schedule interviews, and find the perfect talent for your team.
+            Join our platform and connect with thousands of qualified
+            candidates. Post jobs, schedule interviews, and find the perfect
+            talent for your team.
           </p>
           <button className='rounded-lg border border-primary bg-transparent px-8 py-3 font-semibold text-primary transition-colors hover:bg-primary hover:text-white'>
             Register Your Company

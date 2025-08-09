@@ -42,8 +42,8 @@ export const SignupForm: React.FC = () => {
   return (
     <>
       {!isloggedin && (
-        <div className='flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-background'>
-          <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 sm:mx-auto sm:w-full sm:max-w-sm shadow-lg'>
+        <div className='flex min-h-screen flex-1 flex-col justify-center bg-background px-6 py-12 lg:px-8'>
+          <div className='rounded-lg border border-background-200 bg-background-300 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
             <Form form={form} onFinish={onFinish} layout='vertical'>
               <div className='mb-6 text-center'>
                 <Image
@@ -53,7 +53,7 @@ export const SignupForm: React.FC = () => {
                   width={130}
                   className='mx-auto mb-4'
                 />
-                <Title level={3} className='!text-white !mb-2'>
+                <Title level={3} className='!mb-2 !text-white'>
                   Sign up for an Account
                 </Title>
                 <Text className='text-gray-400'>
@@ -65,10 +65,10 @@ export const SignupForm: React.FC = () => {
                 name='name'
                 rules={[{ required: true, message: 'Name is required' }]}
               >
-                <Input 
-                  size='large' 
+                <Input
+                  size='large'
                   placeholder='Enter your name'
-                  className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                  className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                 />
               </Form.Item>
               <Form.Item
@@ -80,7 +80,7 @@ export const SignupForm: React.FC = () => {
                   size='large'
                   placeholder='Enter your email'
                   type='email'
-                  className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                  className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                 />
               </Form.Item>
               <Form.Item
@@ -91,7 +91,7 @@ export const SignupForm: React.FC = () => {
                 <Input.Password
                   size='large'
                   placeholder='Enter your password'
-                  className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                  className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                 />
               </Form.Item>
               <Form.Item
@@ -117,22 +117,22 @@ export const SignupForm: React.FC = () => {
                 <Input.Password
                   size='large'
                   placeholder='Confirm your password'
-                  className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                  className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                 />
               </Form.Item>
               <Form.Item>
-                <Button 
-                  type='primary' 
-                  htmlType='submit' 
-                  block 
+                <Button
+                  type='primary'
+                  htmlType='submit'
+                  block
                   size='large'
-                  className='bg-primary border-primary hover:bg-primary-400 h-12'
+                  className='h-12 border-primary bg-primary hover:bg-primary-400'
                 >
                   Sign Up
                 </Button>
               </Form.Item>
             </Form>
-            <div className='relative mt-6 flex w-full items-center justify-center rounded-lg border border-background-200 bg-background-200 hover:bg-background-100 transition-colors'>
+            <div className='relative mt-6 flex w-full items-center justify-center rounded-lg border border-background-200 bg-background-200 transition-colors hover:bg-background-100'>
               <Link
                 href='/signin'
                 className='flex items-center gap-x-2 py-3 text-[14px] text-gray-300 hover:text-white'

@@ -20,10 +20,7 @@ export const getJobOption = async () => {
   return response.data;
 };
 
-export const getJobById = async (
-  id?: number | string,
-  queryParams = {}
-) => {
+export const getJobById = async (id?: number | string, queryParams = {}) => {
   if (!id) return null;
   const response = await axios.get(`${JOB}/${id}`, {
     params: queryParams,

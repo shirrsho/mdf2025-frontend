@@ -55,7 +55,10 @@ export const useGetRegistrationOption = () => {
   });
 };
 
-export const useGetRegistrationById = (id?: number | string, queryParams = {}) => {
+export const useGetRegistrationById = (
+  id?: number | string,
+  queryParams = {}
+) => {
   return useQuery<IRegistration>({
     queryKey: [GET_REGISTRATION_BY_ID, id, queryParams],
     queryFn: async () => await getRegistrationById(id, queryParams),

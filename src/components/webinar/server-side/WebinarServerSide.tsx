@@ -5,9 +5,7 @@ import { WebinarSection } from '../grid';
 
 export const WebinarServerSide = () => {
   return (
-    <HydrationBoundary
-      state={dehydrate(prefetchAllPublicWebinarQueryClient())}
-    >
+    <HydrationBoundary state={dehydrate(prefetchAllPublicWebinarQueryClient())}>
       <WebinarSection />
     </HydrationBoundary>
   );

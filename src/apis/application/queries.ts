@@ -55,7 +55,10 @@ export const useGetApplicationOption = () => {
   });
 };
 
-export const useGetApplicationById = (id?: number | string, queryParams = {}) => {
+export const useGetApplicationById = (
+  id?: number | string,
+  queryParams = {}
+) => {
   return useQuery<IApplication>({
     queryKey: [GET_APPLICATION_BY_ID, id, queryParams],
     queryFn: async () => await getApplicationById(id, queryParams),

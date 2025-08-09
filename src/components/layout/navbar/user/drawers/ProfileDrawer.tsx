@@ -25,7 +25,12 @@ export const ProfileDrawerOne: React.FC = () => {
 
   const menuItems = [
     {
-      href: data?.user?.rolePermission === Role.ADMIN ? '/admin/dashboard' : data?.user?.rolePermission === Role.COMPANY ? '/c/dashboard' : 'p/dashboard',
+      href:
+        data?.user?.rolePermission === Role.ADMIN
+          ? '/admin/dashboard'
+          : data?.user?.rolePermission === Role.COMPANY
+            ? '/c/dashboard'
+            : 'p/dashboard',
       label: 'Dashboard',
       icon: (
         <Cog className='mr-3 h-5 w-5 text-paragraph dark:text-paragraph-dark' />

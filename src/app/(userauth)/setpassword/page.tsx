@@ -14,7 +14,9 @@ const SetPasswordPage = () => {
 
   return (
     <div className='flex min-h-screen flex-col items-center justify-center bg-background px-6 py-12 lg:px-8'>
-      <div className='mx-auto'>{email && <SetPasswordForm email={email} />}</div>
+      <div className='mx-auto'>
+        {email && <SetPasswordForm email={email} />}
+      </div>
     </div>
   );
 };

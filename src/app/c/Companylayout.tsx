@@ -47,7 +47,7 @@ const CompanyLayout = ({ children }: { children: React.ReactNode }) => {
         <CompanyMenu />
       </Drawer>
       <div
-        className={`ml-[0px] md:ml-[200px] relative transition-[margin-left] duration-500 ease-in-out`}
+        className={`relative ml-[0px] transition-[margin-left] duration-500 ease-in-out md:ml-[200px]`}
       >
         <AdminNavbar />
         <div className='min-h-screen w-full rounded-tl-[10px] p-4 md:p-6'>
@@ -58,4 +58,4 @@ const CompanyLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default withRole(CompanyLayout, [Role.COMPANY])
+export default withRole(CompanyLayout, [Role.COMPANY]);

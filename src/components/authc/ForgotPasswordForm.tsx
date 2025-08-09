@@ -33,7 +33,7 @@ export const ForgotPasswordForm: React.FC<object> = () => {
   };
 
   return (
-    <div className='space-y-6 bg-background-300 border border-background-200 px-8 py-10 shadow-lg sm:rounded-lg sm:px-12'>
+    <div className='space-y-6 border border-background-200 bg-background-300 px-8 py-10 shadow-lg sm:rounded-lg sm:px-12'>
       <Form form={form} onFinish={onFinish} layout='vertical'>
         <div className='mb-6 flex flex-col items-center space-y-4'>
           <div className='rounded-full bg-primary/20 p-3'>
@@ -41,10 +41,10 @@ export const ForgotPasswordForm: React.FC<object> = () => {
               <Key className='h-8 w-8 text-primary' />
             </div>
           </div>
-          <Title level={2} className='!text-white !mb-2'>
+          <Title level={2} className='!mb-2 !text-white'>
             Forgot Password
           </Title>
-          <Text className='text-gray-400 text-center'>
+          <Text className='text-center text-gray-400'>
             Please enter your email address to reset your password
           </Text>
         </div>
@@ -53,11 +53,11 @@ export const ForgotPasswordForm: React.FC<object> = () => {
           label={<span className='text-gray-300'>Email</span>}
           rules={[{ required: true, message: 'Please enter your email' }]}
         >
-          <Input 
-            type='email' 
-            autoComplete='email' 
+          <Input
+            type='email'
+            autoComplete='email'
             size='large'
-            className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+            className='border-background-100 bg-background-200 text-white placeholder-gray-500'
             placeholder='Enter your email address'
           />
         </Form.Item>
@@ -68,7 +68,7 @@ export const ForgotPasswordForm: React.FC<object> = () => {
             htmlType='submit'
             loading={loading}
             block
-            className='bg-primary border-primary hover:bg-primary-400 h-12'
+            className='h-12 border-primary bg-primary hover:bg-primary-400'
           >
             Reset Password
           </Button>
@@ -76,7 +76,7 @@ export const ForgotPasswordForm: React.FC<object> = () => {
       </Form>
       <Link
         href={`/signin?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-        className='flex items-center justify-center text-gray-400 hover:text-primary transition-colors'
+        className='flex items-center justify-center text-gray-400 transition-colors hover:text-primary'
       >
         <MoveLeft className='mr-2 h-4 w-4' />
         Back to sign in

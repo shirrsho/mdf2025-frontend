@@ -157,13 +157,11 @@ export const AdminCompanyList = () => {
         <div className='space-y-1'>
           {record.contactEmail && (
             <div className='flex items-center text-sm text-paragraph dark:text-paragraph-dark'>
-              
               {record.contactEmail}
             </div>
           )}
           {record.contactNumber && (
             <div className='flex items-center text-sm text-paragraph dark:text-paragraph-dark'>
-              
               {record.contactNumber}
             </div>
           )}
@@ -178,20 +176,25 @@ export const AdminCompanyList = () => {
     {
       title: 'Actions',
       key: 'actions',
-      width: 200,
       render: (record: ICompany) => (
         <Space size='small'>
           <button
-            onClick={() => router.push(`/admin/companies/create/${record.id}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/admin/companies/create/${record.id}`);
+            }}
             className='text-yellow-600 hover:text-yellow-700'
           >
             <Edit />
           </button>
           <button
-            onClick={() => handleDelete(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(record);
+            }}
             className='text-red-600 hover:text-red-700'
           >
-            <Trash />   
+            <Trash />
           </button>
         </Space>
       ),

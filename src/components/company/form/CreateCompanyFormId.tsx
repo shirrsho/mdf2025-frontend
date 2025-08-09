@@ -14,16 +14,13 @@ export const CreateCompanyFormId: React.FC<ICreateCompanyFormId> = ({
 
   if (isLoading) {
     return (
-      <div className='flex justify-center items-center min-h-screen bg-background-100 dark:bg-background-dark-100'>
-        <div className='text-lg text-paragraph dark:text-paragraph-dark'>Loading company details...</div>
+      <div className='flex min-h-screen items-center justify-center bg-background-100 dark:bg-background-dark-100'>
+        <div className='text-lg text-paragraph dark:text-paragraph-dark'>
+          Loading company details...
+        </div>
       </div>
     );
   }
 
-  return (
-    <CreateCompanyForm 
-      initialData={companyData} 
-      isEdit={!!companyId}
-    />
-  );
+  return <CreateCompanyForm initialData={companyData} isEdit={!!companyId} />;
 };

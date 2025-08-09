@@ -5,9 +5,7 @@ import { CompanySection } from '../grid';
 
 export const CompanyServerSide = () => {
   return (
-    <HydrationBoundary
-      state={dehydrate(prefetchAllPublicCompanyQueryClient())}
-    >
+    <HydrationBoundary state={dehydrate(prefetchAllPublicCompanyQueryClient())}>
       <CompanySection />
     </HydrationBoundary>
   );

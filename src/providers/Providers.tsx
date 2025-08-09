@@ -23,7 +23,12 @@ export const queryClient = getQueryClient();
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute='class' defaultTheme='dark' forcedTheme='dark' enableSystem={false}>
+      <ThemeProvider
+        attribute='class'
+        defaultTheme='dark'
+        forcedTheme='dark'
+        enableSystem={false}
+      >
         <AntdRegistry>
           <IsMobileProvider>
             <SocketProvider>

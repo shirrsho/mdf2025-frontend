@@ -6,10 +6,7 @@ import { Table, Button, Card, Space, Typography } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
-import {
-  useDeleteCompany,
-  useGetAllCompanys,
-} from '@/apis';
+import { useDeleteCompany, useGetAllCompanys } from '@/apis';
 import { ICompany } from '@/interfaces';
 import {
   ActionButton,
@@ -137,26 +134,30 @@ export const CompanyList = () => {
         />
       ),
       render: (text: string, record: ICompany) => (
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
+        <div className='flex items-center space-x-3'>
+          <div className='flex-shrink-0'>
             {record.logoUrl ? (
-              <img 
-                src={record.logoUrl} 
+              <img
+                src={record.logoUrl}
                 alt={text}
-                className="w-8 h-8 rounded object-cover border border-background-200 dark:border-background-dark-300"
+                className='h-8 w-8 rounded border border-background-200 object-cover dark:border-background-dark-300'
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
             ) : (
-              <div className="w-8 h-8 rounded bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold text-xs">
+              <div className='flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-primary-400 to-primary-600 text-xs font-semibold text-white'>
                 {text.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
           <div>
-            <div className="font-medium text-heading dark:text-heading-dark">{text}</div>
-            <div className="text-sm text-paragraph dark:text-paragraph-dark">{record.industry}</div>
+            <div className='font-medium text-heading dark:text-heading-dark'>
+              {text}
+            </div>
+            <div className='text-sm text-paragraph dark:text-paragraph-dark'>
+              {record.industry}
+            </div>
           </div>
         </div>
       ),
@@ -171,11 +172,11 @@ export const CompanyList = () => {
       dataIndex: 'website',
       key: 'website',
       render: (website: string) => (
-        <a 
-          href={website} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-primary-500 hover:text-primary-600"
+        <a
+          href={website}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='text-primary-500 hover:text-primary-600'
         >
           {website?.replace(/^https?:\/\//, '')?.substring(0, 20)}...
         </a>
@@ -186,11 +187,11 @@ export const CompanyList = () => {
       width: '150px',
       fixed: 'right',
       render: (record) => (
-        <Space size="small">
+        <Space size='small'>
           <Button
-            size="small"
+            size='small'
             onClick={() => router.push(`/admin/companies/${record.id}`)}
-            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
+            className='border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700'
           >
             View
           </Button>
@@ -205,23 +206,28 @@ export const CompanyList = () => {
   ];
 
   return (
-    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100 px-4 py-6 sm:px-6 lg:px-8'>
+    <div className='min-h-screen bg-background-100 px-4 py-6 dark:bg-background-dark-100 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-7xl'>
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className='mb-8'>
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div>
-                            <Title level={2} className="mb-2 text-heading dark:text-heading-dark">
+              <Title
+                level={2}
+                className='mb-2 text-heading dark:text-heading-dark'
+              >
                 Companies
               </Title>
-              <p className="text-paragraph dark:text-paragraph-dark">Manage all registered companies for the job fair</p>
+              <p className='text-paragraph dark:text-paragraph-dark'>
+                Manage all registered companies for the job fair
+              </p>
             </div>
             <Button
-              type="primary"
-              size="large"
-              icon={<Plus className="w-4 h-4" />}
+              type='primary'
+              size='large'
+              icon={<Plus className='h-4 w-4' />}
               onClick={() => router.push('/admin/companies/create')}
-              className="bg-primary-500 hover:bg-primary-600 border-primary-500 hover:border-primary-600 px-6 h-12 font-medium"
+              className='h-12 border-primary-500 bg-primary-500 px-6 font-medium hover:border-primary-600 hover:bg-primary-600'
             >
               Add New Company
             </Button>
@@ -229,13 +235,17 @@ export const CompanyList = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-6 shadow-sm">
-          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+        <Card className='mb-6 shadow-sm'>
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div className='flex flex-row gap-2'>
               <TableTopButton text='Clear Filters' onClick={resetFilters} />
             </div>
             <div className='text-sm text-paragraph dark:text-paragraph-dark'>
-              Total: <span className="font-semibold text-heading dark:text-heading-dark">{data?.count || 0}</span> companies
+              Total:{' '}
+              <span className='font-semibold text-heading dark:text-heading-dark'>
+                {data?.count || 0}
+              </span>{' '}
+              companies
             </div>
           </div>
         </Card>
@@ -244,7 +254,7 @@ export const CompanyList = () => {
           <LogoLoader />
         ) : (
           <div className=''>
-            <Card className="shadow-sm">
+            <Card className='shadow-sm'>
               <div className='overflow-x-auto'>
                 <Table
                   scroll={{ x: true }}
@@ -254,11 +264,11 @@ export const CompanyList = () => {
                   pagination={false}
                   loading={isLoading}
                   className='company-table'
-                  size="middle"
+                  size='middle'
                 />
               </div>
             </Card>
-            <div className="mt-6">
+            <div className='mt-6'>
               <AppPagination total={data?.count || 0} />
             </div>
           </div>

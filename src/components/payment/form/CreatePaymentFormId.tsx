@@ -2,11 +2,7 @@
 import React from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { handleErrorToast } from '@/utils';
-import {
-  useCreatePayment,
-  useGetPaymentById,
-  useUpdatePayment,
-} from '@/apis';
+import { useCreatePayment, useGetPaymentById, useUpdatePayment } from '@/apis';
 import { toast } from 'react-toastify';
 import { IPayment } from '@/interfaces';
 import { useRouter } from 'next/navigation';

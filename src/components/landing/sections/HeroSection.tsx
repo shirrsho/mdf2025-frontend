@@ -9,7 +9,7 @@ export const HeroSection: React.FC = () => {
     <section className='relative min-h-screen bg-gradient-to-br from-background via-background-100 to-background-200 px-4 py-20'>
       {/* Background Pattern */}
       <div className='absolute inset-0 bg-[url("/pattern.svg")] opacity-5'></div>
-      
+
       {/* Content */}
       <div className='relative mx-auto max-w-7xl'>
         {/* Navigation */}
@@ -50,9 +50,11 @@ export const HeroSection: React.FC = () => {
         <div className='grid items-center gap-12 lg:grid-cols-2'>
           <div className='space-y-8'>
             {/* Badge */}
-            <div className='inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-4 py-2'>
+            <div className='inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2'>
               <Calendar className='mr-2 h-4 w-4 text-primary' />
-              <span className='text-sm font-medium text-primary'>Digital Job Fair 2025</span>
+              <span className='text-sm font-medium text-primary'>
+                Digital Job Fair 2025
+              </span>
             </div>
 
             {/* Heading */}
@@ -62,8 +64,9 @@ export const HeroSection: React.FC = () => {
                 <span className='text-primary'> Dream Career</span>
               </h1>
               <p className='text-lg text-gray-300 lg:text-xl'>
-                Join thousands of job seekers and top companies in the biggest digital job fair of 2025. 
-                Discover opportunities, network with professionals, and land your dream job.
+                Join thousands of job seekers and top companies in the biggest
+                digital job fair of 2025. Discover opportunities, network with
+                professionals, and land your dream job.
               </p>
             </div>
 
@@ -72,7 +75,8 @@ export const HeroSection: React.FC = () => {
               <div className='flex items-center space-x-2'>
                 <Users className='h-5 w-5 text-primary' />
                 <span className='text-white'>
-                  <span className='font-bold text-primary'>10,000+</span> Job Seekers
+                  <span className='font-bold text-primary'>10,000+</span> Job
+                  Seekers
                 </span>
               </div>
               <div className='flex items-center space-x-2'>
@@ -86,10 +90,10 @@ export const HeroSection: React.FC = () => {
             {/* CTA Buttons */}
             <div className='flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0'>
               <Link href='/signup'>
-                <Button 
-                  type='primary' 
-                  size='large' 
-                  className='bg-primary border-primary hover:bg-primary-400 w-full sm:w-auto'
+                <Button
+                  type='primary'
+                  size='large'
+                  className='w-full border-primary bg-primary hover:bg-primary-400 sm:w-auto'
                   icon={<ArrowRight className='h-4 w-4' />}
                   iconPosition='end'
                 >
@@ -97,9 +101,9 @@ export const HeroSection: React.FC = () => {
                 </Button>
               </Link>
               <Link href='#companies'>
-                <Button 
-                  size='large' 
-                  className='border-white text-white hover:bg-white hover:text-background w-full sm:w-auto'
+                <Button
+                  size='large'
+                  className='w-full border-white text-white hover:bg-white hover:text-background sm:w-auto'
                 >
                   View Companies
                 </Button>
@@ -116,8 +120,12 @@ export const HeroSection: React.FC = () => {
                     <div className='mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-primary'>
                       <Users className='h-10 w-10 text-white' />
                     </div>
-                    <h3 className='text-xl font-bold text-white'>Digital Networking</h3>
-                    <p className='text-gray-300'>Connect virtually with industry leaders</p>
+                    <h3 className='text-xl font-bold text-white'>
+                      Digital Networking
+                    </h3>
+                    <p className='text-gray-300'>
+                      Connect virtually with industry leaders
+                    </p>
                   </div>
                 </div>
               </div>
@@ -128,7 +136,9 @@ export const HeroSection: React.FC = () => {
               <div className='flex items-center space-x-3'>
                 <div className='h-8 w-8 rounded-full bg-primary'></div>
                 <div>
-                  <p className='text-sm font-medium text-white'>Live Interview</p>
+                  <p className='text-sm font-medium text-white'>
+                    Live Interview
+                  </p>
                   <p className='text-xs text-gray-400'>Starting in 5 min</p>
                 </div>
               </div>

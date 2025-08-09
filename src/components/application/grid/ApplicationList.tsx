@@ -162,7 +162,11 @@ export const ApplicationList = () => {
       title: 'নাম',
       dataIndex: 'applicationName',
       key: 'applicationName',
-      filterIcon: getFilterValue('applicationName') ? <CheckCircle /> : <Search />,
+      filterIcon: getFilterValue('applicationName') ? (
+        <CheckCircle />
+      ) : (
+        <Search />
+      ),
       filterDropdown: (
         <TableFilterSearch
           onSearch={(value) => updateFilter('applicationName', value)}

@@ -82,7 +82,7 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
 
   return (
     <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-      <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
+      <div className='rounded-lg border border-background-200 bg-background-300 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
         <Form
           form={form}
           onFinish={onSubmit}
@@ -96,7 +96,9 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
                   <Mail className='h-8 w-8 text-primary' />
                 </div>
               </div>
-              <h2 className='text-2xl font-semibold text-white'>Check your email</h2>
+              <h2 className='text-2xl font-semibold text-white'>
+                Check your email
+              </h2>
               <p className='text-center text-sm text-gray-400'>
                 We have sent a verification code to {email}
               </p>
@@ -133,13 +135,15 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
           <input
             type='submit'
             value='Submit'
-            className='my-6 w-full transform cursor-pointer rounded-md bg-primary border-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
+            className='my-6 w-full transform cursor-pointer rounded-md border-primary bg-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
           />
         </Form>
 
         <div className='relative my-6 flex w-full items-center justify-center'>
           <div className='w-full border-t border-background-200'></div>
-          <div className='absolute bg-background-300 px-3 text-gray-400 text-sm'>Or</div>
+          <div className='absolute bg-background-300 px-3 text-sm text-gray-400'>
+            Or
+          </div>
         </div>
 
         <p className='mt-4 text-center text-sm text-gray-400'>

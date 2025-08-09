@@ -44,8 +44,8 @@ export const SignInForm: React.FC = () => {
   return (
     <>
       {isloggedin === false && (
-        <div className='flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-background'>
-          <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 sm:mx-auto sm:w-full sm:max-w-sm shadow-lg'>
+        <div className='flex min-h-screen flex-1 flex-col justify-center bg-background px-6 py-12 lg:px-8'>
+          <div className='rounded-lg border border-background-200 bg-background-300 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
             <Form
               form={form}
               onFinish={onSubmit}
@@ -77,7 +77,7 @@ export const SignInForm: React.FC = () => {
                     size='large'
                     placeholder='Enter your email'
                     type='email'
-                    className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                    className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                   />
                 </Form.Item>
               </div>
@@ -90,7 +90,7 @@ export const SignInForm: React.FC = () => {
                   <Input.Password
                     size='large'
                     placeholder='Enter your password'
-                    className='bg-background-200 border-background-100 text-white placeholder-gray-500'
+                    className='border-background-100 bg-background-200 text-white placeholder-gray-500'
                   />
                 </Form.Item>
               </div>
@@ -113,10 +113,10 @@ export const SignInForm: React.FC = () => {
               </div>
 
               <Form.Item>
-                <Button 
-                  htmlType='submit' 
-                  type='primary' 
-                  className='w-full bg-primary border-primary hover:bg-primary-400 h-10'
+                <Button
+                  htmlType='submit'
+                  type='primary'
+                  className='h-10 w-full border-primary bg-primary hover:bg-primary-400'
                 >
                   Submit
                 </Button>

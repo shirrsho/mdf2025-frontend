@@ -5,9 +5,7 @@ import { PaymentSection } from '../grid';
 
 export const PaymentServerSide = () => {
   return (
-    <HydrationBoundary
-      state={dehydrate(prefetchAllPublicPaymentQueryClient())}
-    >
+    <HydrationBoundary state={dehydrate(prefetchAllPublicPaymentQueryClient())}>
       <PaymentSection />
     </HydrationBoundary>
   );

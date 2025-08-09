@@ -63,10 +63,7 @@ export const useGetJobById = (id?: number | string, queryParams = {}) => {
   });
 };
 
-export const useGetPublicJobById = (
-  id?: number | string,
-  queryParams = {}
-) => {
+export const useGetPublicJobById = (id?: number | string, queryParams = {}) => {
   return useQuery<IJob>({
     queryKey: [GET_JOB_BY_ID, id, queryParams],
     queryFn: async () => await getPublicJobById(id, queryParams),

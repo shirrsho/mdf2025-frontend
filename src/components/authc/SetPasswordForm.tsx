@@ -48,7 +48,7 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
 
   return (
     <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-      <div className='rounded-lg bg-background-300 border border-background-200 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
+      <div className='rounded-lg border border-background-200 bg-background-300 px-10 py-8 shadow-lg sm:mx-auto sm:w-full sm:max-w-sm'>
         <Form form={form} onFinish={onSubmit} layout='vertical'>
           <div className='max-w-md'>
             <div className='mb-6 flex flex-col items-center space-y-4'>
@@ -57,7 +57,9 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
                   <Key className='h-8 w-8 text-primary' />
                 </div>
               </div>
-              <h2 className='text-2xl font-semibold text-white'>Set New Password</h2>
+              <h2 className='text-2xl font-semibold text-white'>
+                Set New Password
+              </h2>
               <p className='px-2 text-center text-sm text-gray-400'>
                 {`Your new password must be different to previously used passwords.`}
               </p>
@@ -110,7 +112,7 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
               type='primary'
               htmlType='submit'
               size='large'
-              className='w-full transform cursor-pointer rounded-md bg-primary border-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
+              className='w-full transform cursor-pointer rounded-md border-primary bg-primary px-4 py-3 tracking-wide text-white transition-colors duration-200 hover:bg-primary-400 focus:bg-primary-500 focus:outline-none'
             >
               Set Password
             </Button>
@@ -119,7 +121,7 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
         <p className='mt-6 text-center text-sm text-gray-400'>
           <Link
             href={`/signin?redirect=${encodeURIComponent(redirect || HOME_PATH)}`}
-            className='flex items-center justify-center font-medium text-gray-400 hover:text-primary transition-colors hover:underline'
+            className='flex items-center justify-center font-medium text-gray-400 transition-colors hover:text-primary hover:underline'
           >
             <ArrowLeft className='mr-2 h-4 w-4' /> Back to sign in
           </Link>

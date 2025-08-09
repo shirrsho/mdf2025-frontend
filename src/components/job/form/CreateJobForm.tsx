@@ -8,10 +8,7 @@ interface ICreateJobForm {
   onFinish?: (values: IJob) => Promise<void>;
 }
 
-export const CreateJobForm: React.FC<ICreateJobForm> = ({
-  form,
-  onFinish,
-}) => {
+export const CreateJobForm: React.FC<ICreateJobForm> = ({ form, onFinish }) => {
   return (
     <div className='min-h-screen px-4 py-6 sm:px-6 sm:py-12 lg:px-8'>
       <div className='mx-auto max-w-4xl overflow-hidden rounded-lg shadow-2xl'>

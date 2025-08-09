@@ -5,9 +5,7 @@ import { JobSection } from '../grid';
 
 export const JobServerSide = () => {
   return (
-    <HydrationBoundary
-      state={dehydrate(prefetchAllPublicJobQueryClient())}
-    >
+    <HydrationBoundary state={dehydrate(prefetchAllPublicJobQueryClient())}>
       <JobSection />
     </HydrationBoundary>
   );

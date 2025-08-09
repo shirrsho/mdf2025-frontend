@@ -42,14 +42,6 @@ export const UserList = () => {
         await updateUser.mutateAsync(values);
         toast.success('User updated successfully');
       } else {
-        // if(values?.rolePermissions?.includes(Role.COMPANY)) {
-        //   values.role = [Role.COMPANY];
-        // }
-        // else if(values?.rolePermissions?.includes(Role.ADMIN)) {
-        //   values.role = [Role.ADMIN];
-        // } else {
-        //   values.role = [Role.USER];
-        // }
         await createUser.mutateAsync(values);
         toast.success('User created successfully');
       }

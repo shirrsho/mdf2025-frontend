@@ -2,11 +2,7 @@
 import React from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { handleErrorToast } from '@/utils';
-import {
-  useCreateWebinar,
-  useGetWebinarById,
-  useUpdateWebinar,
-} from '@/apis';
+import { useCreateWebinar, useGetWebinarById, useUpdateWebinar } from '@/apis';
 import { toast } from 'react-toastify';
 import { IWebinar } from '@/interfaces';
 import { useRouter } from 'next/navigation';

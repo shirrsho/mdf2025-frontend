@@ -53,9 +53,7 @@ ActionButton.Edit = function EditButton({
           event.stopPropagation();
           onClick && onClick();
         }}
-        icon={
-          <Pencil className='text-primary hover:scale-105' />
-        }
+        icon={<Pencil className='text-primary hover:scale-105' />}
       />
     </Tooltip>
   );
@@ -82,9 +80,7 @@ ActionButton.Hide = function HideButton({ onClick, disabled, size = 'small' }) {
           onClick={(event: any) => {
             event.stopPropagation();
           }}
-          icon={
-            <Eye className='text-primary hover:scale-105' />
-          }
+          icon={<Eye className='text-primary hover:scale-105' />}
         />
       </Popconfirm>
     </Tooltip>
@@ -116,9 +112,7 @@ ActionButton.Unhide = function UnhideButton({
           onClick={(event: any) => {
             event.stopPropagation();
           }}
-          icon={
-            <EyeOff className='text-primary hover:scale-105' />
-          }
+          icon={<EyeOff className='text-primary hover:scale-105' />}
         />
       </Popconfirm>
     </Tooltip>
@@ -153,9 +147,7 @@ ActionButton.Delete = function DeleteButton({
           onClick={(event: any) => {
             event.stopPropagation();
           }}
-          icon={
-            <Trash2 className='text-danger hover:scale-105' />
-          }
+          icon={<Trash2 className='text-danger hover:scale-105' />}
         />
       </Popconfirm>
     </Tooltip>
@@ -173,9 +165,7 @@ ActionButton.Details = function HideButton({ disabled, href, size = 'small' }) {
           event.stopPropagation();
         }}
         href={href}
-        icon={
-          <Eye className='text-primary hover:scale-105' />
-        }
+        icon={<Eye className='text-primary hover:scale-105' />}
       />
     </Tooltip>
   );
@@ -191,9 +181,7 @@ ActionButton.SendMail = function SendMailButton({ onClick, tooltip }) {
           event.stopPropagation();
           onClick && onClick();
         }}
-        icon={
-          <Mail className='text-primary hover:scale-105' />
-        }
+        icon={<Mail className='text-primary hover:scale-105' />}
       />
     </Tooltip>
   );

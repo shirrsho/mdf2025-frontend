@@ -63,9 +63,7 @@ export const JobSection = () => {
           ) : (
             <>
               <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-                {data?.data?.map((job) => (
-                  <JobCard key={job.id} job={job} />
-                ))}
+                {data?.data?.map((job) => <JobCard key={job.id} job={job} />)}
               </div>
               <AppPagination total={data?.count || 0} />
             </>
