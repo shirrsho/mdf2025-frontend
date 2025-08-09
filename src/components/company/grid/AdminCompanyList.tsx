@@ -1,25 +1,14 @@
 'use client';
 import React, { useState } from 'react';
-import { 
-  Table, 
-  Button, 
-  Space, 
-  Tag, 
-  Modal, 
-  notification, 
-  Input,
-  Select,
-  Row,
-  Col,
-  Card 
-} from 'antd';
+import { Table, Button, Space, Tag, Modal, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useGetAllCompanys, useDeleteCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
+import { AppPagination } from '@/components/common';
+import Link from 'next/link';
+import { ArrowUp, Edit, Trash } from 'lucide-react';
 
-const { Search } = Input;
-const { Option } = Select;
 const { confirm } = Modal;
 
 export const AdminCompanyList = () => {
@@ -34,27 +23,11 @@ export const AdminCompanyList = () => {
   const { data, isLoading, refetch } = useGetAllCompanys(searchParams);
   const deleteCompany = useDeleteCompany();
 
-  const handleSearch = (value: string) => {
-    setSearchParams(prev => ({
-      ...prev,
-      name: value,
-      page: 1
-    }));
-  };
-
-  const handleSizeFilter = (value: string) => {
-    setSearchParams(prev => ({
-      ...prev,
-      size: value,
-      page: 1
-    }));
-  };
-
   const handleTableChange = (pagination: any) => {
-    setSearchParams(prev => ({
+    setSearchParams((prev) => ({
       ...prev,
       page: pagination.current,
-      limit: pagination.pageSize
+      limit: pagination.pageSize,
     }));
   };
 
@@ -110,26 +83,30 @@ export const AdminCompanyList = () => {
       key: 'name',
       sorter: true,
       render: (text: string, record: ICompany) => (
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
+        <div className='flex items-center space-x-3'>
+          <div className='flex-shrink-0'>
             {record.logoUrl ? (
-              <img 
-                src={record.logoUrl} 
+              <img
+                src={record.logoUrl}
                 alt={text}
-                className="w-10 h-10 rounded-lg object-cover border border-background-200 dark:border-background-dark-300"
+                className='h-10 w-10 rounded-lg border border-background-200 object-cover dark:border-background-dark-300'
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
             ) : (
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold text-lg">
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 text-lg font-semibold text-white'>
                 {text.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
           <div>
-            <div className="font-semibold text-heading dark:text-heading-dark">{text}</div>
-            <div className="text-sm text-paragraph dark:text-paragraph-dark">{record.industry}</div>
+            <div className='font-semibold text-heading dark:text-heading-dark'>
+              {text}
+            </div>
+            <div className='text-sm text-paragraph dark:text-paragraph-dark'>
+              {record.industry}
+            </div>
           </div>
         </div>
       ),
@@ -139,8 +116,7 @@ export const AdminCompanyList = () => {
       dataIndex: 'location',
       key: 'location',
       render: (location: string) => (
-        <div className="flex items-center text-paragraph dark:text-paragraph-dark">
-          <span className="text-textColor dark:text-textColor-dark mr-1">📍</span>
+        <div className='flex items-center text-paragraph dark:text-paragraph-dark'>
           {location}
         </div>
       ),
@@ -150,9 +126,9 @@ export const AdminCompanyList = () => {
       dataIndex: 'size',
       key: 'size',
       render: (size: CompanySize) => (
-        <Tag 
-          color={getSizeColor(size)} 
-          className="px-3 py-1 rounded-full font-medium border-0"
+        <Tag
+          color={getSizeColor(size)}
+          className='rounded-full border-0 px-3 py-1 font-medium'
           style={{ color: 'white' }}
         >
           {getSizeLabel(size)}
@@ -164,35 +140,37 @@ export const AdminCompanyList = () => {
       dataIndex: 'website',
       key: 'website',
       render: (website: string) => (
-        <a 
-          href={website} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-primary hover:text-primary-600 dark:text-primary-dark dark:hover:text-primary-dark-300 font-medium transition-colors"
+        <Link
+          href={website}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='font-medium text-primary transition-colors hover:text-primary-600 dark:text-primary-dark dark:hover:text-primary-dark-300'
         >
-          {website.replace(/^https?:\/\//, '').substring(0, 25)}...
-        </a>
+          <ArrowUp className='rotate-45' />
+        </Link>
       ),
     },
     {
       title: 'Contact Info',
       key: 'contact',
       render: (record: ICompany) => (
-        <div className="space-y-1">
+        <div className='space-y-1'>
           {record.contactEmail && (
-            <div className="text-sm text-paragraph dark:text-paragraph-dark flex items-center">
-              <span className="text-textColor dark:text-textColor-dark mr-1">✉️</span>
+            <div className='flex items-center text-sm text-paragraph dark:text-paragraph-dark'>
+              
               {record.contactEmail}
             </div>
           )}
           {record.contactNumber && (
-            <div className="text-sm text-paragraph dark:text-paragraph-dark flex items-center">
-              <span className="text-textColor dark:text-textColor-dark mr-1">📞</span>
+            <div className='flex items-center text-sm text-paragraph dark:text-paragraph-dark'>
+              
               {record.contactNumber}
             </div>
           )}
           {!record.contactEmail && !record.contactNumber && (
-            <span className="text-textColor dark:text-textColor-dark text-sm">No contact info</span>
+            <span className='text-sm text-textColor dark:text-textColor-dark'>
+              No contact info
+            </span>
           )}
         </div>
       ),
@@ -202,127 +180,65 @@ export const AdminCompanyList = () => {
       key: 'actions',
       width: 200,
       render: (record: ICompany) => (
-        <Space size="small">
-          <Button
-            size="small"
-            onClick={() => router.push(`/admin/companies/${record.id}`)}
-            className="text-indigo-600 dark:text-indigo-dark-600 hover:text-indigo-700 dark:hover:text-indigo-dark-500 hover:bg-indigo-50 dark:hover:bg-indigo-dark-50 border-indigo-200 dark:border-indigo-dark-100"
-          >
-            View
-          </Button>
-          <Button
-            size="small"
+        <Space size='small'>
+          <button
             onClick={() => router.push(`/admin/companies/create/${record.id}`)}
-            className="text-primary hover:text-primary-600 dark:text-primary-dark dark:hover:text-primary-dark-300 hover:bg-primary-50 dark:hover:bg-primary-dark-100 border-primary-200 dark:border-primary-dark-200"
+            className='text-yellow-600 hover:text-yellow-700'
           >
-            Edit
-          </Button>
-          <Button
-            size="small"
+            <Edit />
+          </button>
+          <button
             onClick={() => handleDelete(record)}
-            className="text-danger dark:text-danger-dark hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800"
-            loading={deleteCompany.isPending}
+            className='text-red-600 hover:text-red-700'
           >
-            Delete
-          </Button>
+            <Trash />   
+          </button>
         </Space>
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background-100 dark:bg-background-dark-100">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
+      <div className='mx-auto max-w-7xl rounded-md p-6'>
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className='mb-8'>
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div>
-              <h1 className="text-3xl font-bold text-heading dark:text-heading-dark">Company Management</h1>
-              <p className="text-paragraph dark:text-paragraph-dark mt-1">Manage all registered companies for the job fair</p>
+              <h1 className='text-3xl font-bold text-heading dark:text-white'>
+                Company Management
+              </h1>
+              <p className='mt-1 text-paragraph dark:text-gray-200'>
+                Manage all registered companies for the job fair
+              </p>
             </div>
             <Button
-              type="primary"
-              size="large"
+              type='primary'
+              size='large'
               onClick={() => router.push('/admin/companies/create')}
-              className="bg-primary hover:bg-primary-600 border-primary hover:border-primary-600 px-6 h-12 font-medium text-white"
+              className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
             >
               ✨ Add New Company
             </Button>
           </div>
         </div>
+        <Table
+          columns={columns}
+          dataSource={data?.data}
+          rowKey={(record) => record.id!}
+          onRow={(record) => ({
+            onClick: () => router.push(`/admin/companies/${record.id}`),
+          })}
+          pagination={false}
+          loading={isLoading}
+          onChange={handleTableChange}
+          size='middle'
+          rowClassName={'!cursor-pointer'}
+        />
 
-        {/* Filters Section */}
-        <Card className="mb-6 shadow-sm bg-white dark:bg-background-dark-200 border-background-200 dark:border-background-dark-300">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} lg={8}>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-heading dark:text-heading-dark">Search Companies</label>
-                <Search
-                  placeholder="Search by company name..."
-                  onSearch={handleSearch}
-                  onChange={(e) => !e.target.value && handleSearch('')}
-                  enterButton="Search"
-                  size="large"
-                  className="w-full"
-                />
-              </div>
-            </Col>
-            <Col xs={24} sm={12} lg={8}>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-heading dark:text-heading-dark">Filter by Size</label>
-                <Select
-                  placeholder="All company sizes"
-                  size="large"
-                  style={{ width: '100%' }}
-                  allowClear
-                  onChange={handleSizeFilter}
-                  className="dark:bg-background-dark-200"
-                >
-                  <Option value={CompanySize.STARTUP}>Startup</Option>
-                  <Option value={CompanySize.SMALL}>Small</Option>
-                  <Option value={CompanySize.MEDIUM}>Medium</Option>
-                  <Option value={CompanySize.LARGE}>Large</Option>
-                  <Option value={CompanySize.ENTERPRISE}>Enterprise</Option>
-                </Select>
-              </div>
-            </Col>
-            <Col xs={24} lg={8}>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-heading dark:text-heading-dark">Quick Stats</label>
-                <div className="flex items-center space-x-4 pt-2">
-                  <div className="bg-primary-100 dark:bg-primary-dark-200 px-3 py-2 rounded-lg">
-                    <span className="text-primary-700 dark:text-primary-dark-300 font-semibold">{data?.count || 0}</span>
-                    <span className="text-primary-600 dark:text-primary-dark-400 text-sm ml-1">Total</span>
-                  </div>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* Table Section */}
-        <Card className="shadow-sm bg-white dark:bg-background-dark-200 border-background-200 dark:border-background-dark-300">
-          <Table
-            columns={columns}
-            dataSource={data?.data}
-            rowKey="id"
-            loading={isLoading}
-            pagination={{
-              current: searchParams.page,
-              pageSize: searchParams.limit,
-              total: data?.count,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `Showing ${range[0]}-${range[1]} of ${total} companies`,
-              pageSizeOptions: ['10', '20', '50', '100'],
-            }}
-            onChange={handleTableChange}
-            className="company-table"
-            size="middle"
-            scroll={{ x: 800 }}
-          />
-        </Card>
+        <div className='mt-6'>
+          <AppPagination total={data?.count || 0} />
+        </div>
       </div>
     </div>
   );
