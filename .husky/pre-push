@@ -2,7 +2,7 @@ branch_name=$(git symbolic-ref --short HEAD)
 
 branch_regex="^(feature|bugfix|hotfix|release)\/[a-z0-9]+\/[a-z0-9_\-]+$"
 
-if [[ $branch_name == "dev" || $branch_name == "stable" || $branch_name == "features" || $branch_name == *"-stable" ]]; then
+if [[ $branch_name == "dev" || $branch_name == "main" || $branch_name == "stable" || $branch_name == "features" || $branch_name == *"-stable" ]]; then
   echo "Branch name '$branch_name'"
 else
   echo "Branch name '$branch_name'"
