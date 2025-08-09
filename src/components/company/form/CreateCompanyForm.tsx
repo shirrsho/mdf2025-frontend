@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { useCreateCompany, useUpdateCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
-import { AppQuillInput } from '@/components/common/forms';
+import { AppRichTextInput } from '@/components/common/forms';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -224,7 +224,7 @@ export const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({
                       placeholder="Describe your company, mission, and what makes it unique..."
                       className="rounded-lg border-background-200 dark:border-background-dark-300 focus:border-primary focus:ring-primary bg-white dark:bg-background-dark-100 text-textColor dark:text-textColor-dark"
                     /> */}
-                    <AppQuillInput placeholder='Describe your company, mission, and what makes it unique...' />
+                    <AppRichTextInput placeholder='Describe your company, mission, and what makes it unique...' />
                   </Form.Item>
                 </Col>
               </Row>

@@ -46,7 +46,7 @@ interface TiptapInputProps extends Omit<FormItemProps, 'onChange'> {
   autoFocus?: boolean;
 }
 
-export const AppQuillInput = ({
+export const AppRichTextInput = ({
   value,
   onChange,
   placeholder,

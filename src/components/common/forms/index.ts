@@ -6,7 +6,7 @@ export {
   FileUploaderV2,
 } from './uploaders';
 
-export { CustomPhoneInput, AppQuillInput } from './inputs';
+export { CustomPhoneInput, AppRichTextInput } from './inputs';
 
 export {
   SelectRole,

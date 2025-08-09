@@ -1,2 +1,2 @@
 export { CustomPhoneInput } from './PhoneInput';
-export { AppQuillInput } from './TiptapInput';
+export { AppRichTextInput } from './TiptapInput';
