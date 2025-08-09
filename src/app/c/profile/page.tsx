@@ -1,6 +1,6 @@
 'use client';
 import { useGetUser } from '@/apis';
-import { CompanyProfile } from '@/components/company/grid/CompanyProfile';
+import { CompanyProfile } from '@/components/company';
 import React from 'react';
 
 const DashboardPage = () => {
