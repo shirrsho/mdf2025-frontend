@@ -15,7 +15,6 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
-import { useAdminLayoutContext } from '@/contexts';
 import { logout } from '@/apis';
 import { LOGIN_PATH } from '@/constants';
 

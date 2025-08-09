@@ -2,15 +2,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { Drawer, Form, Table } from 'antd';
+import { Table, Button, Card, Space, Typography } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import {
-  useCreateCompany,
   useDeleteCompany,
   useGetAllCompanys,
-  useUpdateCompany,
 } from '@/apis';
 import { ICompany } from '@/interfaces';
 import {
@@ -21,17 +19,13 @@ import {
   LogoLoader,
 } from '@/components/common';
 import { handleErrorToast } from '@/utils';
-import { CreateCompanyForm } from '../form';
+
+const { Title } = Typography;
 
 export const CompanyList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-
-  const [form] = Form.useForm();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
 
   const pageNo = parseInt(searchParams.get('pageno') || '1', 10);
   const pageSize = parseInt(
@@ -46,9 +40,6 @@ export const CompanyList = () => {
   });
 
   const { data, isLoading, refetch } = useGetAllCompanys(query);
-
-  const createCompany = useCreateCompany();
-  const updateCompany = useUpdateCompany();
   const deleteCompany = useDeleteCompany();
 
   useEffect(() => {
@@ -115,24 +106,6 @@ export const CompanyList = () => {
     router.replace(pathname, { scroll: false });
   }, [router, pathname]);
 
-  const handleSubmit = async (values: ICompany) => {
-    try {
-      if (values.id) {
-        await updateCompany.mutateAsync(values);
-        toast.success('Company updated successfully');
-      } else {
-        await createCompany.mutateAsync(values);
-        toast.success('Company created successfully');
-      }
-      await refetch();
-      setIsModalOpen(false);
-      setIsEditing(false);
-      form.resetFields();
-    } catch (error) {
-      handleErrorToast(error);
-    }
-  };
-
   const onDelete = async (id?: string) => {
     if (!id) return;
     try {
@@ -144,12 +117,6 @@ export const CompanyList = () => {
     }
   };
 
-  const onEdit = (company: ICompany) => {
-    form.setFieldsValue(company);
-    setIsEditing(true);
-    setIsModalOpen(true);
-  };
-
   const columns: ColumnsType<ICompany> = [
     {
       title: 'Sl',
@@ -159,9 +126,9 @@ export const CompanyList = () => {
       render: (_, __, index) => (pageNo - 1) * pageSize + index + 1,
     },
     {
-      title: 'নাম',
-      dataIndex: 'companyName',
-      key: 'companyName',
+      title: 'Company Name',
+      dataIndex: 'name',
+      key: 'name',
       filterIcon: getFilterValue('companyName') ? <CheckCircle /> : <Search />,
       filterDropdown: (
         <TableFilterSearch
@@ -169,87 +136,134 @@ export const CompanyList = () => {
           placeholder='Search by name'
         />
       ),
+      render: (text: string, record: ICompany) => (
+        <div className="flex items-center space-x-3">
+          <div className="flex-shrink-0">
+            {record.logoUrl ? (
+              <img 
+                src={record.logoUrl} 
+                alt={text}
+                className="w-8 h-8 rounded object-cover border border-background-200 dark:border-background-dark-300"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              <div className="w-8 h-8 rounded bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold text-xs">
+                {text.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="font-medium text-heading dark:text-heading-dark">{text}</div>
+            <div className="text-sm text-paragraph dark:text-paragraph-dark">{record.industry}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Location',
+      dataIndex: 'location',
+      key: 'location',
+    },
+    {
+      title: 'Website',
+      dataIndex: 'website',
+      key: 'website',
+      render: (website: string) => (
+        <a 
+          href={website} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-primary-500 hover:text-primary-600"
+        >
+          {website?.replace(/^https?:\/\//, '')?.substring(0, 20)}...
+        </a>
+      ),
     },
     {
       title: 'Actions',
-      width: '90px',
+      width: '150px',
       fixed: 'right',
       render: (record) => (
-        <div className='flex flex-row gap-1'>
-          <ActionButton.Edit href={`/admin/company/create/${record.id}`} />
-          <ActionButton.Edit
-            tooltip='modal edit'
-            onClick={() => onEdit(record)}
-          />
+        <Space size="small">
+          <Button
+            size="small"
+            onClick={() => router.push(`/admin/companies/${record.id}`)}
+            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
+          >
+            View
+          </Button>
+          <ActionButton.Edit href={`/admin/companies/create/${record.id}`} />
           <ActionButton.Delete
             size='small'
             onClick={async () => await onDelete(record.id)}
           />
-        </div>
+        </Space>
       ),
     },
   ];
 
   return (
-    <div className='min-h-screen bg-background-100 px-4 py-6 dark:bg-background-dark-100 sm:px-6 lg:px-8'>
+    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100 px-4 py-6 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-7xl'>
-        <div className='flex w-full flex-row justify-between'>
-          <div className='flex w-[50%] flex-row'>
-            <TableTopButton text='Clear filter' onClick={resetFilters} />
-          </div>
-          <div className='flex w-full flex-row justify-end gap-x-1'>
-            <TableTopButton
-              text='যোগ করুন(modal)'
-              icon={<Plus />}
-              onClick={() => {
-                setIsEditing(false);
-                setIsModalOpen(true);
-              }}
-            />
-            <TableTopButton
-              text='যোগ করুন'
-              href='/admin/company/create'
-              icon={<Plus />}
-            />
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                            <Title level={2} className="mb-2 text-heading dark:text-heading-dark">
+                Companies
+              </Title>
+              <p className="text-paragraph dark:text-paragraph-dark">Manage all registered companies for the job fair</p>
+            </div>
+            <Button
+              type="primary"
+              size="large"
+              icon={<Plus className="w-4 h-4" />}
+              onClick={() => router.push('/admin/companies/create')}
+              className="bg-primary-500 hover:bg-primary-600 border-primary-500 hover:border-primary-600 px-6 h-12 font-medium"
+            >
+              Add New Company
+            </Button>
           </div>
         </div>
+
+        {/* Filters */}
+        <Card className="mb-6 shadow-sm">
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+            <div className='flex flex-row gap-2'>
+              <TableTopButton text='Clear Filters' onClick={resetFilters} />
+            </div>
+            <div className='text-sm text-paragraph dark:text-paragraph-dark'>
+              Total: <span className="font-semibold text-heading dark:text-heading-dark">{data?.count || 0}</span> companies
+            </div>
+          </div>
+        </Card>
+
         {isLoading ? (
           <LogoLoader />
         ) : (
-          <div className='mt-[20px]'>
-            <div className='mb-[55px] overflow-x-auto'>
-              <Table
-                scroll={{ x: true }}
-                columns={columns}
-                dataSource={data?.data}
-                rowKey={(record) => record.id!}
-                pagination={false}
-                loading={isLoading}
-                className='rounded-md border shadow-sm'
-              />
+          <div className=''>
+            <Card className="shadow-sm">
+              <div className='overflow-x-auto'>
+                <Table
+                  scroll={{ x: true }}
+                  columns={columns}
+                  dataSource={data?.data}
+                  rowKey={(record) => record.id!}
+                  pagination={false}
+                  loading={isLoading}
+                  className='company-table'
+                  size="middle"
+                />
+              </div>
+            </Card>
+            <div className="mt-6">
+              <AppPagination total={data?.count || 0} />
             </div>
-            <AppPagination total={data?.count || 0} />
           </div>
         )}
       </div>
-      <Drawer
-        title={
-          <h2 className='text-xl font-semibold text-heading dark:text-heading-dark'>
-            {isEditing ? `Edit Company` : `Create New Company`}
-          </h2>
-        }
-        open={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          form.resetFields();
-          setIsEditing(false);
-        }}
-        placement='right'
-        width={600}
-        className='dark:bg-background-dark-100'
-      >
-        <CreateCompanyForm form={form} onFinish={handleSubmit} />
-      </Drawer>
     </div>
   );
 };
