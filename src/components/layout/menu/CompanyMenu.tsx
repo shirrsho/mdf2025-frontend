@@ -10,13 +10,18 @@ import {
   FileText,
   Briefcase,
   Building,
+  LogOut,
 } from 'lucide-react';
+import { logout } from '@/apis';
+import { LOGIN_PATH } from '@/constants';
 
 export const CompanyMenu = () => {
   const [selectedKey, setSelectedKey] = useState<string[]>(['dashboard']);
   const router = useRouter();
   const pathName = usePathname();
 
+  const pathname = usePathname();
+  const redirectPath = `${LOGIN_PATH}?redirect=${encodeURIComponent(pathname)}`;
   useEffect(() => {
     if (pathName) {
       const activeMenu = [pathName.split('/')[2]];
@@ -54,34 +59,47 @@ export const CompanyMenu = () => {
 
   return (
     <div className='flex h-full min-h-[100vh] w-full flex-col items-center justify-between bg-background-100'>
-      <div className='flex w-full flex-col items-center justify-center'>
-        <div className='flex h-[80px] w-full flex-col items-center justify-center border-b-[2px] border-b-background-200 hover:cursor-pointer'>
-          <Image
-            src='/logo.png'
-            className={`object-contain h-[48px] w-[96px]`}
-            onClick={() => {
-              router.push('/c/dashboard');
-            }}
+      <div className='flex w-full flex-col items-center justify-between h-full'>
+        <div>
+          <div className='flex h-[80px] w-full flex-col items-center justify-center border-b-[2px] border-b-background-200 hover:cursor-pointer'>
+            <Image
+              src='/logo.png'
+              className={`object-contain h-[48px] w-[96px]`}
+              onClick={() => {
+                router.push('/admin');
+              }}
+              style={{
+                transition: 'width 0.5s ease-in-out',
+              }}
+              width={100}
+              height={100}
+              alt=''
+            />
+          </div>
+          <Menu
+            items={menuItems}
             style={{
+              width: 220,
               transition: 'width 0.5s ease-in-out',
+              margin: '10px',
+              border: '0px solid #E5E5E5',
             }}
-            width={100}
-            height={100}
-            alt=''
+            className='!bg-background-100 dark:!bg-background-dark-100'
+            selectedKeys={selectedKey}
+            mode='inline'
           />
         </div>
-        <Menu
-          items={menuItems}
-          style={{
-            width: 220,
-            transition: 'width 0.5s ease-in-out',
-            margin: '10px',
-            border: '0px solid #E5E5E5',
+        <div 
+          className='flex w-full items-center justify-center gap-2 py-3 text-gray-400 hover:bg-gray-600 hover:cursor-pointer transition-colors duration-200 border-t border-gray-500'
+          onClick={async () => {
+            await logout();
+            router.push(redirectPath);
+            window.location.reload();
           }}
-          className='!bg-background-100 dark:!bg-background-dark-100'
-          selectedKeys={selectedKey}
-          mode='inline'
-        />
+        >
+          <LogOut size={16} rotate={180}/>
+          <span className="font-medium">Logout</span>
+        </div>
       </div>
     </div>
   );
