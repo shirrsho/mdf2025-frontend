@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { useCreateCompany, useUpdateCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
-import { AppQuillInput } from '@/components/common/forms/inputs/TiptapInput';
+import { AppQuillInput } from '@/components/common/forms';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
