@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useGetCompanyById } from '@/apis';
-import { CreateCompanyForm } from './CreateCompanyForm';
+import { CompanyForm } from './CompanyForm';
 
 interface ICreateCompanyFormId {
   companyId?: string;
@@ -25,10 +25,6 @@ export const CreateCompanyFormId: React.FC<ICreateCompanyFormId> = ({
   }
 
   return (
-    <CreateCompanyForm
-      mode={mode}
-      initialData={companyData}
-      isEdit={!!companyId}
-    />
+    <CompanyForm mode={mode} initialData={companyData} isEdit={!!companyId} />
   );
 };

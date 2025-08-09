@@ -1,2 +1,2 @@
-export { CreateCompanyForm } from './CreateCompanyForm';
+export { CompanyForm } from './CompanyForm';
 export { CreateCompanyFormId } from './CreateCompanyFormId';

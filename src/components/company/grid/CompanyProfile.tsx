@@ -9,7 +9,13 @@ import { useRouter } from 'next/navigation';
 
 const { Title, Text } = Typography;
 
-export const CompanyProfile = ({ user }: { user: IUser }) => {
+export const CompanyProfile = ({
+  user,
+  mode,
+}: {
+  user: IUser;
+  mode: 'admin' | 'company';
+}) => {
   const router = useRouter();
   const { data: company, isLoading } = useGetCompanyById(user?.companyId ?? '');
 
@@ -73,5 +79,5 @@ export const CompanyProfile = ({ user }: { user: IUser }) => {
     );
   }
 
-  return <CompanyDetail companyId={company?.id ?? ''} />;
+  return <CompanyDetail mode={mode} companyId={company?.id ?? ''} />;
 };

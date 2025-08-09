@@ -35,9 +35,13 @@ const { Title, Text, Paragraph } = Typography;
 
 interface CompanyDetailProps {
   companyId: string;
+  mode: 'admin' | 'company';
 }
 
-export const CompanyDetail: React.FC<CompanyDetailProps> = ({ companyId }) => {
+export const CompanyDetail: React.FC<CompanyDetailProps> = ({
+  companyId,
+  mode,
+}) => {
   const router = useRouter();
   const { data: company, isLoading } = useGetCompanyById(companyId);
   const { data: logins, refetch } = useGetUserByCompanyId(companyId);
@@ -128,7 +132,10 @@ export const CompanyDetail: React.FC<CompanyDetailProps> = ({ companyId }) => {
   }
 
   const handleEdit = () => {
-    router.push(`/admin/companies/create/${companyId}`);
+    if (mode === 'company') {
+      router.push(`/c/institute/create/${companyId}`);
+      return;
+    } else router.push(`/admin/companies/create/${companyId}`);
   };
 
   const handleBack = () => {
@@ -372,21 +379,23 @@ export const CompanyDetail: React.FC<CompanyDetailProps> = ({ companyId }) => {
                   </div>
                   Login Credentials
                 </Title>
-                <Button
-                  type='primary'
-                  size='small'
-                  onClick={() => setIsModalOpen(true)}
-                  style={{
-                    backgroundColor: '#F4612E',
-                    borderColor: '#F4612E',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    height: '32px',
-                    padding: '0 12px',
-                  }}
-                >
-                  {logins?.data?.length ? 'Update' : 'Create'}
-                </Button>
+                {mode == 'admin' && (
+                  <Button
+                    type='primary'
+                    size='small'
+                    onClick={() => setIsModalOpen(true)}
+                    style={{
+                      backgroundColor: '#F4612E',
+                      borderColor: '#F4612E',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      height: '32px',
+                      padding: '0 12px',
+                    }}
+                  >
+                    {logins?.data?.length ? 'Update' : 'Create'}
+                  </Button>
+                )}
               </div>
 
               <div className='space-y-3'>
