@@ -1,8 +1,8 @@
 import React from 'react';
-import { JobList } from '@/components/job';
+import { AdminJobList } from '@/components/job';
 
-const TemplatePage = () => {
-  return <JobList />;
+const JobsPage = () => {
+  return <AdminJobList />;
 };
 
-export default TemplatePage;
+export default JobsPage;

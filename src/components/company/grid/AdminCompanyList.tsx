@@ -208,7 +208,7 @@ export const AdminCompanyList = () => {
         <div className='mb-8'>
           <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div>
-              <h1 className='text-3xl font-bold text-heading dark:text-white'>
+              <h1 className='text-2xl font-bold text-heading dark:text-white'>
                 Company Management
               </h1>
               <p className='mt-1 text-paragraph dark:text-gray-200'>

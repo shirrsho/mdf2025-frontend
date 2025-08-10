@@ -1,14 +1,14 @@
 import React from 'react';
 import { OptionsalParamsType } from '@/types';
-import { CreateTemplateFormId } from '@/components/template';
+import { CreateJobFormId } from '@/components/job';
 
-const CreateTemplate = ({ params }: OptionsalParamsType) => {
-  const templateId = params.id?.[0];
+const CreateJobPage = ({ params }: OptionsalParamsType) => {
+  const jobId = params.id?.[0];
   return (
     <div className='min-h-screen'>
-      <CreateTemplateFormId templateId={templateId} />
+      <CreateJobFormId mode='admin' jobId={jobId} />
     </div>
   );
 };
 
-export default CreateTemplate;
+export default CreateJobPage;
