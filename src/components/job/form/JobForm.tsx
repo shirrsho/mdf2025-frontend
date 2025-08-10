@@ -14,33 +14,35 @@ import {
   InputNumber,
   Divider,
   Tag,
-  notification,
 } from 'antd';
 import { ArrowLeft, Plus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { IJob, JobType, ExperienceLevel, JobStatus } from '@/interfaces';
 import { AppRichTextInput } from '@/components/common/forms';
-import { useCreateJob, useUpdateJob, useGetAllCompanys } from '@/apis';
-import { handleErrorToast } from '@/utils';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
 
-interface CreateJobFormProps {
+interface JobFormProps {
   initialData?: IJob;
   isEdit?: boolean;
-  mode: 'admin' | 'company';
+  onSubmit: (values: any) => Promise<void>;
+  isLoading: boolean;
+  companyOptions: { label: string; value: string }[];
+  companiesLoading: boolean;
 }
 
-export const CreateJobForm: React.FC<CreateJobFormProps> = ({
+export const JobForm: React.FC<JobFormProps> = ({
   initialData,
   isEdit = false,
-  mode,
+  onSubmit,
+  isLoading,
+  companyOptions,
+  companiesLoading,
 }) => {
   const [form] = Form.useForm();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [skillInput, setSkillInput] = useState('');
   const [requirementInput, setRequirementInput] = useState('');
   const [benefitInput, setBenefitInput] = useState('');
@@ -51,19 +53,6 @@ export const CreateJobForm: React.FC<CreateJobFormProps> = ({
   const [benefits, setBenefits] = useState<string[]>(
     initialData?.benefits || []
   );
-
-  // API hooks
-  const createJob = useCreateJob();
-  const updateJob = useUpdateJob();
-  const { data: companiesData, isLoading: companiesLoading } =
-    useGetAllCompanys({ limit: 100 });
-
-  // Transform company data to options format
-  const companyOptions =
-    companiesData?.data?.map((company) => ({
-      label: company.name,
-      value: company.id!,
-    })) || [];
 
   // Set initial form values when editing
   useEffect(() => {
@@ -81,41 +70,13 @@ export const CreateJobForm: React.FC<CreateJobFormProps> = ({
   }, [initialData, isEdit, form]);
 
   const handleSubmit = async (values: any) => {
-    setIsLoading(true);
-    try {
-      const jobData = {
-        ...values,
-        skills,
-        requirements,
-        benefits,
-        applicationDeadline: values.applicationDeadline?.toISOString(),
-      };
-      let r = null;
-      if (isEdit && initialData?.id) {
-        r = await updateJob.mutateAsync({ ...jobData, id: initialData.id });
-        notification.success({
-          message: 'Success',
-          description: 'Job updated successfully!',
-          placement: 'topRight',
-        });
-      } else {
-        r = await createJob.mutateAsync(jobData);
-        notification.success({
-          message: 'Success',
-          description: 'Job created successfully!',
-          placement: 'topRight',
-        });
-      }
-
-      // Redirect based on mode
-      router.push(
-        mode === 'admin' ? `/admin/jobs/${r?.id}` : `/c/jobs/${r?.id}`
-      );
-    } catch (error) {
-      handleErrorToast(error);
-    } finally {
-      setIsLoading(false);
-    }
+    const jobData = {
+      ...values,
+      skills,
+      requirements,
+      benefits,
+    };
+    await onSubmit(jobData);
   };
 
   const addSkill = () => {

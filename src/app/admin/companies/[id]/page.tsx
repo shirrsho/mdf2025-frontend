@@ -5,7 +5,7 @@ const DetailCompany = ({ params }: any) => {
   const companyId = params.id;
   return (
     <div className='min-h-screen'>
-      <CompanyDetail companyId={companyId ?? ''} />
+      <CompanyDetail companyId={companyId ?? ''} mode='admin' />
     </div>
   );
 };

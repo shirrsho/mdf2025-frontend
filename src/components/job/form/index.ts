@@ -1,2 +1,2 @@
-export { CreateJobForm } from './CreateJobForm';
+export { JobForm } from './JobForm';
 export { CreateJobFormId } from './CreateJobFormId';

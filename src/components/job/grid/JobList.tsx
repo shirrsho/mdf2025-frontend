@@ -2,16 +2,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { Drawer, Form, Table } from 'antd';
+import { Form, Table } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
-import {
-  useCreateJob,
-  useDeleteJob,
-  useGetAllJobs,
-  useUpdateJob,
-} from '@/apis';
+import { useDeleteJob, useGetAllJobs } from '@/apis';
 import { IJob } from '@/interfaces';
 import {
   ActionButton,
@@ -21,7 +16,6 @@ import {
   LogoLoader,
 } from '@/components/common';
 import { handleErrorToast } from '@/utils';
-import { CreateJobForm } from '../form';
 
 export const JobList = () => {
   const router = useRouter();
@@ -29,9 +23,6 @@ export const JobList = () => {
   const pathname = usePathname();
 
   const [form] = Form.useForm();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
 
   const pageNo = parseInt(searchParams.get('pageno') || '1', 10);
   const pageSize = parseInt(
@@ -47,8 +38,6 @@ export const JobList = () => {
 
   const { data, isLoading, refetch } = useGetAllJobs(query);
 
-  const createJob = useCreateJob();
-  const updateJob = useUpdateJob();
   const deleteJob = useDeleteJob();
 
   useEffect(() => {
@@ -115,24 +104,6 @@ export const JobList = () => {
     router.replace(pathname, { scroll: false });
   }, [router, pathname]);
 
-  const handleSubmit = async (values: IJob) => {
-    try {
-      if (values.id) {
-        await updateJob.mutateAsync(values);
-        toast.success('Job updated successfully');
-      } else {
-        await createJob.mutateAsync(values);
-        toast.success('Job created successfully');
-      }
-      await refetch();
-      setIsModalOpen(false);
-      setIsEditing(false);
-      form.resetFields();
-    } catch (error) {
-      handleErrorToast(error);
-    }
-  };
-
   const onDelete = async (id?: string) => {
     if (!id) return;
     try {
@@ -146,8 +117,6 @@ export const JobList = () => {
 
   const onEdit = (job: IJob) => {
     form.setFieldsValue(job);
-    setIsEditing(true);
-    setIsModalOpen(true);
   };
 
   const columns: ColumnsType<IJob> = [
@@ -198,14 +167,7 @@ export const JobList = () => {
             <TableTopButton text='Clear filter' onClick={resetFilters} />
           </div>
           <div className='flex w-full flex-row justify-end gap-x-1'>
-            <TableTopButton
-              text='যোগ করুন(modal)'
-              icon={<Plus />}
-              onClick={() => {
-                setIsEditing(false);
-                setIsModalOpen(true);
-              }}
-            />
+            <TableTopButton text='যোগ করুন(modal)' icon={<Plus />} />
             <TableTopButton
               text='যোগ করুন'
               href='/admin/job/create'
@@ -232,24 +194,6 @@ export const JobList = () => {
           </div>
         )}
       </div>
-      <Drawer
-        title={
-          <h2 className='text-xl font-semibold text-heading dark:text-heading-dark'>
-            {isEditing ? `Edit Job` : `Create New Job`}
-          </h2>
-        }
-        open={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          form.resetFields();
-          setIsEditing(false);
-        }}
-        placement='right'
-        width={600}
-        className='dark:bg-background-dark-100'
-      >
-        <CreateJobForm form={form} onFinish={handleSubmit} />
-      </Drawer>
     </div>
   );
 };
