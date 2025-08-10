@@ -31,6 +31,7 @@ interface JobFormProps {
   isLoading: boolean;
   companyOptions: { label: string; value: string }[];
   companiesLoading: boolean;
+  companyId?: string;
 }
 
 export const JobForm: React.FC<JobFormProps> = ({
@@ -40,6 +41,7 @@ export const JobForm: React.FC<JobFormProps> = ({
   isLoading,
   companyOptions,
   companiesLoading,
+  companyId,
 }) => {
   const [form] = Form.useForm();
   const router = useRouter();
@@ -59,6 +61,7 @@ export const JobForm: React.FC<JobFormProps> = ({
     if (initialData && isEdit) {
       form.setFieldsValue({
         ...initialData,
+        companyId,
         applicationDeadline: initialData.applicationDeadline
           ? dayjs(initialData.applicationDeadline)
           : null,
@@ -227,7 +230,9 @@ export const JobForm: React.FC<JobFormProps> = ({
                       placeholder='Select company'
                       loading={companiesLoading}
                       className='rounded-lg'
-                      dropdownClassName='dark:bg-background-dark-200'
+                      popupClassName='dark:bg-background-dark-200'
+                      disabled={companyId ? true : false}
+                      defaultValue={companyId}
                     >
                       {companyOptions.map((option) => (
                         <Option key={option.value} value={option.value}>
@@ -377,7 +382,7 @@ export const JobForm: React.FC<JobFormProps> = ({
                     <InputNumber
                       size='large'
                       placeholder='50000'
-                      className='w-full border-background-200 bg-white text-textColor focus:border-primary'
+                      className='!w-full border-background-200 bg-white text-textColor focus:border-primary'
                       formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                       }
@@ -397,7 +402,7 @@ export const JobForm: React.FC<JobFormProps> = ({
                     <InputNumber
                       size='large'
                       placeholder='100000'
-                      className='w-full border-background-200 bg-white text-textColor focus:border-primary'
+                      className='!w-full border-background-200 bg-white text-textColor focus:border-primary'
                       formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                       }

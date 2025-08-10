@@ -4,7 +4,7 @@ import { IJob } from '@/interfaces';
 import { useGetAllJobs, useDeleteJob } from '@/apis';
 import { JobList } from './JobList';
 
-export const AdminJobList = () => {
+export const CompanyJobList = ({ companyId }: { companyId: string }) => {
   const [searchParams, setSearchParams] = useState({
     page: 1,
     limit: 10,
@@ -13,7 +13,10 @@ export const AdminJobList = () => {
     status: '',
   });
 
-  const { data, isLoading, refetch } = useGetAllJobs(searchParams);
+  const { data, isLoading, refetch } = useGetAllJobs({
+    ...searchParams,
+    companyId: companyId,
+  });
   const deleteJob = useDeleteJob();
 
   const handleTableChange = (pagination: any) => {
@@ -36,11 +39,12 @@ export const AdminJobList = () => {
     <JobList
       jobs={jobs}
       totalCount={totalCount}
-      isLoading={isLoading}
+      isLoading={isLoading || !companyId}
       searchParams={searchParams}
       onTableChange={handleTableChange}
       onDelete={handleDelete}
-      mode='admin'
+      companyId={companyId}
+      mode='company'
     />
   );
 };

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { notification } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   useGetJobById,
   useCreateJob,
@@ -21,6 +21,7 @@ export const CreateJobFormId: React.FC<ICreateJobFormId> = ({
   mode,
 }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   // API hooks
@@ -94,6 +95,7 @@ export const CreateJobFormId: React.FC<ICreateJobFormId> = ({
       isLoading={isLoading}
       companyOptions={companyOptions}
       companiesLoading={companiesLoading}
+      companyId={searchParams?.get('c') ?? undefined}
     />
   );
 };
