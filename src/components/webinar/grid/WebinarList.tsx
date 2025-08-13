@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
-import { AppPagination } from '@/components/common';
+import { AppPagination, HtmlRenderer } from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import dayjs from 'dayjs';
 
@@ -151,7 +151,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
               {record.title}
             </div>
             <div className='mt-1 line-clamp-2 text-xs text-gray-400'>
-              {record.description}
+              <HtmlRenderer htmlString={record.description} />
             </div>
             {record.category && (
               <Tag
@@ -317,18 +317,19 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
         {/* Header */}
         <div className='mb-8 flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold text-heading dark:text-white'>
+            <h1 className='text-2xl font-bold text-heading dark:text-white'>
               Webinar Management
             </h1>
-            <p className='mt-2 text-paragraph dark:text-gray-200'>
+            <p className='mt-1 text-paragraph dark:text-gray-200'>
               Manage webinars, schedules, and participant engagement
             </p>
           </div>
           <Button
             type='primary'
+            size='large'
             icon={<Plus className='h-4 w-4' />}
             onClick={() => router.push('/admin/webinars/create')}
-            className='h-10 border-primary bg-primary font-medium hover:bg-primary-600'
+            className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
           >
             Create Webinar
           </Button>

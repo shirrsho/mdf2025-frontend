@@ -392,14 +392,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
                 onChange={onTableChange}
                 size='middle'
                 rowClassName={'!cursor-pointer'}
-                className='dark-table'
-                style={
-                  {
-                    '--table-bg': '#2a2a2a',
-                    '--table-header-bg': '#313131',
-                    '--table-row-hover-bg': '#313131',
-                  } as React.CSSProperties
-                }
               />
             </Card>
 

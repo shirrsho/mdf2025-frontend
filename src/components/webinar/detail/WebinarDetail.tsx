@@ -31,6 +31,7 @@ import {
 import { useGetWebinarById } from '@/apis';
 import { WebinarStatus } from '@/interfaces';
 import dayjs from 'dayjs';
+import { HtmlRenderer } from '@/components/common';
 
 const { Title, Text } = Typography;
 
@@ -135,7 +136,9 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
             <Button
               type='primary'
               icon={<Edit className='h-4 w-4' />}
-              onClick={() => router.push(`/admin/webinars/edit/${webinar.id}`)}
+              onClick={() =>
+                router.push(`/admin/webinars/create/${webinar.id}`)
+              }
               className='h-10 border-primary bg-primary font-medium hover:bg-primary-600'
             >
               Edit Webinar
@@ -207,7 +210,9 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
                   <Title level={4} className='!mb-2 !text-gray-200'>
                     {webinar.title}
                   </Title>
-                  <Text className='text-gray-400'>{webinar.description}</Text>
+                  <Text className='text-gray-400'>
+                    <HtmlRenderer htmlString={webinar.description} />
+                  </Text>
                   {webinar.category && (
                     <div className='mt-3'>
                       <Tag
@@ -381,7 +386,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
                   block
                   icon={<Edit className='h-4 w-4' />}
                   onClick={() =>
-                    router.push(`/admin/webinars/edit/${webinar.id}`)
+                    router.push(`/admin/webinars/create/${webinar.id}`)
                   }
                   className='h-10 border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
                 >

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Form,
   Input,
@@ -13,8 +13,15 @@ import {
   Divider,
   Typography,
   Space,
+  Alert,
 } from 'antd';
-import { ArrowLeft, Upload as UploadIcon, Link } from 'lucide-react';
+import {
+  ArrowLeft,
+  Upload as UploadIcon,
+  Link,
+  Clock,
+  Calendar,
+} from 'lucide-react';
 import {
   IWebinar,
   IWebinarCreateRequest,
@@ -24,8 +31,8 @@ import {
 import { useGetTimeslotOption } from '@/apis/timeslot';
 import { useGetCompanyOption } from '@/apis/company';
 import { TimeSlotPicker } from './TimeSlotPicker';
+import { AppRichTextInput } from '@/components/common/forms';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;
 
@@ -53,53 +60,55 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
     duration?: number;
   }>({});
 
-  // Load options
   const { data: timeslotOptions } = useGetTimeslotOption();
   const { data: companyOptions } = useGetCompanyOption();
 
-  const handleSubmit = async (values: any) => {
-    try {
-      // Validate that time slots are selected
-      if (!timeSlotData.scheduledStartTime || !timeSlotData.duration) {
-        message.error('Please select time slots for the webinar');
-        return;
-      }
+  const initialValues = useMemo(() => {
+    return initialData
+      ? {
+          ...initialData,
+          host: initialData.host?.id,
+          timeslot: initialData.timeslot?.id,
+        }
+      : { status: WebinarStatus.SCHEDULED };
+  }, [initialData]);
 
-      const formData = {
-        ...values,
-        scheduledStartTime: timeSlotData.scheduledStartTime,
-        duration: timeSlotData.duration,
-      };
-
-      await onSubmit(formData);
-    } catch {
-      message.error('Please check your input and try again');
-    }
-  };
-
-  const initialValues = initialData
-    ? {
-        ...initialData,
-      }
-    : {
-        status: WebinarStatus.SCHEDULED,
-        maxParticipants: 100,
-      };
-
-  // Update timeSlotData and selectedTimeslotId when initialData changes
+  // Initialize form and state when initialData changes
   useEffect(() => {
     if (initialData) {
-      setSelectedTimeslotId(initialData.timeslot?.id);
-      setTimeSlotData({
-        scheduledStartTime: initialData.scheduledStartTime
-          ? typeof initialData.scheduledStartTime === 'string'
-            ? initialData.scheduledStartTime
-            : initialData.scheduledStartTime.toISOString()
-          : undefined,
-        duration: initialData.duration,
-      });
+      const timeslotId = initialData.timeslot?.id;
+      const startTime = initialData.scheduledStartTime
+        ? typeof initialData.scheduledStartTime === 'string'
+          ? initialData.scheduledStartTime
+          : initialData.scheduledStartTime.toISOString()
+        : undefined;
+
+      if (selectedTimeslotId !== timeslotId) setSelectedTimeslotId(timeslotId);
+      if (
+        timeSlotData?.scheduledStartTime !== startTime ||
+        timeSlotData?.duration !== initialData.duration
+      ) {
+        setTimeSlotData({
+          scheduledStartTime: startTime,
+          duration: initialData.duration,
+        });
+      }
+      form.setFieldsValue(initialValues);
     }
-  }, [initialData]);
+  }, [initialData, initialValues]);
+
+  const handleSubmit = async (values: any) => {
+    if (!timeSlotData?.scheduledStartTime || !timeSlotData?.duration) {
+      message.error('Please select time slots for the webinar');
+      return;
+    }
+    await onSubmit({ ...values, ...timeSlotData });
+  };
+
+  const handleTimeslotChange = (value: string) => {
+    setSelectedTimeslotId(value);
+    setTimeSlotData({});
+  };
 
   const statusOptions = [
     { label: 'Scheduled', value: WebinarStatus.SCHEDULED },
@@ -107,22 +116,6 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
     { label: 'Completed', value: WebinarStatus.COMPLETED },
     { label: 'Cancelled', value: WebinarStatus.CANCELLED },
   ];
-
-  const handleTimeslotChange = (value: string) => {
-    setSelectedTimeslotId(value);
-    // Reset time slot selection when timeslot changes
-    setTimeSlotData({});
-  };
-
-  const handleTimeSlotPickerChange = (
-    value: { scheduledStartTime: string; duration: number } | undefined
-  ) => {
-    if (value) {
-      setTimeSlotData(value);
-    } else {
-      setTimeSlotData({});
-    }
-  };
 
   return (
     <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
@@ -228,11 +221,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       },
                     ]}
                   >
-                    <TextArea
-                      rows={4}
-                      placeholder='Describe the webinar content, objectives, and what participants will learn'
-                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
-                    />
+                    <AppRichTextInput placeholder='Describe the webinar content, objectives, and what participants will learn' />
                   </Form.Item>
                 </Col>
               </Row>
@@ -268,17 +257,19 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       },
                     ]}
                   >
-                    <Select
-                      size='large'
-                      placeholder='Select host company'
-                      className='rounded-lg'
-                    >
-                      {companyOptions?.map((company: any) => (
-                        <Option key={company.value} value={company.value}>
-                          {company.label}
-                        </Option>
-                      ))}
-                    </Select>
+                    {!isLoading && (
+                      <Select
+                        size='large'
+                        placeholder='Select host company'
+                        className='rounded-lg'
+                      >
+                        {companyOptions?.map((company: any) => (
+                          <Option key={company.value} value={company.value}>
+                            {company.label}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -294,40 +285,133 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       { required: true, message: 'Please select timeslot' },
                     ]}
                   >
-                    <Select
-                      size='large'
-                      placeholder='Select timeslot'
-                      className='rounded-lg'
-                      onChange={handleTimeslotChange}
-                    >
-                      {timeslotOptions?.map((timeslot: any) => (
-                        <Option key={timeslot.value} value={timeslot.value}>
-                          {timeslot.label}
-                        </Option>
-                      ))}
-                    </Select>
+                    {!isLoading && (
+                      <Select
+                        size='large'
+                        placeholder='Select timeslot'
+                        className='rounded-lg'
+                        onChange={handleTimeslotChange}
+                      >
+                        {timeslotOptions?.map((timeslot: any) => (
+                          <Option key={timeslot.value} value={timeslot.value}>
+                            {timeslot.label}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   </Form.Item>
                 </Col>
 
                 <Col xs={24}>
                   <Form.Item
                     label={
-                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
-                        Time Slots & Duration
-                      </span>
+                      <div className='flex items-center space-x-2'>
+                        <Clock className='h-4 w-4 text-primary' />
+                        <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                          Time Slots & Duration
+                        </span>
+                      </div>
                     }
                     required
                   >
-                    <div className='rounded-lg border border-background-200 bg-white p-4 dark:border-background-dark-300 dark:bg-background-dark-100'>
-                      <TimeSlotPicker
-                        value={timeSlotData}
-                        onChange={handleTimeSlotPickerChange}
-                        timeslotId={selectedTimeslotId}
-                        disabled={!selectedTimeslotId}
+                    <div className='mb-4'>
+                      <Alert
+                        message={
+                          <div className='text-xs'>
+                            <div className='mb-1 font-medium'>
+                              How to schedule:
+                            </div>
+                            <ol className='ml-2 list-inside list-decimal space-y-1 text-xs'>
+                              <li>
+                                Select <strong>Host Company</strong> and{' '}
+                                <strong>Timeslot</strong> above
+                              </li>
+                              <li>
+                                Choose <strong>time slots</strong> and{' '}
+                                <strong>duration</strong> below
+                              </li>
+                            </ol>
+                          </div>
+                        }
+                        type='info'
+                        className='mb-4'
                       />
-                      {!selectedTimeslotId && (
-                        <div className='mt-1 text-xs text-gray-400'>
-                          Please select a timeslot first
+                    </div>
+
+                    <div
+                      className={`rounded-lg border transition-all duration-200 ${
+                        selectedTimeslotId
+                          ? 'border-primary-200'
+                          : 'border-background-200 bg-white dark:border-background-dark-300 dark:bg-background-dark-100'
+                      } p-6`}
+                    >
+                      <div className='mb-4 flex items-center justify-between'>
+                        <div className='flex items-center space-x-2'>
+                          <Calendar className='h-5 w-5 text-primary' />
+                          <span className='font-medium text-heading dark:text-heading-dark'>
+                            Select Time & Duration
+                          </span>
+                        </div>
+
+                        <div
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                            selectedTimeslotId
+                              ? timeSlotData?.scheduledStartTime &&
+                                timeSlotData?.duration
+                                ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                              : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                          }`}
+                        >
+                          {selectedTimeslotId
+                            ? timeSlotData?.scheduledStartTime &&
+                              timeSlotData?.duration
+                              ? '✅ Ready'
+                              : '⏳ Select Time'
+                            : '⚠️ Select Timeslot First'}
+                        </div>
+                      </div>
+
+                      {selectedTimeslotId ? (
+                        <div className='py-8'>
+                          <TimeSlotPicker
+                            value={timeSlotData}
+                            onChange={setTimeSlotData}
+                            timeslotId={selectedTimeslotId}
+                            disabled={!selectedTimeslotId}
+                            excludeWebinarId={initialData?.id}
+                          />
+
+                          {timeSlotData?.scheduledStartTime &&
+                            timeSlotData?.duration && (
+                              <div className='mt-4 rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-900/20'>
+                                <div className='flex items-center space-x-2 text-green-700 dark:text-green-300'>
+                                  <Clock className='h-4 w-4' />
+                                  <span className='text-sm font-medium'>
+                                    Schedule:
+                                  </span>
+                                </div>
+                                <div className='mt-1 text-sm text-green-600 dark:text-green-400'>
+                                  <div>
+                                    📅{' '}
+                                    {new Date(
+                                      timeSlotData?.scheduledStartTime
+                                    ).toLocaleString()}
+                                  </div>
+                                  <div>⏱️ {timeSlotData?.duration} minutes</div>
+                                </div>
+                              </div>
+                            )}
+                        </div>
+                      ) : (
+                        <div className='py-8 text-center'>
+                          <Calendar className='mx-auto mb-3 h-12 w-12 text-gray-400 opacity-50' />
+                          <div className='text-sm font-medium text-gray-400'>
+                            No Timeslot Selected
+                          </div>
+                          <div className='text-xs text-gray-400'>
+                            Select host company and timeslot above
+                          </div>
                         </div>
                       )}
                     </div>
@@ -351,12 +435,15 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
               </Title>
 
               <Row gutter={[24, 16]}>
-                <Col xs={24} lg={8}>
+                <Col xs={24} lg={12}>
                   <Form.Item
                     name='maxParticipants'
                     label={
                       <span className='font-medium text-paragraph dark:text-paragraph-dark'>
-                        Max Participants
+                        Max Participants{' '}
+                        <span className='text-xs font-normal text-gray-400'>
+                          Keep this empty for unlimited
+                        </span>
                       </span>
                     }
                   >
@@ -364,13 +451,13 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       size='large'
                       min={1}
                       max={1000}
-                      placeholder='100'
-                      className='w-full rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                      placeholder='Unlimited'
+                      className='!w-full rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
                 </Col>
 
-                <Col xs={24} lg={8}>
+                {/* <Col xs={24} lg={8}>
                   <Form.Item
                     name='category'
                     label={
@@ -385,9 +472,9 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
                     />
                   </Form.Item>
-                </Col>
+                </Col> */}
 
-                <Col xs={24} lg={8}>
+                <Col xs={24} lg={12}>
                   <Form.Item
                     name='status'
                     label={
@@ -400,6 +487,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       size='large'
                       placeholder='Select status'
                       className='rounded-lg'
+                      defaultValue={WebinarStatus.SCHEDULED}
                     >
                       {statusOptions.map((option) => (
                         <Option key={option.value} value={option.value}>
