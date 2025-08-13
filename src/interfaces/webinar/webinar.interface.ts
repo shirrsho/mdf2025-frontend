@@ -1,4 +1,67 @@
+// Webinar Status Enum
+export enum WebinarStatus {
+  SCHEDULED = 'scheduled',
+  LIVE = 'live',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
+
+// Main Webinar Interface
 export interface IWebinar {
-  name: string;
   id?: string;
+  title: string;
+  description: string;
+  hostId: string;
+  timeslotId: string;
+  duration: number; // Duration in minutes
+  scheduledStartTime?: Date | string;
+  maxParticipants?: number;
+  meetingLink?: string;
+  category?: string;
+  status: WebinarStatus;
+  bannerUrl?: string;
+  createdAt?: string;
+
+  // Populated fields
+  host?: {
+    id: string;
+    companyName: string;
+    logo?: string;
+  };
+  timeslot?: {
+    id: string;
+    timeslotName: string;
+    startTime: string;
+    endTime: string;
+  };
+}
+
+// Create Webinar Request Interface
+export interface IWebinarCreateRequest {
+  title: string;
+  description: string;
+  hostId: string;
+  timeslotId: string;
+  duration: number; // Duration in minutes
+  scheduledStartTime?: Date | string;
+  maxParticipants?: number;
+  meetingLink?: string;
+  category?: string;
+  status?: WebinarStatus;
+  bannerUrl?: string;
+}
+
+// Update Webinar Request Interface
+export interface IWebinarUpdateRequest {
+  title?: string;
+  description?: string;
+  hostId?: string;
+  timeslotId?: string;
+  duration?: number; // Duration in minutes
+  scheduledStartTime?: Date | string;
+  maxParticipants?: number;
+  meetingLink?: string;
+  category?: string;
+  status?: WebinarStatus;
+  bannerUrl?: string;
 }

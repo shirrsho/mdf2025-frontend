@@ -1,8 +1,8 @@
-import { WebinarList } from '@/components/webinar';
+import { WebinarSection } from '@/components/webinar';
 import React from 'react';
 
 const DashboardPage = () => {
-  return <WebinarList />;
+  return <WebinarSection />;
 };
 
 export default DashboardPage;

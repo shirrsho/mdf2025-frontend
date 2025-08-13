@@ -1,0 +1,1 @@
+export { WebinarDetail } from './WebinarDetail';

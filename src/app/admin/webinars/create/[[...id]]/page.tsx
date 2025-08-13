@@ -1,14 +1,14 @@
 import React from 'react';
 import { OptionsalParamsType } from '@/types';
-import { CreateTemplateFormId } from '@/components/template';
+import { CreateWebinarFormId } from '@/components/webinar';
 
-const CreateTemplate = ({ params }: OptionsalParamsType) => {
-  const templateId = params.id?.[0];
+const CreateWebinar = ({ params }: OptionsalParamsType) => {
+  const webinarId = params.id?.[0];
   return (
     <div className='min-h-screen'>
-      <CreateTemplateFormId templateId={templateId} />
+      <CreateWebinarFormId webinarId={webinarId} />
     </div>
   );
 };
 
-export default CreateTemplate;
+export default CreateWebinar;

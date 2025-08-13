@@ -2,9 +2,9 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { message } from 'antd';
-import { useGetWebinarById, useCreateWebinar, useUpdateWebinar } from '@/apis';
+import { WebinarForm } from './WebinarForm';
+import { useCreateWebinar, useUpdateWebinar, useGetWebinarById } from '@/apis';
 import { IWebinarCreateRequest, IWebinarUpdateRequest } from '@/interfaces';
-import { WebinarForm } from '../forms/WebinarForm';
 
 interface CreateWebinarFormIdProps {
   webinarId?: string;
@@ -78,16 +78,13 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
     );
   }
 
-  // For now, return a placeholder until we create the full form
   return (
-    <div className='min-h-screen bg-background-100 p-6 dark:bg-background-dark-100'>
-      <WebinarForm
-        initialData={webinar}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        isLoading={isLoading}
-        mode={isEditMode ? 'edit' : 'create'}
-      />
-    </div>
+    <WebinarForm
+      mode={isEditMode ? 'edit' : 'create'}
+      onSubmit={handleSubmit}
+      onCancel={handleCancel}
+      initialData={webinar}
+      isLoading={isLoading}
+    />
   );
 };
