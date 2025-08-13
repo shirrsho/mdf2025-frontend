@@ -232,7 +232,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
                 <Descriptions.Item label='Host Company'>
                   <div className='flex items-center gap-2'>
                     <Building className='h-4 w-4 text-blue-400' />
-                    {webinar.host?.companyName || 'Unknown Host'}
+                    {webinar.host?.name || 'Unknown Host'}
                   </div>
                 </Descriptions.Item>
                 <Descriptions.Item label='Timeslot'>

@@ -1,24 +1,22 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Button,
   Card,
   Table,
   Tag,
   Space,
-  Input,
-  Select,
   Row,
   Col,
   Statistic,
   Avatar,
+  Tooltip,
+  Modal,
+  notification,
 } from 'antd';
 import { useRouter } from 'next/navigation';
 import {
   Plus,
-  Search,
-  Filter,
-  Eye,
   Edit,
   Trash2,
   Users,
@@ -33,7 +31,10 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
 import { AppPagination } from '@/components/common';
+import { handleErrorToast } from '@/utils';
 import dayjs from 'dayjs';
+
+const { confirm } = Modal;
 
 interface WebinarListViewProps {
   webinars: IWebinar[];
@@ -46,16 +47,43 @@ interface WebinarListViewProps {
     page?: number;
     limit?: number;
   };
+  onTableChange?: (pagination: any) => void;
+  onDelete?: (webinar: IWebinar) => Promise<void>;
+  mode?: 'admin' | 'company';
 }
 
 export const WebinarList: React.FC<WebinarListViewProps> = ({
   webinars,
   totalCount,
   isLoading,
-  searchParams,
+  searchParams, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onTableChange,
+  onDelete,
+  mode = 'admin', // eslint-disable-line @typescript-eslint/no-unused-vars
 }) => {
   const router = useRouter();
-  const [searchTitle, setSearchTitle] = useState(searchParams.title);
+
+  const handleDelete = (webinar: IWebinar) => {
+    confirm({
+      title: 'Delete Webinar',
+      content: `Are you sure you want to delete "${webinar.title}"? This action cannot be undone.`,
+      okText: 'Yes, Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          await onDelete?.(webinar);
+          notification.success({
+            message: 'Success',
+            description: 'Webinar deleted successfully!',
+            placement: 'topRight',
+          });
+        } catch (error) {
+          handleErrorToast(error);
+        }
+      },
+    });
+  };
 
   const getStatusColor = (status: WebinarStatus) => {
     switch (status) {
@@ -151,7 +179,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
           <div className='mb-2 flex items-center gap-1'>
             <Users className='h-3 w-3' style={{ color: '#1890ff' }} />
             <span className='text-xs font-medium' style={{ color: '#F9FAFB' }}>
-              {record.host?.companyName || 'Unknown Host'}
+              {record.host?.name || 'Unknown Host'}
             </span>
           </div>
           <div className='mb-1 flex items-center gap-1'>
@@ -229,30 +257,38 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
       fixed: 'right' as const,
       render: (record: IWebinar) => (
         <Space size='small'>
-          <Button
-            type='link'
-            size='small'
-            icon={<Eye className='h-4 w-4' />}
-            className='p-1 text-blue-600 hover:text-blue-800'
-            onClick={() => router.push(`/admin/webinars/${record.id}`)}
-          />
-          <Button
-            type='link'
-            size='small'
-            icon={<Edit className='h-4 w-4' />}
-            className='p-1 text-green-600 hover:text-green-800'
-            onClick={() => router.push(`/admin/webinars/edit/${record.id}`)}
-          />
-          <Button
-            type='link'
-            size='small'
-            icon={<Trash2 className='h-4 w-4' />}
-            className='p-1 text-red-600 hover:text-red-800'
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle delete
-            }}
-          />
+          <Tooltip title='Edit Webinar'>
+            <Button
+              size='small'
+              icon={<Edit className='h-3 w-3' />}
+              style={{
+                backgroundColor: '#10b981',
+                borderColor: '#10b981',
+                color: 'white',
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/admin/webinars/create/${record.id}`);
+              }}
+            />
+          </Tooltip>
+          {onDelete && (
+            <Tooltip title='Delete Webinar'>
+              <Button
+                size='small'
+                icon={<Trash2 className='h-3 w-3' />}
+                style={{
+                  backgroundColor: '#ef4444',
+                  borderColor: '#ef4444',
+                  color: 'white',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(record);
+                }}
+              />
+            </Tooltip>
+          )}
         </Space>
       ),
     },
@@ -354,65 +390,6 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
           </Col>
         </Row>
 
-        {/* Filters */}
-        <Card
-          className='mb-6 border-0 shadow-lg'
-          style={{ backgroundColor: '#2a2a2a' }}
-        >
-          <Row gutter={16} align='middle'>
-            <Col xs={24} sm={8}>
-              <Input
-                placeholder='Search webinars...'
-                prefix={<Search className='h-4 w-4 text-gray-400' />}
-                value={searchTitle}
-                onChange={(e) => setSearchTitle(e.target.value)}
-                className='h-10 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                onPressEnter={() => {
-                  // Handle search
-                }}
-              />
-            </Col>
-            <Col xs={24} sm={6}>
-              <Select
-                placeholder='Filter by status'
-                className='h-10 w-full'
-                allowClear
-                suffixIcon={<Filter className='h-4 w-4 text-gray-400' />}
-              >
-                <Select.Option value={WebinarStatus.SCHEDULED}>
-                  Scheduled
-                </Select.Option>
-                <Select.Option value={WebinarStatus.LIVE}>Live</Select.Option>
-                <Select.Option value={WebinarStatus.COMPLETED}>
-                  Completed
-                </Select.Option>
-                <Select.Option value={WebinarStatus.CANCELLED}>
-                  Cancelled
-                </Select.Option>
-              </Select>
-            </Col>
-            <Col xs={24} sm={6}>
-              <Select
-                placeholder='Filter by host'
-                className='h-10 w-full'
-                allowClear
-                suffixIcon={<Users className='h-4 w-4 text-gray-400' />}
-              >
-                {/* Load company options here */}
-              </Select>
-            </Col>
-            <Col xs={24} sm={4}>
-              <Button
-                type='primary'
-                icon={<Search className='h-4 w-4' />}
-                className='h-10 w-full border-primary bg-primary hover:bg-primary-600'
-              >
-                Search
-              </Button>
-            </Col>
-          </Row>
-        </Card>
-
         {/* Webinar Table */}
         <Card
           className='border-0 shadow-lg'
@@ -424,19 +401,13 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             dataSource={webinars}
             loading={isLoading}
             pagination={false}
-            rowKey='id'
-            scroll={{ x: 1000 }}
-            className='custom-table'
-            style={{
-              backgroundColor: 'transparent',
-            }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            rowKey={(record) => record.id!}
+            onChange={onTableChange}
             onRow={(record) => ({
-              style: {
-                backgroundColor: '#2a2a2a',
-                borderBottom: '1px solid #3a3a3a',
-              },
+              onClick: () => router.push(`/admin/webinars/${record.id}`),
             })}
+            scroll={{ x: 1000 }}
+            rowClassName={'!cursor-pointer'}
           />
 
           {/* Pagination */}

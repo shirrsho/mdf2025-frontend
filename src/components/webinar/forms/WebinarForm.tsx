@@ -10,17 +10,11 @@ import {
   Card,
   Row,
   Col,
+  Divider,
+  Typography,
+  Space,
 } from 'antd';
-import {
-  Save,
-  X,
-  Upload as UploadIcon,
-  Calendar,
-  Clock,
-  Users,
-  Link,
-  Tag,
-} from 'lucide-react';
+import { ArrowLeft, Upload as UploadIcon, Link } from 'lucide-react';
 import {
   IWebinar,
   IWebinarCreateRequest,
@@ -33,6 +27,7 @@ import { TimeSlotPicker } from './TimeSlotPicker';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { Title, Text } = Typography;
 
 interface WebinarFormProps {
   onSubmit: (data: IWebinarCreateRequest | IWebinarUpdateRequest) => void;
@@ -94,7 +89,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
   // Update timeSlotData and selectedTimeslotId when initialData changes
   useEffect(() => {
     if (initialData) {
-      setSelectedTimeslotId(initialData.timeslotId?.toString());
+      setSelectedTimeslotId(initialData.timeslot?.id);
       setTimeSlotData({
         scheduledStartTime: initialData.scheduledStartTime
           ? typeof initialData.scheduledStartTime === 'string'
@@ -130,20 +125,35 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
   };
 
   return (
-    <div className='min-h-screen bg-background-100 p-6 dark:bg-background-dark-100'>
-      <div className='mx-auto max-w-4xl'>
-        <Card
-          title={
-            <div className='flex items-center gap-3'>
-              <Calendar className='h-6 w-6 text-primary' />
-              <span className='text-xl font-semibold text-heading dark:text-white'>
+    <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
+      <div className='mx-auto max-w-4xl px-6'>
+        {/* Header */}
+        <div className='mb-8'>
+          <Button
+            icon={<ArrowLeft className='h-4 w-4' />}
+            onClick={onCancel}
+            className='mb-4 border-background-200 text-paragraph hover:border-background-300 hover:text-heading dark:border-background-dark-300 dark:text-paragraph-dark dark:hover:border-background-dark-200 dark:hover:text-heading-dark'
+          >
+            Back to Webinars
+          </Button>
+          <div className='flex items-center justify-between'>
+            <div>
+              <Title
+                level={2}
+                className='mb-2 text-heading dark:text-heading-dark'
+              >
                 {mode === 'create' ? 'Create New Webinar' : 'Edit Webinar'}
-              </span>
+              </Title>
+              <Text className='text-lg text-paragraph dark:text-paragraph-dark'>
+                {mode === 'create'
+                  ? 'Schedule a new webinar session for participants'
+                  : 'Update webinar information and details'}
+              </Text>
             </div>
-          }
-          className='border-0 shadow-lg'
-          style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-        >
+          </div>
+        </div>
+
+        <Card className='border-0 bg-white shadow-lg dark:bg-background-dark-200'>
           <Form
             form={form}
             layout='vertical'
@@ -151,302 +161,325 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
             initialValues={initialValues}
             className='space-y-6'
           >
-            <Row gutter={24}>
-              {/* Basic Information */}
-              <Col xs={24}>
-                <div className='mb-6'>
-                  <h3 className='mb-4 flex items-center gap-2 text-lg font-medium text-gray-200'>
-                    <Tag className='h-5 w-5' />
-                    Basic Information
-                  </h3>
+            {/* Basic Information Section */}
+            <div>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-dark-200 dark:text-primary-dark-300'>
+                  1
+                </span>
+                Basic Information
+              </Title>
 
-                  <Row gutter={16}>
-                    <Col xs={24}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Webinar Title
-                          </span>
-                        }
-                        name='title'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter webinar title',
-                          },
-                          {
-                            min: 5,
-                            message: 'Title must be at least 5 characters',
-                          },
-                          {
-                            max: 200,
-                            message: 'Title must not exceed 200 characters',
-                          },
-                        ]}
-                      >
-                        <Input
-                          placeholder='Enter webinar title'
-                          className='h-12 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                        />
-                      </Form.Item>
-                    </Col>
+              <Row gutter={[24, 16]}>
+                <Col xs={24}>
+                  <Form.Item
+                    name='title'
+                    label={
+                      <span className='font-medium text-heading dark:text-heading-dark'>
+                        Webinar Title
+                      </span>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter webinar title',
+                      },
+                      {
+                        min: 5,
+                        message: 'Title must be at least 5 characters',
+                      },
+                      {
+                        max: 200,
+                        message: 'Title must not exceed 200 characters',
+                      },
+                    ]}
+                  >
+                    <Input
+                      size='large'
+                      placeholder='e.g. Advanced React Development Workshop'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
 
-                    <Col xs={24}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Description
-                          </span>
-                        }
-                        name='description'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter webinar description',
-                          },
-                          {
-                            min: 20,
-                            message:
-                              'Description must be at least 20 characters',
-                          },
-                          {
-                            max: 1000,
-                            message:
-                              'Description must not exceed 1000 characters',
-                          },
-                        ]}
-                      >
-                        <TextArea
-                          rows={4}
-                          placeholder='Describe the webinar content, objectives, and what participants will learn'
-                          className='border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
+                <Col xs={24}>
+                  <Form.Item
+                    name='description'
+                    label={
+                      <span className='font-medium text-heading dark:text-heading-dark'>
+                        Description
+                      </span>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter webinar description',
+                      },
+                      {
+                        min: 20,
+                        message: 'Description must be at least 20 characters',
+                      },
+                      {
+                        max: 1000,
+                        message: 'Description must not exceed 1000 characters',
+                      },
+                    ]}
+                  >
+                    <TextArea
+                      rows={4}
+                      placeholder='Describe the webinar content, objectives, and what participants will learn'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
 
-              {/* Scheduling */}
-              <Col xs={24}>
-                <div className='mb-6'>
-                  <h3 className='mb-4 flex items-center gap-2 text-lg font-medium text-gray-200'>
-                    <Clock className='h-5 w-5' />
-                    Scheduling
-                  </h3>
+            <Divider className='my-8 border-background-200 dark:border-background-dark-300' />
 
-                  <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Host Company
-                          </span>
-                        }
-                        name='hostId'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please select host company',
-                          },
-                        ]}
-                      >
-                        <Select
-                          placeholder='Select host company'
-                          className='h-12'
-                          style={{ height: '48px' }}
-                        >
-                          {companyOptions?.map((company: any) => (
-                            <Option key={company.value} value={company.value}>
-                              {company.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
+            {/* Scheduling Section */}
+            <div>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-900 dark:text-primary-400'>
+                  2
+                </span>
+                Scheduling & Time Slots
+              </Title>
 
-                    <Col xs={24} sm={12}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Timeslot
-                          </span>
-                        }
-                        name='timeslotId'
-                        rules={[
-                          { required: true, message: 'Please select timeslot' },
-                        ]}
-                      >
-                        <Select
-                          placeholder='Select timeslot'
-                          className='h-12'
-                          style={{ height: '48px' }}
-                          onChange={handleTimeslotChange}
-                        >
-                          {timeslotOptions?.map((timeslot: any) => (
-                            <Option key={timeslot.value} value={timeslot.value}>
-                              {timeslot.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
+              <Row gutter={[24, 16]}>
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    name='host'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Host Company
+                      </span>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select host company',
+                      },
+                    ]}
+                  >
+                    <Select
+                      size='large'
+                      placeholder='Select host company'
+                      className='rounded-lg'
+                    >
+                      {companyOptions?.map((company: any) => (
+                        <Option key={company.value} value={company.value}>
+                          {company.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
 
-                    <Col xs={24}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Time Slots & Duration
-                          </span>
-                        }
-                        required
-                      >
-                        <TimeSlotPicker
-                          value={timeSlotData}
-                          onChange={handleTimeSlotPickerChange}
-                          timeslotId={selectedTimeslotId}
-                          disabled={!selectedTimeslotId}
-                        />
-                        {!selectedTimeslotId && (
-                          <div className='mt-1 text-xs text-gray-400'>
-                            Please select a timeslot first
-                          </div>
-                        )}
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    name='timeslot'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Timeslot
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'Please select timeslot' },
+                    ]}
+                  >
+                    <Select
+                      size='large'
+                      placeholder='Select timeslot'
+                      className='rounded-lg'
+                      onChange={handleTimeslotChange}
+                    >
+                      {timeslotOptions?.map((timeslot: any) => (
+                        <Option key={timeslot.value} value={timeslot.value}>
+                          {timeslot.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
 
-              {/* Additional Settings */}
-              <Col xs={24}>
-                <div className='mb-6'>
-                  <h3 className='mb-4 flex items-center gap-2 text-lg font-medium text-gray-200'>
-                    <Users className='h-5 w-5' />
-                    Additional Settings
-                  </h3>
+                <Col xs={24}>
+                  <Form.Item
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Time Slots & Duration
+                      </span>
+                    }
+                    required
+                  >
+                    <div className='rounded-lg border border-background-200 bg-white p-4 dark:border-background-dark-300 dark:bg-background-dark-100'>
+                      <TimeSlotPicker
+                        value={timeSlotData}
+                        onChange={handleTimeSlotPickerChange}
+                        timeslotId={selectedTimeslotId}
+                        disabled={!selectedTimeslotId}
+                      />
+                      {!selectedTimeslotId && (
+                        <div className='mt-1 text-xs text-gray-400'>
+                          Please select a timeslot first
+                        </div>
+                      )}
+                    </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
 
-                  <Row gutter={16}>
-                    <Col xs={24} sm={8}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Max Participants
-                          </span>
-                        }
-                        name='maxParticipants'
-                      >
-                        <InputNumber
-                          min={1}
-                          max={1000}
-                          placeholder='100'
-                          className='h-12 w-full border-gray-600 bg-gray-800 text-white'
-                        />
-                      </Form.Item>
-                    </Col>
+            <Divider className='my-8 border-background-200 dark:border-background-dark-300' />
 
-                    <Col xs={24} sm={8}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Category
-                          </span>
-                        }
-                        name='category'
-                      >
-                        <Input
-                          placeholder='e.g., Technology, Business'
-                          className='h-12 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                        />
-                      </Form.Item>
-                    </Col>
+            {/* Additional Settings Section */}
+            <div>
+              <Title
+                level={4}
+                className='mb-6 flex items-center text-heading dark:text-heading-dark'
+              >
+                <span className='mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-600 dark:bg-primary-900 dark:text-primary-400'>
+                  3
+                </span>
+                Additional Settings
+              </Title>
 
-                    <Col xs={24} sm={8}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Status
-                          </span>
-                        }
-                        name='status'
-                      >
-                        <Select
-                          placeholder='Select status'
-                          className='h-12'
-                          style={{ height: '48px' }}
-                        >
-                          {statusOptions.map((option) => (
-                            <Option key={option.value} value={option.value}>
-                              {option.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
+              <Row gutter={[24, 16]}>
+                <Col xs={24} lg={8}>
+                  <Form.Item
+                    name='maxParticipants'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Max Participants
+                      </span>
+                    }
+                  >
+                    <InputNumber
+                      size='large'
+                      min={1}
+                      max={1000}
+                      placeholder='100'
+                      className='w-full rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
 
-                    <Col xs={24} sm={12}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Meeting Link
-                          </span>
-                        }
-                        name='meetingLink'
-                        rules={[
-                          { type: 'url', message: 'Please enter a valid URL' },
-                        ]}
-                      >
-                        <Input
-                          prefix={<Link className='h-4 w-4 text-gray-400' />}
-                          placeholder='https://zoom.us/j/123456789'
-                          className='h-12 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                        />
-                      </Form.Item>
-                    </Col>
+                <Col xs={24} lg={8}>
+                  <Form.Item
+                    name='category'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Category
+                      </span>
+                    }
+                  >
+                    <Input
+                      size='large'
+                      placeholder='e.g., Technology, Business'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
 
-                    <Col xs={24} sm={12}>
-                      <Form.Item
-                        label={
-                          <span className='text-sm font-medium text-gray-300'>
-                            Banner URL
-                          </span>
-                        }
-                        name='bannerUrl'
-                        rules={[
-                          { type: 'url', message: 'Please enter a valid URL' },
-                        ]}
-                      >
-                        <Input
-                          prefix={
-                            <UploadIcon className='h-4 w-4 text-gray-400' />
-                          }
-                          placeholder='https://example.com/banner.jpg'
-                          className='h-12 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400'
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
-            </Row>
+                <Col xs={24} lg={8}>
+                  <Form.Item
+                    name='status'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Status
+                      </span>
+                    }
+                  >
+                    <Select
+                      size='large'
+                      placeholder='Select status'
+                      className='rounded-lg'
+                    >
+                      {statusOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                          <Space>
+                            <span>
+                              {option.value === WebinarStatus.SCHEDULED && '📅'}
+                              {option.value === WebinarStatus.LIVE && '🔴'}
+                              {option.value === WebinarStatus.COMPLETED && '✅'}
+                              {option.value === WebinarStatus.CANCELLED && '❌'}
+                            </span>
+                            <span>{option.label}</span>
+                          </Space>
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
 
-            {/* Form Actions */}
-            <div className='flex justify-end gap-4 border-t border-gray-600 pt-6'>
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    name='meetingLink'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Meeting Link
+                      </span>
+                    }
+                    rules={[
+                      { type: 'url', message: 'Please enter a valid URL' },
+                    ]}
+                  >
+                    <Input
+                      size='large'
+                      prefix={<Link className='h-4 w-4 text-gray-400' />}
+                      placeholder='https://zoom.us/j/123456789'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    name='bannerUrl'
+                    label={
+                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                        Banner URL
+                      </span>
+                    }
+                    rules={[
+                      { type: 'url', message: 'Please enter a valid URL' },
+                    ]}
+                  >
+                    <Input
+                      size='large'
+                      prefix={<UploadIcon className='h-4 w-4 text-gray-400' />}
+                      placeholder='https://example.com/banner.jpg'
+                      className='rounded-lg border-background-200 bg-white text-textColor focus:border-primary focus:ring-primary dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-textColor-dark'
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+
+            {/* Submit Buttons */}
+            <Divider className='my-8 border-background-200 dark:border-background-dark-300' />
+            <div className='flex justify-end space-x-4 pt-6'>
               <Button
+                size='large'
                 onClick={onCancel}
-                className='h-12 border-gray-600 px-6 text-gray-300 hover:border-gray-500 hover:text-white'
-                icon={<X className='h-4 w-4' />}
+                className='h-12 border-background-200 bg-white px-8 text-paragraph hover:border-background-300 hover:text-heading dark:border-background-dark-300 dark:bg-background-dark-100 dark:text-paragraph-dark dark:hover:border-background-dark-200 dark:hover:text-heading-dark'
               >
                 Cancel
               </Button>
               <Button
                 type='primary'
                 htmlType='submit'
+                size='large'
                 loading={isLoading}
-                className='h-12 border-primary bg-primary px-6 font-medium hover:bg-primary-600'
-                icon={<Save className='h-4 w-4' />}
+                className='h-12 border-primary bg-primary px-8 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
               >
-                {mode === 'create' ? 'Create Webinar' : 'Update Webinar'}
+                {mode === 'create' ? '🚀 Create Webinar' : '✅ Update Webinar'}
               </Button>
             </div>
           </Form>

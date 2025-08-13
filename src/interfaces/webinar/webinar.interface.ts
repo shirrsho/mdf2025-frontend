@@ -1,3 +1,6 @@
+import { ICompany } from '../company/company.interface';
+import { ITimeslot } from '../timeslot/timeslot.interface';
+
 // Webinar Status Enum
 export enum WebinarStatus {
   SCHEDULED = 'scheduled',
@@ -23,25 +26,16 @@ export interface IWebinar {
   createdAt?: string;
 
   // Populated fields
-  host?: {
-    id: string;
-    companyName: string;
-    logo?: string;
-  };
-  timeslot?: {
-    id: string;
-    timeslotName: string;
-    startTime: string;
-    endTime: string;
-  };
+  host?: ICompany;
+  timeslot?: ITimeslot;
 }
 
 // Create Webinar Request Interface
 export interface IWebinarCreateRequest {
   title: string;
   description: string;
-  hostId: string;
-  timeslotId: string;
+  host: string;
+  timeslot: string;
   duration: number; // Duration in minutes
   scheduledStartTime?: Date | string;
   maxParticipants?: number;
