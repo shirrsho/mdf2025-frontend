@@ -8,3 +8,4 @@ export * from './job';
 export * from './payment';
 export * from './registration';
 export * from './webinar';
+export * from './timeslot';

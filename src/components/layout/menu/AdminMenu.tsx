@@ -14,6 +14,7 @@ import {
   DollarSign,
   Settings,
   LogOut,
+  TimerIcon,
 } from 'lucide-react';
 import { logout } from '@/apis';
 import { LOGIN_PATH } from '@/constants';
@@ -43,6 +44,11 @@ export const AdminMenu = () => {
       label: <Link href='/admin/users'>Users</Link>,
       key: 'users',
       icon: <UserIcon />,
+    },
+    {
+      label: <Link href='/admin/timeslots'>Time Slots</Link>,
+      key: 'timeslots',
+      icon: <TimerIcon />,
     },
     {
       label: <Link href='/admin/companies'>Companies</Link>,
