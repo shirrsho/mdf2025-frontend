@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { ConfigProvider, theme, ThemeConfig } from 'antd';
 import { colors } from '../../colorpalette';
 
@@ -14,6 +14,32 @@ const AntdConfigContext = createContext<AntdConfigContextType>({
 type Props = { children: React.ReactNode };
 
 export const AntdConfigProvider = (props: Props) => {
+  useEffect(() => {
+    // Add custom CSS to fix input prefix/suffix borders
+    const style = document.createElement('style');
+    style.textContent = `
+      .ant-input-affix-wrapper .ant-input-prefix,
+      .ant-input-affix-wrapper .ant-input-suffix {
+        border: none !important;
+        background: transparent !important;
+      }
+      .ant-input-affix-wrapper .ant-input {
+        border: none !important;
+        background: transparent !important;
+      }
+      .ant-input-affix-wrapper:focus,
+      .ant-input-affix-wrapper:focus-within {
+        border-color: ${colors.primary.DEFAULT} !important;
+        box-shadow: 0 0 0 2px ${colors.primary.DEFAULT}20 !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   const darkTheme: ThemeConfig = {
     token: {
       colorPrimary: colors.primary.DEFAULT,
@@ -35,6 +61,7 @@ export const AntdConfigProvider = (props: Props) => {
       colorWhite: '#ffffff',
     },
     algorithm: [theme.darkAlgorithm],
+    cssVar: true,
     components: {
       Button: {
         primaryColor: '#ffffff',
@@ -63,6 +90,9 @@ export const AntdConfigProvider = (props: Props) => {
         colorTextPlaceholder: '#8a8a8a',
         activeBorderColor: colors.primary.DEFAULT,
         hoverBorderColor: '#4a4a4a',
+        addonBg: colors.background[100],
+        colorIcon: '#ffffff',
+        colorIconHover: '#ffffff',
       },
       Select: {
         colorBgContainer: colors.background[100],
