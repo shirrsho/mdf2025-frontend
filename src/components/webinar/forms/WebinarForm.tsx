@@ -32,6 +32,7 @@ import { useGetTimeslotOption } from '@/apis/timeslot';
 import { useGetCompanyOption } from '@/apis/company';
 import { TimeSlotPicker } from './TimeSlotPicker';
 import { AppRichTextInput } from '@/components/common/forms';
+import { useSearchParams } from 'next/navigation';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -62,6 +63,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
 
   const { data: timeslotOptions } = useGetTimeslotOption();
   const { data: companyOptions } = useGetCompanyOption();
+  const searchParams = useSearchParams();
 
   const initialValues = useMemo(() => {
     return initialData
@@ -70,7 +72,10 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
           host: initialData.host?.id,
           timeslot: initialData.timeslot?.id,
         }
-      : { status: WebinarStatus.SCHEDULED };
+      : {
+          status: WebinarStatus.SCHEDULED,
+          timeslot: searchParams.get('timeslot') ?? undefined,
+        };
   }, [initialData]);
 
   // Initialize form and state when initialData changes
@@ -94,6 +99,8 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
         });
       }
       form.setFieldsValue(initialValues);
+    } else if (searchParams.get('timeslot')) {
+      setSelectedTimeslotId(searchParams.get('timeslot') ?? undefined);
     }
   }, [initialData, initialValues]);
 

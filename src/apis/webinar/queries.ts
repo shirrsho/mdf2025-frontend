@@ -6,9 +6,11 @@ import {
   deleteWebinar,
   getAllPublicWebinars,
   getAllWebinars,
+  getAvailableSlots,
   getPublicWebinarById,
   getWebinarById,
   getWebinarOption,
+  getWebinarsByTimeslot,
   updateWebinar,
 } from './apis';
 import {
@@ -116,5 +118,29 @@ export const useDeleteWebinar = () => {
       await stallQueries(GET_ALL_WEBINAR);
       await stallQueries(GET_WEBINAR_OPTIONS);
     },
+  });
+};
+
+export const useGetWebinarsByTimeslot = (
+  timeslotId?: string,
+  queryParams = {}
+) => {
+  return useQuery<PaginationResponse<IWebinar>>({
+    queryKey: [GET_ALL_WEBINAR, 'by_timeslot', timeslotId, queryParams],
+    queryFn: async () => await getWebinarsByTimeslot(timeslotId, queryParams),
+    staleTime: STALE_TIME,
+    enabled: !!timeslotId,
+  });
+};
+
+export const useGetAvailableSlots = (
+  timeslotId?: string,
+  duration: number = 60
+) => {
+  return useQuery<{ startTime: Date; endTime: Date }[]>({
+    queryKey: ['available_slots', timeslotId, duration],
+    queryFn: async () => await getAvailableSlots(timeslotId, duration),
+    staleTime: STALE_TIME,
+    enabled: !!timeslotId,
   });
 };

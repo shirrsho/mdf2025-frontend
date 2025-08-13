@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { Button, Card, Table, Tag, Space, Calendar, Badge } from 'antd';
+import React from 'react';
+import { Button, Card, Table, Tag, Space } from 'antd';
 import { useRouter } from 'next/navigation';
 import {
   Plus,
@@ -10,12 +10,11 @@ import {
   Edit,
   Trash2,
   Grid,
-  List,
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { ITimeslot } from '@/interfaces';
 import { AppPagination } from '@/components/common';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 interface TimeslotListViewProps {
   timeslots: ITimeslot[];
@@ -39,7 +38,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
   mode,
 }) => {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<'table' | 'calendar'>('table');
 
   const getStatusColor = (isAvailable: boolean) => {
     return isAvailable ? '#10b981' : '#ef4444';
@@ -64,39 +62,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
 
   const getBaseUrl = () => {
     return mode === 'admin' ? '/admin' : '/c';
-  };
-
-  // Calendar related functions
-  const getListData = (value: Dayjs) => {
-    const dateStr = value.format('YYYY-MM-DD');
-    return timeslots.filter(
-      (timeslot) => dayjs(timeslot.startTime).format('YYYY-MM-DD') === dateStr
-    );
-  };
-
-  const dateCellRender = (value: Dayjs) => {
-    const listData = getListData(value);
-    return (
-      <ul className='events'>
-        {listData.map((item) => (
-          <li key={item.id}>
-            <Badge
-              status={item.isAvailable ? 'success' : 'error'}
-              text={
-                <span
-                  className='cursor-pointer text-xs hover:underline'
-                  onClick={() =>
-                    router.push(`${getBaseUrl()}/timeslots/create/${item.id}`)
-                  }
-                >
-                  {item.timeslotName}
-                </span>
-              }
-            />
-          </li>
-        ))}
-      </ul>
-    );
   };
 
   const columns: ColumnsType<ITimeslot> = [
@@ -252,21 +217,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
           </div>
           <Space>
             <Button
-              icon={
-                viewMode === 'table' ? (
-                  <CalendarIcon className='h-4 w-4' />
-                ) : (
-                  <List className='h-4 w-4' />
-                )
-              }
-              onClick={() =>
-                setViewMode(viewMode === 'table' ? 'calendar' : 'table')
-              }
-              className='h-12 border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
-            >
-              {viewMode === 'table' ? 'Calendar View' : 'Table View'}
-            </Button>
-            <Button
               type='primary'
               size='large'
               icon={<Plus className='h-4 w-4' />}
@@ -372,48 +322,30 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
           </Card>
         </div>
 
-        {/* Content - Table or Calendar */}
-        {viewMode === 'table' ? (
-          <>
-            <Card
-              className='border-0 shadow-lg'
-              style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-            >
-              <Table
-                columns={columns}
-                dataSource={timeslots}
-                rowKey={(record) => record.id!}
-                onRow={(record) => ({
-                  onClick: () =>
-                    router.push(`${getBaseUrl()}/timeslots/${record.id}`),
-                })}
-                pagination={false}
-                loading={isLoading}
-                onChange={onTableChange}
-                size='middle'
-                rowClassName={'!cursor-pointer'}
-              />
-            </Card>
+        {/* Content - Table */}
+        <Card
+          className='border-0 shadow-lg'
+          style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
+        >
+          <Table
+            columns={columns}
+            dataSource={timeslots}
+            rowKey={(record) => record.id!}
+            onRow={(record) => ({
+              onClick: () =>
+                router.push(`${getBaseUrl()}/timeslots/${record.id}`),
+            })}
+            pagination={false}
+            loading={isLoading}
+            onChange={onTableChange}
+            size='middle'
+            rowClassName={'!cursor-pointer'}
+          />
+        </Card>
 
-            <div className='mt-6'>
-              <AppPagination total={totalCount || 0} />
-            </div>
-          </>
-        ) : (
-          <Card
-            className='border-0 shadow-lg'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <Calendar
-              dateCellRender={dateCellRender}
-              className='dark-calendar'
-              style={{
-                backgroundColor: '#2a2a2a',
-                color: '#F9FAFB',
-              }}
-            />
-          </Card>
-        )}
+        <div className='mt-6'>
+          <AppPagination total={totalCount || 0} />
+        </div>
       </div>
     </div>
   );
