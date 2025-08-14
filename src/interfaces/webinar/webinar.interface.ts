@@ -39,7 +39,6 @@ export interface IWebinarCreateRequest {
   maxParticipants?: number;
   meetingLink?: string;
   category?: string;
-  status?: WebinarStatus;
   bannerUrl?: string;
 }
 

@@ -93,9 +93,8 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
         duration: initialData.duration,
       });
     } else {
-      // Create mode: set defaults and handle search params
+      // Create mode: set defaults and handle search params (no status field)
       form.setFieldsValue({
-        status: WebinarStatus.ACTIVE,
         timeslot: timeslotParam || undefined,
       });
 
@@ -168,8 +167,8 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
               </Title>
               <Text className='text-lg text-paragraph dark:text-paragraph-dark'>
                 {mode === 'create'
-                  ? 'Schedule a new webinar session for participants'
-                  : 'Update webinar information and details'}
+                  ? 'Schedule a new webinar session for participants. Status will be automatically set to Active.'
+                  : 'Update webinar information and details. You can change the status to cancel if needed.'}
               </Text>
             </div>
           </div>
@@ -502,37 +501,45 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                   </Form.Item>
                 </Col> */}
 
-                <Col xs={24} lg={12}>
-                  <Form.Item
-                    name='status'
-                    label={
-                      <span className='font-medium text-paragraph dark:text-paragraph-dark'>
-                        Status
-                      </span>
-                    }
-                  >
-                    <Select
-                      size='large'
-                      placeholder='Select status'
-                      className='rounded-lg'
-                      defaultValue={WebinarStatus.ACTIVE}
+                {/* Status field - only show in edit mode */}
+                {mode === 'edit' && (
+                  <Col xs={24} lg={12}>
+                    <Form.Item
+                      name='status'
+                      label={
+                        <span className='font-medium text-paragraph dark:text-paragraph-dark'>
+                          Status
+                        </span>
+                      }
+                      extra={
+                        <Text className='text-xs text-gray-500 dark:text-gray-400'>
+                          Change to &apos;Cancelled&apos; to cancel this webinar
+                        </Text>
+                      }
                     >
-                      {statusOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          <Space>
-                            <span>
-                              {option.value === WebinarStatus.ACTIVE && '✅'}
-                              {option.value === WebinarStatus.CANCELLED && '❌'}
-                            </span>
-                            <span>{option.label}</span>
-                          </Space>
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
+                      <Select
+                        size='large'
+                        placeholder='Select status'
+                        className='rounded-lg'
+                      >
+                        {statusOptions.map((option) => (
+                          <Option key={option.value} value={option.value}>
+                            <Space>
+                              <span>
+                                {option.value === WebinarStatus.ACTIVE && '✅'}
+                                {option.value === WebinarStatus.CANCELLED &&
+                                  '❌'}
+                              </span>
+                              <span>{option.label}</span>
+                            </Space>
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                )}
 
-                <Col xs={24} lg={12}>
+                <Col xs={24} lg={mode === 'edit' ? 12 : 24}>
                   <Form.Item
                     name='meetingLink'
                     label={
@@ -553,7 +560,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                   </Form.Item>
                 </Col>
 
-                <Col xs={24} lg={12}>
+                <Col xs={24} lg={mode === 'edit' ? 12 : 24}>
                   <Form.Item
                     name='bannerUrl'
                     label={
