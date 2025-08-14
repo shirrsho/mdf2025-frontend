@@ -32,12 +32,69 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const isInitialLoadRef = useRef(true);
+  const hasInitializedRef = useRef(false);
 
-  const { data: timeslotData } = useGetTimeslotById(timeslotId);
-  const { data: webinarsData } = useGetAllWebinars({
+  const {
+    data: timeslotData,
+    isLoading: isTimeslotLoading,
+    isSuccess: isTimeslotSuccess,
+  } = useGetTimeslotById(timeslotId);
+
+  const {
+    data: webinarsData,
+    isLoading: isWebinarsLoading,
+    isSuccess: isWebinarsSuccess,
+  } = useGetAllWebinars({
     timeslotId: timeslotId || '',
     limit: 1000,
   });
+
+  const isDataReady =
+    !!timeslotId &&
+    isTimeslotSuccess &&
+    isWebinarsSuccess &&
+    timeslotData &&
+    webinarsData;
+
+  // Reset state when timeslotId changes
+  useEffect(() => {
+    if (timeslotId) {
+      setSelectedSlots([]);
+      setTimeSlots([]);
+      isInitialLoadRef.current = true;
+      hasInitializedRef.current = false;
+    }
+  }, [timeslotId]);
+
+  // Debug logging for development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('TimeSlotPicker Debug:', {
+        timeslotId,
+        isTimeslotLoading,
+        isWebinarsLoading,
+        isTimeslotSuccess,
+        isWebinarsSuccess,
+        isDataReady,
+        timeslotData: !!timeslotData,
+        webinarsData: !!webinarsData,
+        timeSlotsLength: timeSlots.length,
+        selectedSlotsLength: selectedSlots.length,
+        hasInitialized: hasInitializedRef.current,
+      });
+    }
+  }, [
+    timeslotId,
+    isTimeslotLoading,
+    isWebinarsLoading,
+    isTimeslotSuccess,
+    isWebinarsSuccess,
+    isDataReady,
+    timeslotData,
+    webinarsData,
+    timeSlots.length,
+    selectedSlots.length,
+  ]);
 
   // Generate 30-minute time slots
   const generateTimeSlots = useCallback((): TimeSlot[] => {
@@ -76,6 +133,8 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
       return webinarsData.data.some((webinar) => {
         if (!webinar.scheduledStartTime || !webinar.duration) return false;
         if (excludeWebinarId && webinar.id === excludeWebinarId) return false;
+        // Only consider active webinars - cancelled ones free up their slots
+        if (webinar.status === 'cancelled') return false;
 
         const webinarStart = dayjs(webinar.scheduledStartTime);
         const webinarEnd = webinarStart.add(webinar.duration, 'minutes');
@@ -88,16 +147,22 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
 
   // Update time slots when data changes
   useEffect(() => {
+    if (!isDataReady) return;
+
     const slots = generateTimeSlots().map((slot) => ({
       ...slot,
       disabled: isSlotBooked(slot),
     }));
     setTimeSlots(slots);
-  }, [generateTimeSlots, isSlotBooked]);
+    hasInitializedRef.current = true;
+  }, [isDataReady, generateTimeSlots, isSlotBooked]);
 
-  // Update selected slots when value changes (but not when timeSlots change to avoid circular deps)
+  // Initialize selected slots from initial value when data is ready
   useEffect(() => {
-    if (value?.scheduledStartTime && value?.duration && timeSlots.length > 0) {
+    if (!isDataReady || !hasInitializedRef.current || timeSlots.length === 0)
+      return;
+
+    if (value?.scheduledStartTime && value?.duration) {
       const startTime = dayjs(value.scheduledStartTime);
       const slotsNeeded = Math.ceil(value.duration / 30);
       const newSelectedSlots: string[] = [];
@@ -110,11 +175,19 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
         }
       }
 
-      setSelectedSlots(newSelectedSlots);
-    } else if (!value?.scheduledStartTime || !value?.duration) {
-      setSelectedSlots([]);
+      if (newSelectedSlots.length > 0) {
+        setSelectedSlots(newSelectedSlots);
+      }
     }
-  }, [value?.scheduledStartTime, value?.duration, timeSlots.length]); // Remove selectedSlots dependency
+    // Mark initial load as complete after first successful initialization
+    isInitialLoadRef.current = false;
+  }, [
+    isDataReady,
+    hasInitializedRef.current,
+    timeSlots.length,
+    value?.scheduledStartTime,
+    value?.duration,
+  ]);
 
   // Update visual state when selectedSlots changes
   useEffect(() => {
@@ -128,8 +201,11 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
 
   // Auto-confirm selection changes (simplified)
   useEffect(() => {
-    if (isInitialLoadRef.current || timeSlots.length === 0) {
-      isInitialLoadRef.current = false;
+    if (
+      isInitialLoadRef.current ||
+      !hasInitializedRef.current ||
+      timeSlots.length === 0
+    ) {
       return;
     }
 
@@ -149,10 +225,20 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
           onChange?.({ scheduledStartTime: startTime, duration });
         }
       }
-    } else if (value?.scheduledStartTime || value?.duration) {
+    } else if (
+      (value?.scheduledStartTime || value?.duration) &&
+      !isInitialLoadRef.current
+    ) {
       onChange?.(undefined as any);
     }
-  }, [selectedSlots.length, onChange]); // Simplified dependencies
+  }, [
+    selectedSlots,
+    timeSlots.length,
+    hasInitializedRef.current,
+    onChange,
+    value?.scheduledStartTime,
+    value?.duration,
+  ]);
 
   const handleSlotClick = (clickedSlot: TimeSlot) => {
     if (clickedSlot.disabled) {
@@ -246,7 +332,15 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
       {timeSlots.length === 0 ? (
         <div className='py-8 text-center text-gray-400 dark:text-gray-500'>
           <Clock className='mx-auto mb-2 h-8 w-8 opacity-50' />
-          <div className='text-sm'>Loading time slots...</div>
+          <div className='text-sm'>
+            {isTimeslotLoading || isWebinarsLoading
+              ? 'Loading time slots...'
+              : !timeslotId
+                ? 'Select a timeslot to view available times'
+                : !isDataReady
+                  ? 'No time slots available'
+                  : 'Loading time slots...'}
+          </div>
         </div>
       ) : (
         <>

@@ -34,11 +34,11 @@ import { AppPagination, HtmlRenderer } from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import {
   getWebinarDisplayStatus,
-  formatWebinarTime,
   isWebinarLive,
   isWebinarCompleted,
   isWebinarScheduled,
 } from '@/utils/webinar.utils';
+import dayjs from 'dayjs';
 
 const { confirm } = Modal;
 
@@ -176,7 +176,13 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             </span>
           </div>
           <div className='text-xs' style={{ color: '#9CA3AF' }}>
-            {formatWebinarTime(record)}
+            {/* {formatWebinarTime(record)} */}
+            {dayjs(record?.scheduledStartTime?.toString()).format(
+              'h:mmA'
+            )} -{' '}
+            {dayjs(record?.scheduledStartTime?.toString())
+              .add(record.duration, 'minute')
+              .format('h:mmA')}
           </div>
         </div>
       ),

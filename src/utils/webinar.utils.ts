@@ -109,7 +109,7 @@ export const getWebinarStatusTagProps = (webinar: IWebinar) => {
  * Format webinar time display
  */
 export const formatWebinarTime = (webinar: IWebinar): string => {
-  const startTime = webinar.timeslot?.startTime || webinar.scheduledStartTime;
+  const startTime = webinar?.scheduledStartTime;
 
   if (!startTime) {
     return 'Time TBD';
