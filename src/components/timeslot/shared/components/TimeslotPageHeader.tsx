@@ -1,9 +1,7 @@
 import React from 'react';
-import { Button, Typography, Space } from 'antd';
+import { Button, Space } from 'antd';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, LucideIcon } from 'lucide-react';
-
-const { Title, Text } = Typography;
 
 interface TimeslotPageHeaderProps {
   title: string;
@@ -68,12 +66,22 @@ export const TimeslotPageHeader: React.FC<TimeslotPageHeaderProps> = ({
 
           {/* Header Info */}
           <div className='flex-1'>
-            <Title level={2} className='mb-2 text-white'>
+            {/* <Title level={3} className='text-white'>
               {title}
             </Title>
             {subtitle && (
-              <Text className='mb-4 text-lg text-gray-200'>{subtitle}</Text>
-            )}
+              <Text className='mb-4 !text-lg text-gray-200'>{subtitle}</Text>
+            )} */}
+            <div className='mb-8 flex items-center justify-between'>
+              <div>
+                <h1 className='text-2xl font-bold text-heading dark:text-white'>
+                  {title}
+                </h1>
+                <p className='mt-1 text-paragraph dark:text-gray-200'>
+                  {subtitle}
+                </p>
+              </div>
+            </div>
             {children}
           </div>
         </div>
