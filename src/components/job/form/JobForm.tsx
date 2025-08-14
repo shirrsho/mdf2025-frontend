@@ -70,7 +70,7 @@ export const JobForm: React.FC<JobFormProps> = ({
       setRequirements(initialData.requirements || []);
       setBenefits(initialData.benefits || []);
     }
-  }, [initialData, isEdit, form]);
+  }, [initialData, isEdit, form, companyId]);
 
   const handleSubmit = async (values: any) => {
     const jobData = {

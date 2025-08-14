@@ -2,20 +2,17 @@
 import React, { useMemo } from 'react';
 import { Button, Card, Table, Space } from 'antd';
 import { useRouter } from 'next/navigation';
-import {
-  Plus,
-  Clock,
-  Calendar as CalendarIcon,
-  Users,
-  Edit,
-  Trash2,
-  Grid,
-} from 'lucide-react';
+import { Plus, Edit, Trash2, Grid } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { ITimeslot } from '@/interfaces';
 import { AppPagination } from '@/components/common';
 import { useGetAllWebinars } from '@/apis';
-import dayjs from 'dayjs';
+import {
+  useTimeslotUtils,
+  useTimeslotStats,
+  TimeslotStatsCards,
+  TimeslotPageHeader,
+} from '../shared';
 
 interface TimeslotListViewProps {
   timeslots: ITimeslot[];
@@ -40,34 +37,28 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
   const router = useRouter();
 
   // Fetch all webinars to calculate usage statistics
-  const { data: webinarsData } = useGetAllWebinars({ limit: 1000 }); // Fetch all webinars
+  const { data: webinarsData } = useGetAllWebinars({ limit: 1000 });
+  const webinars = useMemo(
+    () => webinarsData?.data || [],
+    [webinarsData?.data]
+  );
+
+  const { formatFullDateTime, formatDuration } = useTimeslotUtils();
+  const stats = useTimeslotStats({ timeslots, webinars });
 
   // Create a map of timeslot ID to webinar count for efficient lookup
   const timeslotWebinarMap = useMemo(() => {
-    if (!webinarsData?.data) return {};
+    if (!webinars.length) return {};
 
     const map: Record<string, number> = {};
-    webinarsData.data.forEach((webinar) => {
+    webinars.forEach((webinar) => {
       const timeslotId = webinar.timeslotId || webinar.timeslot?.id;
       if (timeslotId) {
         map[timeslotId] = (map[timeslotId] || 0) + 1;
       }
     });
     return map;
-  }, [webinarsData]);
-
-  const formatTime = (date: string | Date) => {
-    return dayjs(date).format('MMM DD, YYYY - hh:mm A');
-  };
-
-  const formatDuration = (startTime: string | Date, endTime: string | Date) => {
-    const start = dayjs(startTime);
-    const end = dayjs(endTime);
-    const duration = end.diff(start, 'minutes');
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-  };
+  }, [webinars]);
 
   const getBaseUrl = () => {
     return mode === 'admin' ? '/admin' : '/c';
@@ -101,23 +92,20 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
       width: '30%',
       render: (record: ITimeslot) => (
         <div>
-          <div className='mb-2 flex items-center gap-2'>
-            <CalendarIcon className='h-3 w-3' style={{ color: '#AFADB5' }} />
-            <span className='text-sm font-medium' style={{ color: '#F9FAFB' }}>
-              Start: {formatTime(record.startTime)}
-            </span>
+          <div
+            className='mb-2 text-sm font-medium'
+            style={{ color: '#F9FAFB' }}
+          >
+            Start: {formatFullDateTime(record.startTime)}
           </div>
-          <div className='mb-2 flex items-center gap-2'>
-            <Clock className='h-3 w-3' style={{ color: '#AFADB5' }} />
-            <span className='text-sm font-medium' style={{ color: '#F9FAFB' }}>
-              End: {formatTime(record.endTime)}
-            </span>
+          <div
+            className='mb-2 text-sm font-medium'
+            style={{ color: '#F9FAFB' }}
+          >
+            End: {formatFullDateTime(record.endTime)}
           </div>
-          <div className='flex items-center gap-2'>
-            <Clock className='h-3 w-3' style={{ color: '#bfab25' }} />
-            <span className='text-sm' style={{ color: '#bfab25' }}>
-              Duration: {formatDuration(record.startTime, record.endTime)}
-            </span>
+          <div className='text-sm' style={{ color: '#bfab25' }}>
+            Duration: {formatDuration(record.startTime, record.endTime)}
           </div>
         </div>
       ),
@@ -128,33 +116,27 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
       width: '15%',
       render: (record: ITimeslot) => {
         const webinarCount = timeslotWebinarMap[record.id!] || 0;
-        const isTimeslotPast = dayjs(record.endTime).isBefore(dayjs());
+        const isPast = new Date(record.endTime) < new Date();
 
         return (
           <div>
-            <div className='mb-1 flex items-center gap-1'>
-              <Users
-                className='h-3 w-3'
-                style={{ color: webinarCount > 0 ? '#10b981' : '#6b7280' }}
-              />
-              <span
-                className='text-sm font-medium'
-                style={{ color: '#F9FAFB' }}
-              >
-                {webinarCount} Webinar{webinarCount !== 1 ? 's' : ''}
-              </span>
+            <div
+              className='mb-1 text-sm font-medium'
+              style={{ color: '#F9FAFB' }}
+            >
+              {webinarCount} Webinar{webinarCount !== 1 ? 's' : ''}
             </div>
             <div
               className='text-xs'
               style={{
-                color: isTimeslotPast
+                color: isPast
                   ? '#ef4444'
                   : webinarCount > 0
                     ? '#10b981'
                     : '#f59e0b',
               }}
             >
-              {isTimeslotPast
+              {isPast
                 ? 'Past'
                 : webinarCount > 0
                   ? `${webinarCount} Scheduled`
@@ -171,7 +153,7 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
       width: '15%',
       render: (createdAt: string) => (
         <div className='text-sm' style={{ color: '#D1D5DB' }}>
-          {createdAt ? dayjs(createdAt).format('MMM DD, YYYY') : 'N/A'}
+          {createdAt ? new Date(createdAt).toLocaleDateString() : 'N/A'}
         </div>
       ),
     },
@@ -182,16 +164,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
       fixed: 'right' as const,
       render: (record: ITimeslot) => (
         <Space size='small'>
-          {/* <Button
-            type="link"
-            size="small"
-            icon={<Eye className="h-4 w-4" />}
-            className="text-blue-600 hover:text-blue-800 p-1"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle delete
-            }}
-          /> */}
           <Button
             type='link'
             size='small'
@@ -217,142 +189,41 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
     },
   ];
 
-  const upcomingTimeslots = timeslots.filter((t) =>
-    dayjs(t.startTime).isAfter(dayjs())
+  const headerActions = (
+    <>
+      <Button
+        size='large'
+        icon={<Grid className='h-4 w-4' />}
+        onClick={() => router.push(`${getBaseUrl()}/timeslots/overview`)}
+        className='h-12 border-indigo-400 px-6 font-medium text-indigo-400 hover:border-indigo-300 hover:bg-indigo-900/20 hover:text-indigo-300'
+      >
+        📊 View All Slots
+      </Button>
+      <Button
+        type='primary'
+        size='large'
+        icon={<Plus className='h-4 w-4' />}
+        onClick={() => router.push(`${getBaseUrl()}/timeslots/create`)}
+        className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
+      >
+        Create New Timeslot
+      </Button>
+    </>
   );
 
-  const totalWebinars = webinarsData?.data?.length || 0;
-
   return (
-    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
+    <div className='min-h-screen bg-gray-900'>
       <div className='mx-auto max-w-7xl rounded-md p-6'>
         {/* Header */}
-        <div className='mb-8 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-heading dark:text-white'>
-              Timeslot Management
-            </h1>
-            <p className='mt-1 text-paragraph dark:text-gray-200'>
-              Manage time slots for webinar scheduling
-            </p>
-          </div>
-          <Space>
-            <Button
-              size='large'
-              icon={<Grid className='h-4 w-4' />}
-              onClick={() => router.push(`${getBaseUrl()}/timeslots/overview`)}
-              className='h-12 border-indigo-600 px-6 font-medium text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-500 dark:border-indigo-400 dark:text-indigo-400 dark:hover:border-indigo-300 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-300'
-            >
-              📊 View All Slots
-            </Button>
-            <Button
-              type='primary'
-              size='large'
-              icon={<Plus className='h-4 w-4' />}
-              onClick={() => router.push(`${getBaseUrl()}/timeslots/create`)}
-              className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
-            >
-              Create New Timeslot
-            </Button>
-          </Space>
-        </div>
+        <TimeslotPageHeader
+          title='Timeslot Management'
+          subtitle='Manage time slots for webinar scheduling'
+          showBackButton={false}
+          actions={headerActions}
+        />
 
         {/* Stats Cards */}
-        <div className='mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
-          <Card
-            className='border-0 shadow-sm'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <div className='flex items-center'>
-              <div
-                className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#F4612E20' }}
-              >
-                <Clock className='h-6 w-6' style={{ color: '#F4612E' }} />
-              </div>
-              <div>
-                <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Total Timeslots
-                </p>
-                <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {totalCount || 0}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='border-0 shadow-sm'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <div className='flex items-center'>
-              <div
-                className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#10b98120' }}
-              >
-                <Users className='h-6 w-6' style={{ color: '#10b981' }} />
-              </div>
-              <div>
-                <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Total Webinars
-                </p>
-                <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {totalWebinars}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='border-0 shadow-sm'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <div className='flex items-center'>
-              <div
-                className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#f59e0b20' }}
-              >
-                <Grid className='h-6 w-6' style={{ color: '#f59e0b' }} />
-              </div>
-              <div>
-                <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Past Timeslots
-                </p>
-                <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {
-                    timeslots.filter((t) => dayjs(t.endTime).isBefore(dayjs()))
-                      .length
-                  }
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='border-0 shadow-sm'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <div className='flex items-center'>
-              <div
-                className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#bfab2520' }}
-              >
-                <CalendarIcon
-                  className='h-6 w-6'
-                  style={{ color: '#bfab25' }}
-                />
-              </div>
-              <div>
-                <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Upcoming
-                </p>
-                <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {upcomingTimeslots.length}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <TimeslotStatsCards stats={stats} />
 
         {/* Content - Table */}
         <Card

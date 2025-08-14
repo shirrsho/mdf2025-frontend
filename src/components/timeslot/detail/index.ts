@@ -1,1 +1,1 @@
-export * from './TimeslotDetail';
+export { TimeslotDetail } from './TimeslotDetail';

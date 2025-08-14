@@ -1,38 +1,28 @@
 'use client';
-import React, { useMemo } from 'react';
-import { Card, Button, Row, Col, Typography, Avatar, Tag } from 'antd';
+import React from 'react';
+import { Card, Button, Typography, Tag, Row, Col, Avatar } from 'antd';
 import { useRouter } from 'next/navigation';
 import {
+  Plus,
+  Grid,
   ArrowLeft,
+  CalendarDays,
   Users,
   CheckCircle,
   XCircle,
   Building2,
-  Plus,
-  CalendarDays,
   Timer,
   Zap,
-  Grid,
 } from 'lucide-react';
 import { useGetAllTimeslots, useGetAllWebinars } from '@/apis';
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
-
-dayjs.extend(isBetween);
+import {
+  useTimeslotUtils,
+  useTimeslotStats,
+  TimeslotLoadingState,
+  TimeSlot,
+} from '../shared';
 
 const { Title, Text } = Typography;
-
-interface TimeSlot {
-  id: string;
-  timeslotId: string;
-  timeslotName: string;
-  startTime: dayjs.Dayjs;
-  endTime: dayjs.Dayjs;
-  isOccupied: boolean;
-  webinar?: any;
-  isGrouped: boolean;
-  originalTimeslot: any;
-}
 
 export const TimeslotOverview: React.FC = () => {
   const router = useRouter();
@@ -45,167 +35,34 @@ export const TimeslotOverview: React.FC = () => {
   const timeslots = timeslotsData?.data || [];
   const webinars = webinarsData?.data || [];
 
+  const {
+    createAllTimeSlots,
+    groupSlotsByDate,
+    getDateStatus,
+    formatDateKey,
+    formatTime,
+  } = useTimeslotUtils();
+  const stats = useTimeslotStats({ timeslots, webinars });
+
   // Create all time slots from all timeslots with their booking status
-  const allTimeSlots = useMemo(() => {
-    if (!timeslots.length) return [];
-
-    const slots: TimeSlot[] = [];
-
-    timeslots.forEach((timeslot) => {
-      const start = dayjs(timeslot.startTime);
-      const end = dayjs(timeslot.endTime);
-      const duration = end.diff(start, 'minutes');
-      const slotDuration = 30; // 30 minute slots
-      const totalSlots = Math.ceil(duration / slotDuration);
-
-      // Get webinars for this timeslot
-      const timeslotWebinars = webinars.filter(
-        (webinar) =>
-          webinar.timeslotId === timeslot.id ||
-          webinar.timeslot?.id === timeslot.id
-      );
-
-      const processedWebinars = new Set();
-
-      for (let i = 0; i < totalSlots; i++) {
-        const slotStart = start.add(i * slotDuration, 'minutes');
-        const slotEnd = start.add((i + 1) * slotDuration, 'minutes');
-
-        // Check if this slot is occupied by a webinar
-        const occupyingWebinar = timeslotWebinars.find((webinar) => {
-          const webinarStart = dayjs(
-            webinar.scheduledStartTime || timeslot.startTime
-          );
-          const webinarEnd = webinarStart.add(webinar.duration, 'minutes');
-          return (
-            slotStart.isBefore(webinarEnd) && slotEnd.isAfter(webinarStart)
-          );
-        });
-
-        if (occupyingWebinar && !processedWebinars.has(occupyingWebinar.id)) {
-          // This is a new webinar, create a grouped slot for it
-          const webinarStart = dayjs(
-            occupyingWebinar.scheduledStartTime || timeslot.startTime
-          );
-          const webinarEnd = webinarStart.add(
-            occupyingWebinar.duration,
-            'minutes'
-          );
-
-          slots.push({
-            id: `${timeslot.id}-webinar-${occupyingWebinar.id}`,
-            timeslotId: timeslot.id!,
-            timeslotName: timeslot.timeslotName,
-            startTime: webinarStart,
-            endTime: webinarEnd,
-            isOccupied: true,
-            webinar: occupyingWebinar,
-            isGrouped: true,
-            originalTimeslot: timeslot,
-          });
-
-          processedWebinars.add(occupyingWebinar.id);
-
-          // Skip ahead to after this webinar
-          const webinarDurationSlots = Math.ceil(
-            occupyingWebinar.duration / slotDuration
-          );
-          i += webinarDurationSlots - 1;
-        } else if (!occupyingWebinar) {
-          // This is an available slot
-          slots.push({
-            id: `${timeslot.id}-slot-${i}`,
-            timeslotId: timeslot.id!,
-            timeslotName: timeslot.timeslotName,
-            startTime: slotStart,
-            endTime: slotEnd,
-            isOccupied: false,
-            webinar: null,
-            isGrouped: false,
-            originalTimeslot: timeslot,
-          });
-        }
-      }
-    });
-
-    // Sort slots by start time
-    return slots.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
-  }, [timeslots, webinars]);
+  const allTimeSlots = createAllTimeSlots(timeslots, webinars);
 
   // Group slots by date for better organization
-  const slotsByDate = useMemo(() => {
-    const grouped: Record<string, TimeSlot[]> = {};
-
-    allTimeSlots.forEach((slot) => {
-      const dateKey = slot.startTime.format('YYYY-MM-DD');
-      if (!grouped[dateKey]) {
-        grouped[dateKey] = [];
-      }
-      grouped[dateKey].push(slot);
-    });
-
-    return grouped;
-  }, [allTimeSlots]);
-
-  const formatTime = (date: dayjs.Dayjs) => {
-    return date.format('HH:mm');
-  };
-
-  const formatDateKey = (dateKey: string) => {
-    return dayjs(dateKey).format('MMMM DD, YYYY - dddd');
-  };
-
-  const getDateStatus = (dateKey: string) => {
-    const date = dayjs(dateKey);
-    const today = dayjs();
-
-    if (date.isSame(today, 'day')) {
-      return { label: 'Today', color: '#10b981', bgColor: '#10b98120' };
-    } else if (date.isAfter(today)) {
-      return { label: 'Upcoming', color: '#f59e0b', bgColor: '#f59e0b20' };
-    } else {
-      return { label: 'Past', color: '#ef4444', bgColor: '#ef444420' };
-    }
-  };
-
-  const stats = useMemo(() => {
-    const totalSlots = allTimeSlots.length;
-    const bookedSlots = allTimeSlots.filter((slot) => slot.isOccupied).length;
-    const availableSlots = totalSlots - bookedSlots;
-    const uniqueTimeslots = new Set(allTimeSlots.map((slot) => slot.timeslotId))
-      .size;
-
-    return {
-      totalSlots,
-      bookedSlots,
-      availableSlots,
-      uniqueTimeslots,
-      utilizationRate:
-        totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0,
-    };
-  }, [allTimeSlots]);
+  const slotsByDate = groupSlotsByDate(allTimeSlots);
 
   if (timeslotsLoading || webinarsLoading) {
-    return (
-      <div className='min-h-screen bg-background-100 p-6 dark:bg-background-dark-100'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='text-lg text-paragraph dark:text-paragraph-dark'>
-            Loading timeslot overview...
-          </div>
-        </div>
-      </div>
-    );
+    return <TimeslotLoadingState message='Loading timeslot overview...' />;
   }
 
   return (
-    <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
+    <div className='min-h-screen bg-gray-900 py-8'>
       <div className='mx-auto max-w-7xl px-6'>
         {/* Header */}
         <div className='mb-8'>
           <Button
             icon={<ArrowLeft className='h-4 w-4' />}
             onClick={() => router.push('/admin/timeslots')}
-            className='mb-6 border-background-200 text-paragraph hover:border-background-300 hover:text-heading dark:border-background-dark-300 dark:text-paragraph-dark dark:hover:border-background-dark-200 dark:hover:text-heading-dark'
+            className='mb-6 border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
           >
             Back to Timeslots
           </Button>
@@ -221,33 +78,30 @@ export const TimeslotOverview: React.FC = () => {
 
               {/* Overview Info */}
               <div className='flex-1'>
-                <Title
-                  level={2}
-                  className='mb-2 text-heading dark:text-heading-dark'
-                >
+                <Title level={2} className='mb-2 text-white'>
                   All Time Slots Overview
                 </Title>
-                <Text className='mb-4 text-lg text-paragraph dark:text-paragraph-dark'>
+                <Text className='mb-4 text-lg text-gray-200'>
                   Complete view of all time slots across all timeslots with
                   booking status
                 </Text>
 
-                <div className='flex flex-wrap items-center gap-4 text-paragraph dark:text-paragraph-dark'>
+                <div className='flex flex-wrap items-center gap-4 text-gray-200'>
                   <div className='flex items-center space-x-2'>
-                    <CalendarDays className='h-4 w-4 text-textColor dark:text-textColor-dark' />
-                    <Text className='text-paragraph dark:text-paragraph-dark'>
-                      {stats.uniqueTimeslots} Timeslots
+                    <CalendarDays className='h-4 w-4 text-gray-300' />
+                    <Text className='text-gray-200'>
+                      {stats.totalTimeslots} Timeslots
                     </Text>
                   </div>
                   <div className='flex items-center space-x-2'>
-                    <Grid className='h-4 w-4 text-textColor dark:text-textColor-dark' />
-                    <Text className='text-paragraph dark:text-paragraph-dark'>
+                    <Grid className='h-4 w-4 text-gray-300' />
+                    <Text className='text-gray-200'>
                       {stats.totalSlots} Total Slots
                     </Text>
                   </div>
                   <div className='flex items-center space-x-2'>
-                    <Users className='h-4 w-4 text-textColor dark:text-textColor-dark' />
-                    <Text className='text-paragraph dark:text-paragraph-dark'>
+                    <Users className='h-4 w-4 text-gray-300' />
+                    <Text className='text-gray-200'>
                       {stats.utilizationRate}% Utilization
                     </Text>
                   </div>
@@ -344,19 +198,14 @@ export const TimeslotOverview: React.FC = () => {
 
         {/* Time Slots by Date */}
         {Object.entries(slotsByDate).map(([dateKey, slots]) => {
+          const typedSlots = slots as TimeSlot[];
           const dateStatus = getDateStatus(dateKey);
 
           return (
-            <Card
-              key={dateKey}
-              className='!mb-6 bg-white shadow-sm dark:bg-background-dark-200'
-            >
+            <Card key={dateKey} className='!mb-6 bg-gray-800 shadow-sm'>
               <div className='mb-6 flex items-center justify-between'>
                 <div className='flex items-baseline gap-4'>
-                  <Title
-                    level={4}
-                    className='mb-0 text-heading dark:text-heading-dark'
-                  >
+                  <Title level={4} className='mb-0 text-white'>
                     {formatDateKey(dateKey)}
                   </Title>
                   <Tag
@@ -376,22 +225,23 @@ export const TimeslotOverview: React.FC = () => {
                 <div className='flex items-center gap-4 text-sm'>
                   <span className='flex items-center gap-2'>
                     <div className='h-3 w-3 rounded-full bg-green-500'></div>
-                    <Text className='text-paragraph dark:text-paragraph-dark'>
-                      {slots.filter((slot) => !slot.isOccupied).length}{' '}
+                    <Text className='text-gray-200'>
+                      {typedSlots.filter((slot) => !slot.isOccupied).length}{' '}
                       Available
                     </Text>
                   </span>
                   <span className='flex items-center gap-2'>
                     <div className='h-3 w-3 rounded-full bg-red-500'></div>
-                    <Text className='text-paragraph dark:text-paragraph-dark'>
-                      {slots.filter((slot) => slot.isOccupied).length} Booked
+                    <Text className='text-gray-200'>
+                      {typedSlots.filter((slot) => slot.isOccupied).length}{' '}
+                      Booked
                     </Text>
                   </span>
                 </div>
               </div>
 
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                {slots.map((slot) => (
+                {typedSlots.map((slot) => (
                   <div
                     key={slot.id}
                     className={`group relative cursor-pointer rounded-lg border-2 p-4 transition-all duration-300 ${
@@ -416,7 +266,7 @@ export const TimeslotOverview: React.FC = () => {
 
                     <div className='mb-3 flex items-center justify-between'>
                       <div
-                        className={`font-semibold text-heading dark:text-heading-dark ${
+                        className={`font-semibold text-white ${
                           slot.isGrouped ? 'text-sm' : 'text-base'
                         }`}
                       >
@@ -433,7 +283,7 @@ export const TimeslotOverview: React.FC = () => {
                     </div>
 
                     {slot.isGrouped && (
-                      <div className='mb-2 text-xs text-paragraph opacity-75 dark:text-paragraph-dark'>
+                      <div className='mb-2 text-xs text-gray-400 opacity-75'>
                         Duration: {slot.webinar?.duration || 0} minutes
                       </div>
                     )}
@@ -475,14 +325,14 @@ export const TimeslotOverview: React.FC = () => {
                       <div className='space-y-3'>
                         <div className='text-center'>
                           <div className='mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/40'>
-                            <Zap className='h-5 w-5 text-green-600 dark:text-green-400' />
+                            <Zap className='h-5 w-5 text-green-400' />
                           </div>
-                          <div className='text-sm font-medium text-green-600 dark:text-green-400'>
+                          <div className='text-sm font-medium text-green-400'>
                             Available for Booking
                           </div>
                         </div>
                         <div className='text-center'>
-                          <Text className='text-xs text-primary hover:text-primary-600 dark:text-primary-dark dark:hover:text-primary-dark-400'>
+                          <Text className='text-xs text-blue-400 hover:text-blue-300'>
                             Click to schedule webinar →
                           </Text>
                         </div>
@@ -496,15 +346,12 @@ export const TimeslotOverview: React.FC = () => {
         })}
 
         {Object.keys(slotsByDate).length === 0 && (
-          <Card className='bg-white py-16 text-center shadow-sm dark:bg-background-dark-200'>
-            <CalendarDays className='text-textColor-light dark:text-textColor-dark-light mx-auto mb-4 h-16 w-16' />
-            <Title
-              level={4}
-              className='mb-2 text-textColor dark:text-textColor-dark'
-            >
+          <Card className='bg-gray-800 py-16 text-center shadow-sm'>
+            <CalendarDays className='mx-auto mb-4 h-16 w-16 text-gray-400' />
+            <Title level={4} className='mb-2 text-white'>
               No Time Slots Available
             </Title>
-            <Text className='mb-6 text-paragraph dark:text-paragraph-dark'>
+            <Text className='mb-6 text-gray-300'>
               Create some timeslots to see their time slots here.
             </Text>
             <Button

@@ -121,7 +121,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
         setSelectedSlots([]);
       }
     }
-  }, [value, timeSlots]);
+  }, [value, timeSlots, selectedSlots]);
 
   // Update visual state
   useEffect(() => {
@@ -161,7 +161,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
     } else if (value?.scheduledStartTime || value?.duration) {
       onChange?.(undefined as any);
     }
-  }, [selectedSlots]);
+  }, [selectedSlots, onChange, timeSlots, value]);
 
   const handleSlotClick = (clickedSlot: TimeSlot) => {
     if (clickedSlot.disabled) {

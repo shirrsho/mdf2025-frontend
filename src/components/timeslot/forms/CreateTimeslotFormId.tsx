@@ -66,20 +66,16 @@ export const CreateTimeslotFormId: React.FC<CreateTimeslotFormIdProps> = ({
 
   if (isEditMode && isLoadingTimeslot) {
     return (
-      <div className='flex min-h-screen items-center justify-center bg-background-100 dark:bg-background-dark-100'>
-        <div className='text-lg text-paragraph dark:text-paragraph-dark'>
-          Loading timeslot details...
-        </div>
+      <div className='flex min-h-screen items-center justify-center bg-gray-900'>
+        <div className='text-lg text-gray-300'>Loading timeslot details...</div>
       </div>
     );
   }
 
   if (isEditMode && !timeslot) {
     return (
-      <div className='flex min-h-screen items-center justify-center bg-background-100 dark:bg-background-dark-100'>
-        <div className='text-lg text-paragraph dark:text-paragraph-dark'>
-          Timeslot not found
-        </div>
+      <div className='flex min-h-screen items-center justify-center bg-gray-900'>
+        <div className='text-lg text-gray-300'>Timeslot not found</div>
       </div>
     );
   }

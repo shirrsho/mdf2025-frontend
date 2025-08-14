@@ -58,7 +58,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
     : {};
 
   return (
-    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
+    <div className='min-h-screen bg-gray-900'>
       <div className='mx-auto max-w-2xl p-6'>
         <Form
           form={form}
@@ -70,7 +70,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
           {/* Timeslot Name */}
           <Form.Item
             label={
-              <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <span className='text-sm font-medium text-gray-300'>
                 Timeslot Name
               </span>
             }
@@ -83,14 +83,14 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
           >
             <Input
               placeholder='Enter timeslot name (e.g., Morning Session)'
-              className='h-12 border-gray-300 text-gray-900 placeholder:text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500'
+              className='h-12 border-gray-600 bg-gray-800 text-white placeholder:text-gray-500'
             />
           </Form.Item>
 
           {/* Time Range */}
           <Form.Item
             label={
-              <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <span className='text-sm font-medium text-gray-300'>
                 Time Range
               </span>
             }
@@ -128,7 +128,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
               showTime={{ format: 'HH:mm' }}
               format='YYYY-MM-DD HH:mm'
               placeholder={['Start Time', 'End Time']}
-              className='h-12 w-full border-gray-300 text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+              className='h-12 w-full border-gray-600 bg-gray-800 text-white'
               style={{ width: '100%' }}
             />
           </Form.Item>
@@ -136,7 +136,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
           {/* Description */}
           <Form.Item
             label={
-              <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <span className='text-sm font-medium text-gray-300'>
                 Description
               </span>
             }
@@ -151,7 +151,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
             <TextArea
               rows={4}
               placeholder='Enter a description for this timeslot (optional)'
-              className='border-gray-300 text-gray-900 placeholder:text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500'
+              className='border-gray-600 bg-gray-800 text-white placeholder:text-gray-500'
             />
           </Form.Item>
 
@@ -159,7 +159,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
           <div className='flex justify-end gap-4 pt-6'>
             <Button
               onClick={onCancel}
-              className='h-12 border-gray-300 px-6 text-gray-700 hover:border-gray-400 hover:text-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-500 dark:hover:text-white'
+              className='h-12 border-gray-600 px-6 text-gray-300 hover:border-gray-500 hover:text-white'
               icon={<X className='h-4 w-4' />}
             >
               Cancel

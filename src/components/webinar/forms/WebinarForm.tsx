@@ -120,7 +120,14 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
         timeslot: timeslotFromParams,
       });
     }
-  }, [initialData, initialValues, searchParams, form]);
+  }, [
+    initialData,
+    initialValues,
+    searchParams,
+    form,
+    selectedTimeslotId,
+    timeSlotData,
+  ]);
 
   const handleSubmit = async (values: any) => {
     if (!timeSlotData?.scheduledStartTime || !timeSlotData?.duration) {
