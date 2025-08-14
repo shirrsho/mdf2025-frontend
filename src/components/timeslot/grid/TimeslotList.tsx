@@ -212,7 +212,7 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
   );
 
   return (
-    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
+    <div className='min-h-screen bg-gray-900'>
       <div className='mx-auto max-w-7xl rounded-md p-6'>
         {/* Header */}
         <TimeslotPageHeader

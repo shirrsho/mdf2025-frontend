@@ -32,7 +32,13 @@ import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
 import { AppPagination, HtmlRenderer } from '@/components/common';
 import { handleErrorToast } from '@/utils';
-import dayjs from 'dayjs';
+import {
+  getWebinarDisplayStatus,
+  formatWebinarTime,
+  isWebinarLive,
+  isWebinarCompleted,
+  isWebinarScheduled,
+} from '@/utils/webinar.utils';
 
 const { confirm } = Modal;
 
@@ -85,38 +91,19 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
     });
   };
 
-  const getStatusColor = (status: WebinarStatus) => {
-    switch (status) {
-      case WebinarStatus.SCHEDULED:
-        return '#1890ff';
-      case WebinarStatus.LIVE:
-        return '#52c41a';
-      case WebinarStatus.COMPLETED:
-        return '#722ed1';
-      case WebinarStatus.CANCELLED:
-        return '#ff4d4f';
-      default:
-        return '#d9d9d9';
-    }
-  };
-
-  const getStatusIcon = (status: WebinarStatus) => {
-    switch (status) {
-      case WebinarStatus.SCHEDULED:
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'scheduled':
         return <Calendar className='h-3 w-3' />;
-      case WebinarStatus.LIVE:
+      case 'live':
         return <Play className='h-3 w-3' />;
-      case WebinarStatus.COMPLETED:
+      case 'completed':
         return <CheckCircle className='h-3 w-3' />;
-      case WebinarStatus.CANCELLED:
+      case 'cancelled':
         return <XCircle className='h-3 w-3' />;
       default:
         return <Pause className='h-3 w-3' />;
     }
-  };
-
-  const formatDateTime = (date: string | Date) => {
-    return dayjs(date).format('MMM DD, YYYY HH:mm');
   };
 
   const getDurationText = (minutes: number) => {
@@ -188,11 +175,9 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
               {record.timeslot?.timeslotName || 'No timeslot'}
             </span>
           </div>
-          {record.scheduledStartTime && (
-            <div className='text-xs' style={{ color: '#9CA3AF' }}>
-              {formatDateTime(record.scheduledStartTime)}
-            </div>
-          )}
+          <div className='text-xs' style={{ color: '#9CA3AF' }}>
+            {formatWebinarTime(record)}
+          </div>
         </div>
       ),
     },
@@ -231,24 +216,28 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
       title: 'Status',
       key: 'status',
       width: '15%',
-      render: (record: IWebinar) => (
-        <div className='flex items-center gap-2'>
-          <Tag
-            icon={getStatusIcon(record.status)}
-            style={{
-              backgroundColor: `${getStatusColor(record.status)}20`,
-              color: getStatusColor(record.status),
-              border: 'none',
-              fontSize: '11px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-          </Tag>
-        </div>
-      ),
+      render: (record: IWebinar) => {
+        const displayStatus = getWebinarDisplayStatus(record);
+
+        return (
+          <div className='flex items-center gap-2'>
+            <Tag
+              icon={getStatusIcon(displayStatus.status)}
+              style={{
+                backgroundColor: `${displayStatus.color}20`,
+                color: displayStatus.color,
+                border: 'none',
+                fontSize: '11px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              {displayStatus.label}
+            </Tag>
+          </div>
+        );
+      },
     },
     {
       title: 'Actions',
@@ -295,13 +284,9 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
   ];
 
   const getWebinarStats = () => {
-    const scheduled = webinars.filter(
-      (w) => w.status === WebinarStatus.SCHEDULED
-    ).length;
-    const live = webinars.filter((w) => w.status === WebinarStatus.LIVE).length;
-    const completed = webinars.filter(
-      (w) => w.status === WebinarStatus.COMPLETED
-    ).length;
+    const scheduled = webinars.filter((w) => isWebinarScheduled(w)).length;
+    const live = webinars.filter((w) => isWebinarLive(w)).length;
+    const completed = webinars.filter((w) => isWebinarCompleted(w)).length;
     const cancelled = webinars.filter(
       (w) => w.status === WebinarStatus.CANCELLED
     ).length;

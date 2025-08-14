@@ -3,9 +3,7 @@ import { ITimeslot } from '../timeslot/timeslot.interface';
 
 // Webinar Status Enum
 export enum WebinarStatus {
-  SCHEDULED = 'scheduled',
-  LIVE = 'live',
-  COMPLETED = 'completed',
+  ACTIVE = 'active',
   CANCELLED = 'cancelled',
 }
 

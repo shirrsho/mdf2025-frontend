@@ -14,27 +14,21 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
   webinarId,
 }) => {
   const router = useRouter();
-  const isEditMode = Boolean(webinarId);
 
   // Hooks
   const { data: webinar, isLoading: isLoadingWebinar } = useGetWebinarById(
-    webinarId!,
-    { enabled: isEditMode }
+    webinarId!
+    // { enabled: isEditMode }
   );
 
   const createWebinarMutation = useCreateWebinar();
   const updateWebinarMutation = useUpdateWebinar();
 
-  const isLoading =
-    createWebinarMutation.isPending ||
-    updateWebinarMutation.isPending ||
-    (isEditMode && isLoadingWebinar);
-
   const handleSubmit = async (
     data: IWebinarCreateRequest | IWebinarUpdateRequest
   ) => {
     try {
-      if (isEditMode && webinarId) {
+      if (webinarId) {
         await updateWebinarMutation.mutateAsync({
           id: webinarId,
           ...data,
@@ -49,7 +43,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        `Failed to ${isEditMode ? 'update' : 'create'} webinar`;
+        `Failed to ${webinarId ? 'update' : 'create'} webinar`;
       message.error(errorMessage);
     }
   };
@@ -58,7 +52,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
     router.push('/admin/webinars');
   };
 
-  if (isEditMode && isLoadingWebinar) {
+  if (isLoadingWebinar) {
     return (
       <div className='flex min-h-screen items-center justify-center bg-background-100 dark:bg-background-dark-100'>
         <div className='text-lg text-paragraph dark:text-paragraph-dark'>
@@ -68,7 +62,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
     );
   }
 
-  if (isEditMode && !webinar) {
+  if (!webinar && webinarId) {
     return (
       <div className='flex min-h-screen items-center justify-center bg-background-100 dark:bg-background-dark-100'>
         <div className='text-lg text-paragraph dark:text-paragraph-dark'>
@@ -80,11 +74,11 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
 
   return (
     <WebinarForm
-      mode={isEditMode ? 'edit' : 'create'}
+      mode={webinarId ? 'edit' : 'create'}
       onSubmit={handleSubmit}
       onCancel={handleCancel}
       initialData={webinar}
-      isLoading={isLoading}
+      isLoading={isLoadingWebinar}
     />
   );
 };

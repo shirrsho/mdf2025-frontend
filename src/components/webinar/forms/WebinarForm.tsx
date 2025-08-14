@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Form,
   Input,
@@ -61,73 +61,57 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
     duration?: number;
   }>({});
 
-  const { data: timeslotOptions } = useGetTimeslotOption();
-  const { data: companyOptions } = useGetCompanyOption();
+  const { data: timeslotOptions, isLoading: timeSlotLoading } =
+    useGetTimeslotOption();
+  const { data: companyOptions, isLoading: companyOptionsLoading } =
+    useGetCompanyOption();
   const searchParams = useSearchParams();
 
-  const initialValues = useMemo(() => {
-    return initialData
-      ? {
-          ...initialData,
-          host: initialData.host?.id,
-          timeslot: initialData.timeslot?.id,
-        }
-      : {
-          status: WebinarStatus.SCHEDULED,
-          timeslot: searchParams.get('timeslot') ?? undefined,
-          startTime: searchParams.get('startTime') ?? undefined,
-        };
-  }, [initialData, searchParams]);
+  // Extract search params to prevent re-render loops
+  const timeslotParam = searchParams.get('timeslot');
+  const startTimeParam = searchParams.get('startTime');
 
-  // Initialize form and state when initialData changes
+  // Initialize form only once when component mounts or initialData changes
   useEffect(() => {
-    if (initialData) {
-      const timeslotId = initialData.timeslot?.id;
-      const startTime = initialData.scheduledStartTime
-        ? typeof initialData.scheduledStartTime === 'string'
-          ? initialData.scheduledStartTime
-          : initialData.scheduledStartTime.toISOString()
-        : undefined;
+    console.log(isLoading);
 
-      if (selectedTimeslotId !== timeslotId) setSelectedTimeslotId(timeslotId);
-      if (
-        timeSlotData?.scheduledStartTime !== startTime ||
-        timeSlotData?.duration !== initialData.duration
-      ) {
-        setTimeSlotData({
-          scheduledStartTime: startTime,
-          duration: initialData.duration,
-        });
-      }
-      form.setFieldsValue(initialValues);
-    } else if (searchParams.get('timeslot')) {
-      const timeslotFromParams = searchParams.get('timeslot');
-      const startTimeFromParams = searchParams.get('startTime');
+    if (initialData && !isLoading) {
+      // Edit mode: populate with existing data
+      const formValues = {
+        ...initialData,
+        host: initialData.host?.id,
+        timeslot: initialData.timeslot?.id,
+      };
 
-      setSelectedTimeslotId(timeslotFromParams ?? undefined);
+      form.setFieldsValue(formValues);
+      setSelectedTimeslotId(initialData.timeslot?.id);
 
-      // If both timeslot and startTime are provided, set the time slot data
-      if (timeslotFromParams && startTimeFromParams) {
-        setTimeSlotData({
-          scheduledStartTime: startTimeFromParams,
-          duration: 30, // Default duration
-        });
-      }
+      const startTime = initialData.scheduledStartTime ?? undefined;
 
-      // Set form values from search params
-      form.setFieldsValue({
-        ...initialValues,
-        timeslot: timeslotFromParams,
+      setTimeSlotData({
+        scheduledStartTime: startTime?.toString(),
+        duration: initialData.duration,
       });
+    } else {
+      // Create mode: set defaults and handle search params
+      form.setFieldsValue({
+        status: WebinarStatus.ACTIVE,
+        timeslot: timeslotParam || undefined,
+      });
+
+      if (timeslotParam) {
+        setSelectedTimeslotId(timeslotParam);
+
+        if (startTimeParam) {
+          setTimeSlotData({
+            scheduledStartTime: startTimeParam,
+            duration: 30,
+          });
+        }
+      }
     }
-  }, [
-    initialData,
-    initialValues,
-    searchParams,
-    form,
-    selectedTimeslotId,
-    timeSlotData,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]); // Intentionally only depend on isLoading to prevent loops
 
   const handleSubmit = async (values: any) => {
     if (!timeSlotData?.scheduledStartTime || !timeSlotData?.duration) {
@@ -139,26 +123,26 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
 
   const handleTimeslotChange = (value: string) => {
     setSelectedTimeslotId(value);
-
-    // Only clear timeSlotData if this is not the initial load from search params
-    const startTimeFromParams = searchParams.get('startTime');
-    const timeslotFromParams = searchParams.get('timeslot');
-
-    // If changing to the same timeslot from params and we have a startTime, preserve it
-    if (value === timeslotFromParams && startTimeFromParams) {
-      setTimeSlotData({
-        scheduledStartTime: startTimeFromParams,
-        duration: 60, // Default duration
-      });
-    } else {
-      setTimeSlotData({});
-    }
+    // Clear time slot data when changing timeslot
+    setTimeSlotData({});
   };
 
+  // Memoize the onChange handler to prevent unnecessary re-renders
+  const handleTimeSlotChange = useCallback(
+    (
+      newValue: { scheduledStartTime: string; duration: number } | undefined
+    ) => {
+      if (newValue) {
+        setTimeSlotData(newValue);
+      } else {
+        setTimeSlotData({});
+      }
+    },
+    []
+  );
+
   const statusOptions = [
-    { label: 'Scheduled', value: WebinarStatus.SCHEDULED },
-    { label: 'Live', value: WebinarStatus.LIVE },
-    { label: 'Completed', value: WebinarStatus.COMPLETED },
+    { label: 'Active', value: WebinarStatus.ACTIVE },
     { label: 'Cancelled', value: WebinarStatus.CANCELLED },
   ];
 
@@ -196,7 +180,6 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
             form={form}
             layout='vertical'
             onFinish={handleSubmit}
-            initialValues={initialValues}
             className='space-y-6'
           >
             {/* Basic Information Section */}
@@ -302,7 +285,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       },
                     ]}
                   >
-                    {!isLoading && (
+                    {!companyOptionsLoading && (
                       <Select
                         size='large'
                         placeholder='Select host company'
@@ -330,7 +313,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       { required: true, message: 'Please select timeslot' },
                     ]}
                   >
-                    {!isLoading && (
+                    {!timeSlotLoading && (
                       <Select
                         size='large'
                         placeholder='Select timeslot'
@@ -421,7 +404,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                         <div className='py-8'>
                           <TimeSlotPicker
                             value={timeSlotData}
-                            onChange={setTimeSlotData}
+                            onChange={handleTimeSlotChange}
                             timeslotId={selectedTimeslotId}
                             disabled={!selectedTimeslotId}
                             excludeWebinarId={initialData?.id}
@@ -532,15 +515,13 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                       size='large'
                       placeholder='Select status'
                       className='rounded-lg'
-                      defaultValue={WebinarStatus.SCHEDULED}
+                      defaultValue={WebinarStatus.ACTIVE}
                     >
                       {statusOptions.map((option) => (
                         <Option key={option.value} value={option.value}>
                           <Space>
                             <span>
-                              {option.value === WebinarStatus.SCHEDULED && '📅'}
-                              {option.value === WebinarStatus.LIVE && '🔴'}
-                              {option.value === WebinarStatus.COMPLETED && '✅'}
+                              {option.value === WebinarStatus.ACTIVE && '✅'}
                               {option.value === WebinarStatus.CANCELLED && '❌'}
                             </span>
                             <span>{option.label}</span>

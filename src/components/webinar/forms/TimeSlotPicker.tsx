@@ -95,7 +95,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
     setTimeSlots(slots);
   }, [generateTimeSlots, isSlotBooked]);
 
-  // Update selected slots when value or timeSlots change
+  // Update selected slots when value changes (but not when timeSlots change to avoid circular deps)
   useEffect(() => {
     if (value?.scheduledStartTime && value?.duration && timeSlots.length > 0) {
       const startTime = dayjs(value.scheduledStartTime);
@@ -110,20 +110,13 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
         }
       }
 
-      const currentSelection = selectedSlots.sort().join(',');
-      const newSelection = newSelectedSlots.sort().join(',');
-
-      if (currentSelection !== newSelection) {
-        setSelectedSlots(newSelectedSlots);
-      }
+      setSelectedSlots(newSelectedSlots);
     } else if (!value?.scheduledStartTime || !value?.duration) {
-      if (selectedSlots.length > 0) {
-        setSelectedSlots([]);
-      }
+      setSelectedSlots([]);
     }
-  }, [value, timeSlots, selectedSlots]);
+  }, [value?.scheduledStartTime, value?.duration, timeSlots.length]); // Remove selectedSlots dependency
 
-  // Update visual state
+  // Update visual state when selectedSlots changes
   useEffect(() => {
     setTimeSlots((prevSlots) =>
       prevSlots.map((slot) => ({
@@ -133,35 +126,33 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
     );
   }, [selectedSlots]);
 
-  // Auto-confirm selection changes
+  // Auto-confirm selection changes (simplified)
   useEffect(() => {
-    if (isInitialLoadRef.current) {
+    if (isInitialLoadRef.current || timeSlots.length === 0) {
       isInitialLoadRef.current = false;
       return;
     }
 
-    if (timeSlots.length === 0) return;
-
     if (selectedSlots.length > 0) {
-      const firstSlot = timeSlots.find(
-        (slot) => slot.id === selectedSlots.sort()[0]
-      );
+      const sortedSlots = selectedSlots.sort();
+      const firstSlot = timeSlots.find((slot) => slot.id === sortedSlots[0]);
+
       if (firstSlot) {
         const startTime = dayjs(firstSlot.startTime).toISOString();
         const duration = selectedSlots.length * 30;
 
-        if (
-          !value ||
-          value.scheduledStartTime !== startTime ||
-          value.duration !== duration
-        ) {
+        // Only call onChange if the value actually changed
+        const currentStart = value?.scheduledStartTime;
+        const currentDuration = value?.duration;
+
+        if (currentStart !== startTime || currentDuration !== duration) {
           onChange?.({ scheduledStartTime: startTime, duration });
         }
       }
     } else if (value?.scheduledStartTime || value?.duration) {
       onChange?.(undefined as any);
     }
-  }, [selectedSlots, onChange, timeSlots, value]);
+  }, [selectedSlots.length, onChange]); // Simplified dependencies
 
   const handleSlotClick = (clickedSlot: TimeSlot) => {
     if (clickedSlot.disabled) {

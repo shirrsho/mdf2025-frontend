@@ -29,9 +29,14 @@ import {
   User,
 } from 'lucide-react';
 import { useGetWebinarById } from '@/apis';
-import { WebinarStatus } from '@/interfaces';
-import dayjs from 'dayjs';
 import { HtmlRenderer } from '@/components/common';
+import {
+  getWebinarDisplayStatus,
+  formatWebinarTime,
+  isWebinarLive,
+  isWebinarCompleted,
+  isWebinarScheduled,
+} from '@/utils/webinar.utils';
 
 const { Title, Text } = Typography;
 
@@ -63,38 +68,19 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
     );
   }
 
-  const getStatusColor = (status: WebinarStatus) => {
-    switch (status) {
-      case WebinarStatus.SCHEDULED:
-        return '#1890ff';
-      case WebinarStatus.LIVE:
-        return '#52c41a';
-      case WebinarStatus.COMPLETED:
-        return '#722ed1';
-      case WebinarStatus.CANCELLED:
-        return '#ff4d4f';
-      default:
-        return '#d9d9d9';
-    }
-  };
-
-  const getStatusIcon = (status: WebinarStatus) => {
-    switch (status) {
-      case WebinarStatus.SCHEDULED:
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'scheduled':
         return <Calendar className='h-5 w-5' />;
-      case WebinarStatus.LIVE:
+      case 'live':
         return <Play className='h-5 w-5' />;
-      case WebinarStatus.COMPLETED:
+      case 'completed':
         return <CheckCircle className='h-5 w-5' />;
-      case WebinarStatus.CANCELLED:
+      case 'cancelled':
         return <XCircle className='h-5 w-5' />;
       default:
         return <Pause className='h-5 w-5' />;
     }
-  };
-
-  const formatDateTime = (date: string | Date) => {
-    return dayjs(date).format('MMMM DD, YYYY - hh:mm A');
   };
 
   const getDurationText = (minutes: number) => {
@@ -106,9 +92,11 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
     return `${mins} minutes`;
   };
 
-  const isUpcoming = webinar.status === WebinarStatus.SCHEDULED;
-  const isLive = webinar.status === WebinarStatus.LIVE;
-  const isCompleted = webinar.status === WebinarStatus.COMPLETED;
+  const isUpcoming = isWebinarScheduled(webinar);
+  const isLive = isWebinarLive(webinar);
+  const isCompleted = isWebinarCompleted(webinar);
+
+  const displayStatus = getWebinarDisplayStatus(webinar);
 
   return (
     <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
@@ -161,16 +149,15 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
           }}
         >
           <div className='flex items-center gap-3'>
-            {getStatusIcon(webinar.status)}
+            {getStatusIcon(displayStatus.status)}
             <div>
               <Text
                 className='font-medium'
                 style={{
-                  color: getStatusColor(webinar.status),
+                  color: displayStatus.color,
                 }}
               >
-                {webinar.status.charAt(0).toUpperCase() +
-                  webinar.status.slice(1)}
+                {displayStatus.label}
               </Text>
               <div className='text-sm' style={{ color: '#6b7280' }}>
                 {isLive
@@ -252,14 +239,12 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
                     {getDurationText(webinar.duration)}
                   </div>
                 </Descriptions.Item>
-                {webinar.scheduledStartTime && (
-                  <Descriptions.Item label='Scheduled Start'>
-                    <div className='flex items-center gap-2'>
-                      <Calendar className='h-4 w-4 text-purple-400' />
-                      {formatDateTime(webinar.scheduledStartTime)}
-                    </div>
-                  </Descriptions.Item>
-                )}
+                <Descriptions.Item label='Scheduled Time'>
+                  <div className='flex items-center gap-2'>
+                    <Calendar className='h-4 w-4 text-purple-400' />
+                    {formatWebinarTime(webinar)}
+                  </div>
+                </Descriptions.Item>
                 {webinar.maxParticipants && (
                   <Descriptions.Item label='Max Participants'>
                     <div className='flex items-center gap-2'>
