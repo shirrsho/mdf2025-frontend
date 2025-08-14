@@ -443,6 +443,7 @@ export const CompanyDetail: React.FC<CompanyDetailProps> = ({
                     />
                     <Text className='text-sm' style={{ color: '#AFADB5' }}>
                       No login credentials created
+                      <br />
                     </Text>
                     <Text className='mt-1 text-xs' style={{ color: '#6b7280' }}>
                       Click &quot;Create&quot; to add login access

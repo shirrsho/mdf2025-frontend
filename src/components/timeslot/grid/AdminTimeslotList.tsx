@@ -8,7 +8,6 @@ export const AdminTimeslotList = () => {
     page: 1,
     limit: 10,
     timeslotName: '',
-    isAvailable: '',
   });
 
   const { data, isLoading } = useGetAllTimeslots(searchParams);

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Form, Input, Button, Switch, DatePicker, message } from 'antd';
+import { Form, Input, Button, DatePicker, message } from 'antd';
 import { Save, X } from 'lucide-react';
 import {
   ITimeslot,
@@ -55,9 +55,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
         ...initialData,
         timeRange: [dayjs(initialData.startTime), dayjs(initialData.endTime)],
       }
-    : {
-        isAvailable: true,
-      };
+    : {};
 
   return (
     <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
@@ -155,28 +153,6 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
               placeholder='Enter a description for this timeslot (optional)'
               className='border-gray-300 text-gray-900 placeholder:text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500'
             />
-          </Form.Item>
-
-          {/* Availability */}
-          <Form.Item
-            label={
-              <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-                Availability
-              </span>
-            }
-            name='isAvailable'
-            valuePropName='checked'
-          >
-            <div className='flex items-center gap-3'>
-              <Switch
-                className='bg-gray-300 dark:bg-gray-600'
-                checkedChildren='Available'
-                unCheckedChildren='Unavailable'
-              />
-              <span className='text-sm text-gray-600 dark:text-gray-400'>
-                Toggle to make this timeslot available for booking
-              </span>
-            </div>
           </Form.Item>
 
           {/* Form Actions */}

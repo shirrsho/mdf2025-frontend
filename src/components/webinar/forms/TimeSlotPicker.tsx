@@ -238,12 +238,12 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
         <div className='flex items-center space-x-2'>
           <Clock className='h-4 w-4 text-primary' />
           <span className='text-sm font-medium text-heading dark:text-heading-dark'>
-            Select Time Slots (30min each)
+            Select Time Slots (30min each, Select Multiple for Longer Sessions)
           </span>
         </div>
         {selectedSlots.length > 0 && (
           <Button
-            size='small'
+            // size='small'
             onClick={() => setSelectedSlots([])}
             className='text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           >

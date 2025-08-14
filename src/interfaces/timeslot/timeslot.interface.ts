@@ -5,7 +5,6 @@ export interface ITimeslot {
   startTime: string | Date;
   endTime: string | Date;
   description?: string;
-  isAvailable: boolean;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
@@ -15,7 +14,6 @@ export interface ITimeslotCreateRequest {
   startTime: string | Date;
   endTime: string | Date;
   description?: string;
-  isAvailable?: boolean;
 }
 
 export interface ITimeslotUpdateRequest extends ITimeslotCreateRequest {

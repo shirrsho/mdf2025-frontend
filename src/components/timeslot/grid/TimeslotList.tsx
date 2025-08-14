@@ -1,6 +1,6 @@
 'use client';
-import React from 'react';
-import { Button, Card, Table, Tag, Space } from 'antd';
+import React, { useMemo } from 'react';
+import { Button, Card, Table, Space } from 'antd';
 import { useRouter } from 'next/navigation';
 import {
   Plus,
@@ -14,6 +14,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { ITimeslot } from '@/interfaces';
 import { AppPagination } from '@/components/common';
+import { useGetAllWebinars } from '@/apis';
 import dayjs from 'dayjs';
 
 interface TimeslotListViewProps {
@@ -24,7 +25,6 @@ interface TimeslotListViewProps {
     page: number;
     limit: number;
     timeslotName: string;
-    isAvailable: string;
   };
   onTableChange: (pagination: any) => void;
   mode: 'admin';
@@ -39,13 +39,22 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
 }) => {
   const router = useRouter();
 
-  const getStatusColor = (isAvailable: boolean) => {
-    return isAvailable ? '#10b981' : '#ef4444';
-  };
+  // Fetch all webinars to calculate usage statistics
+  const { data: webinarsData } = useGetAllWebinars({ limit: 1000 }); // Fetch all webinars
 
-  const getStatusText = (isAvailable: boolean) => {
-    return isAvailable ? 'Available' : 'Unavailable';
-  };
+  // Create a map of timeslot ID to webinar count for efficient lookup
+  const timeslotWebinarMap = useMemo(() => {
+    if (!webinarsData?.data) return {};
+
+    const map: Record<string, number> = {};
+    webinarsData.data.forEach((webinar) => {
+      const timeslotId = webinar.timeslotId || webinar.timeslot?.id;
+      if (timeslotId) {
+        map[timeslotId] = (map[timeslotId] || 0) + 1;
+      }
+    });
+    return map;
+  }, [webinarsData]);
 
   const formatTime = (date: string | Date) => {
     return dayjs(date).format('MMM DD, YYYY - hh:mm A');
@@ -83,18 +92,6 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
               {record.description}
             </div>
           )}
-          <div className='mt-2'>
-            <Tag
-              style={{
-                backgroundColor: `${getStatusColor(record.isAvailable)}20`,
-                color: getStatusColor(record.isAvailable),
-                border: 'none',
-                fontSize: '11px',
-              }}
-            >
-              {getStatusText(record.isAvailable)}
-            </Tag>
-          </div>
         </div>
       ),
     },
@@ -129,19 +126,43 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
       title: 'Usage',
       key: 'usage',
       width: '15%',
-      render: () => (
-        <div>
-          <div className='mb-1 flex items-center gap-1'>
-            <Users className='h-3 w-3' style={{ color: '#395b50' }} />
-            <span className='text-sm font-medium' style={{ color: '#F9FAFB' }}>
-              0 Webinars
-            </span>
+      render: (record: ITimeslot) => {
+        const webinarCount = timeslotWebinarMap[record.id!] || 0;
+        const isTimeslotPast = dayjs(record.endTime).isBefore(dayjs());
+
+        return (
+          <div>
+            <div className='mb-1 flex items-center gap-1'>
+              <Users
+                className='h-3 w-3'
+                style={{ color: webinarCount > 0 ? '#10b981' : '#6b7280' }}
+              />
+              <span
+                className='text-sm font-medium'
+                style={{ color: '#F9FAFB' }}
+              >
+                {webinarCount} Webinar{webinarCount !== 1 ? 's' : ''}
+              </span>
+            </div>
+            <div
+              className='text-xs'
+              style={{
+                color: isTimeslotPast
+                  ? '#ef4444'
+                  : webinarCount > 0
+                    ? '#10b981'
+                    : '#f59e0b',
+              }}
+            >
+              {isTimeslotPast
+                ? 'Past'
+                : webinarCount > 0
+                  ? `${webinarCount} Scheduled`
+                  : 'Available'}
+            </div>
           </div>
-          <div className='text-xs' style={{ color: '#AFADB5' }}>
-            Available
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: 'Created',
@@ -196,11 +217,11 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
     },
   ];
 
-  const availableTimeslots = timeslots.filter((t) => t.isAvailable);
-  const unavailableTimeslots = timeslots.filter((t) => !t.isAvailable);
   const upcomingTimeslots = timeslots.filter((t) =>
     dayjs(t.startTime).isAfter(dayjs())
   );
+
+  const totalWebinars = webinarsData?.data?.length || 0;
 
   return (
     <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
@@ -216,6 +237,14 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
             </p>
           </div>
           <Space>
+            <Button
+              size='large'
+              icon={<Grid className='h-4 w-4' />}
+              onClick={() => router.push(`${getBaseUrl()}/timeslots/overview`)}
+              className='h-12 border-indigo-600 px-6 font-medium text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-500 dark:border-indigo-400 dark:text-indigo-400 dark:hover:border-indigo-300 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-300'
+            >
+              📊 View All Slots
+            </Button>
             <Button
               type='primary'
               size='large'
@@ -261,17 +290,14 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
                 style={{ backgroundColor: '#10b98120' }}
               >
-                <CalendarIcon
-                  className='h-6 w-6'
-                  style={{ color: '#10b981' }}
-                />
+                <Users className='h-6 w-6' style={{ color: '#10b981' }} />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Available
+                  Total Webinars
                 </p>
                 <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {availableTimeslots.length}
+                  {totalWebinars}
                 </p>
               </div>
             </div>
@@ -284,16 +310,19 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
             <div className='flex items-center'>
               <div
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#ef444420' }}
+                style={{ backgroundColor: '#f59e0b20' }}
               >
-                <Grid className='h-6 w-6' style={{ color: '#ef4444' }} />
+                <Grid className='h-6 w-6' style={{ color: '#f59e0b' }} />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Unavailable
+                  Past Timeslots
                 </p>
                 <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {unavailableTimeslots.length}
+                  {
+                    timeslots.filter((t) => dayjs(t.endTime).isBefore(dayjs()))
+                      .length
+                  }
                 </p>
               </div>
             </div>
@@ -308,7 +337,10 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
                 style={{ backgroundColor: '#bfab2520' }}
               >
-                <Users className='h-6 w-6' style={{ color: '#bfab25' }} />
+                <CalendarIcon
+                  className='h-6 w-6'
+                  style={{ color: '#bfab25' }}
+                />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>

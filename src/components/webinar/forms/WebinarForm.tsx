@@ -75,8 +75,9 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
       : {
           status: WebinarStatus.SCHEDULED,
           timeslot: searchParams.get('timeslot') ?? undefined,
+          startTime: searchParams.get('startTime') ?? undefined,
         };
-  }, [initialData]);
+  }, [initialData, searchParams]);
 
   // Initialize form and state when initialData changes
   useEffect(() => {
@@ -100,9 +101,26 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
       }
       form.setFieldsValue(initialValues);
     } else if (searchParams.get('timeslot')) {
-      setSelectedTimeslotId(searchParams.get('timeslot') ?? undefined);
+      const timeslotFromParams = searchParams.get('timeslot');
+      const startTimeFromParams = searchParams.get('startTime');
+
+      setSelectedTimeslotId(timeslotFromParams ?? undefined);
+
+      // If both timeslot and startTime are provided, set the time slot data
+      if (timeslotFromParams && startTimeFromParams) {
+        setTimeSlotData({
+          scheduledStartTime: startTimeFromParams,
+          duration: 30, // Default duration
+        });
+      }
+
+      // Set form values from search params
+      form.setFieldsValue({
+        ...initialValues,
+        timeslot: timeslotFromParams,
+      });
     }
-  }, [initialData, initialValues]);
+  }, [initialData, initialValues, searchParams, form]);
 
   const handleSubmit = async (values: any) => {
     if (!timeSlotData?.scheduledStartTime || !timeSlotData?.duration) {
@@ -114,7 +132,20 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
 
   const handleTimeslotChange = (value: string) => {
     setSelectedTimeslotId(value);
-    setTimeSlotData({});
+
+    // Only clear timeSlotData if this is not the initial load from search params
+    const startTimeFromParams = searchParams.get('startTime');
+    const timeslotFromParams = searchParams.get('timeslot');
+
+    // If changing to the same timeslot from params and we have a startTime, preserve it
+    if (value === timeslotFromParams && startTimeFromParams) {
+      setTimeSlotData({
+        scheduledStartTime: startTimeFromParams,
+        duration: 60, // Default duration
+      });
+    } else {
+      setTimeSlotData({});
+    }
   };
 
   const statusOptions = [
