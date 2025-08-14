@@ -70,6 +70,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
   // Extract search params to prevent re-render loops
   const timeslotParam = searchParams.get('timeslot');
   const startTimeParam = searchParams.get('startTime');
+  const hostId = searchParams.get('c');
 
   // Initialize form only once when component mounts or initialData changes
   useEffect(() => {
@@ -97,6 +98,12 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
       form.setFieldsValue({
         timeslot: timeslotParam || undefined,
       });
+
+      if (hostId) {
+        form.setFieldsValue({
+          host: hostId || undefined,
+        });
+      }
 
       if (timeslotParam) {
         setSelectedTimeslotId(timeslotParam);
@@ -289,6 +296,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
                         size='large'
                         placeholder='Select host company'
                         className='rounded-lg'
+                        disabled={hostId ? true : false}
                       >
                         {companyOptions?.map((company: any) => (
                           <Option key={company.value} value={company.value}>

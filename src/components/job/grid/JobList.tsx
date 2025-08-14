@@ -337,7 +337,9 @@ export const JobList: React.FC<JobListViewProps> = ({
             size='large'
             icon={<Plus className='h-4 w-4' />}
             onClick={() =>
-              router.push(`${getBaseUrl()}/jobs/create?c=${companyId}`)
+              router.push(
+                `${getBaseUrl()}/jobs/create${companyId ? `?c=${companyId}` : ''}`
+              )
             }
             className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
           >

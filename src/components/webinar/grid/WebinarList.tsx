@@ -56,6 +56,7 @@ interface WebinarListViewProps {
   onTableChange?: (pagination: any) => void;
   onDelete?: (webinar: IWebinar) => Promise<void>;
   mode?: 'admin' | 'company';
+  companyId?: string;
 }
 
 export const WebinarList: React.FC<WebinarListViewProps> = ({
@@ -65,9 +66,14 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
   searchParams, // eslint-disable-line @typescript-eslint/no-unused-vars
   onTableChange,
   onDelete,
-  mode = 'admin', // eslint-disable-line @typescript-eslint/no-unused-vars
+  mode = 'admin',
+  companyId,
 }) => {
   const router = useRouter();
+
+  const getBaseUrl = () => {
+    return mode === 'admin' ? '/admin' : '/c';
+  };
 
   const handleDelete = (webinar: IWebinar) => {
     confirm({
@@ -133,7 +139,9 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             <div
               className='cursor-pointer truncate text-sm font-medium hover:text-blue-500'
               style={{ color: '#F9FAFB' }}
-              onClick={() => router.push(`/admin/webinars/${record.id}`)}
+              onClick={() =>
+                router.push(`${getBaseUrl()}/webinars/${record.id}`)
+              }
             >
               {record.title}
             </div>
@@ -263,7 +271,9 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/admin/webinars/create/${record.id}`);
+                router.push(
+                  `${getBaseUrl()}/webinars/create/${record.id}${companyId ? `?c=${companyId}` : ''}`
+                );
               }}
             />
           </Tooltip>
@@ -303,8 +313,8 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
   const stats = getWebinarStats();
 
   return (
-    <div className='min-h-screen bg-background-100 p-6 dark:bg-background-dark-100'>
-      <div className='mx-auto max-w-7xl'>
+    <div className='min-h-screen bg-background-100 dark:bg-background-dark-100'>
+      <div className='mx-auto max-w-7xl p-6'>
         {/* Header */}
         <div className='mb-8 flex items-center justify-between'>
           <div>
@@ -319,7 +329,11 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             type='primary'
             size='large'
             icon={<Plus className='h-4 w-4' />}
-            onClick={() => router.push('/admin/webinars/create')}
+            onClick={() =>
+              router.push(
+                `${getBaseUrl()}/webinars/create${companyId ? `?c=${companyId}` : ''}`
+              )
+            }
             className='h-12 border-primary bg-primary px-6 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
           >
             Create Webinar
@@ -396,7 +410,8 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             rowKey={(record) => record.id!}
             onChange={onTableChange}
             onRow={(record) => ({
-              onClick: () => router.push(`/admin/webinars/${record.id}`),
+              onClick: () =>
+                router.push(`${getBaseUrl()}/webinars/${record.id}`),
             })}
             scroll={{ x: 1000 }}
             rowClassName={'!cursor-pointer'}

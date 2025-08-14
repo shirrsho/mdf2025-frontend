@@ -8,12 +8,18 @@ import { IWebinarCreateRequest, IWebinarUpdateRequest } from '@/interfaces';
 
 interface CreateWebinarFormIdProps {
   webinarId?: string;
+  mode?: 'admin' | 'company';
 }
 
 export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
   webinarId,
+  mode = 'admin',
 }) => {
   const router = useRouter();
+
+  const getBaseUrl = () => {
+    return mode === 'admin' ? '/admin' : '/c';
+  };
 
   // Hooks
   const { data: webinar, isLoading: isLoadingWebinar } = useGetWebinarById(
@@ -38,7 +44,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
         await createWebinarMutation.mutateAsync(data as IWebinarCreateRequest);
         message.success('Webinar created successfully!');
       }
-      router.push('/admin/webinars');
+      router.push(`${getBaseUrl()}/webinars`);
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ||
@@ -49,7 +55,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
   };
 
   const handleCancel = () => {
-    router.push('/admin/webinars');
+    router.push(`${getBaseUrl()}/webinars`);
   };
 
   if (isLoadingWebinar) {

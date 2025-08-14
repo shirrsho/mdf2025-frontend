@@ -26,11 +26,26 @@ const { Title, Text } = Typography;
 
 interface WebinarDetailProps {
   webinarId: string;
+  mode?: 'admin' | 'company' | 'public';
 }
 
-export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
+export const WebinarDetail: React.FC<WebinarDetailProps> = ({
+  webinarId,
+  mode = 'admin',
+}) => {
   const router = useRouter();
   const { data: webinar, isLoading } = useGetWebinarById(webinarId);
+
+  const getBaseUrl = () => {
+    switch (mode) {
+      case 'company':
+        return '/c';
+      case 'public':
+        return '';
+      default:
+        return '/admin';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -79,7 +94,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
           </p>
           <Button
             type='primary'
-            onClick={() => router.push('/admin/webinars')}
+            onClick={() => router.push(`${getBaseUrl()}/webinars`)}
             className='border-blue-600 bg-blue-600 hover:border-blue-700 hover:bg-blue-700'
           >
             Back to Webinars
@@ -222,7 +237,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({ webinarId }) => {
                 size='large'
                 icon={<Edit className='h-4 w-4' />}
                 onClick={() =>
-                  router.push(`/admin/webinars/create/${webinar.id}`)
+                  router.push(`${getBaseUrl()}/webinars/create/${webinar.id}`)
                 }
                 className='h-12 border-primary bg-primary px-8 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
               >
