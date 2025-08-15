@@ -31,6 +31,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
 import { HtmlRenderer } from '@/components/common';
 import { handleErrorToast } from '@/utils';
+import { CustomPagination } from '@/components/common';
 import {
   getWebinarDisplayStatus,
   isWebinarLive,
@@ -406,16 +407,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             columns={columns}
             dataSource={webinars}
             loading={isLoading}
-            pagination={{
-              current: searchParams.page,
-              pageSize: searchParams.limit,
-              total: totalCount,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} webinars`,
-              pageSizeOptions: ['10', '20', '30', '50'],
-            }}
+            pagination={false}
             rowKey={(record) => record.id!}
             onChange={onTableChange}
             onRow={(record) => ({
@@ -424,6 +416,16 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             })}
             scroll={{ x: 1000 }}
             rowClassName={'!cursor-pointer'}
+          />
+
+          <CustomPagination
+            current={searchParams.page || 1}
+            pageSize={searchParams.limit || 10}
+            total={totalCount}
+            onChange={(page, pageSize) =>
+              onTableChange?.({ current: page, pageSize })
+            }
+            itemType='webinars'
           />
         </Card>
       </div>

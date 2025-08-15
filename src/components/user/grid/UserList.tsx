@@ -12,7 +12,12 @@ import {
   useUpdateUser,
 } from '@/apis';
 import { IUser } from '@/interfaces';
-import { ActionButton, TableTopButton, Loader } from '@/components/common';
+import {
+  ActionButton,
+  TableTopButton,
+  Loader,
+  CustomPagination,
+} from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import { CreateUserForm } from '../form';
 
@@ -143,19 +148,20 @@ export const UserList = () => {
                 columns={columns}
                 dataSource={data?.data}
                 rowKey={(record) => record.id!}
-                pagination={{
-                  current: page,
-                  pageSize: limit,
-                  total: data?.count || 0,
-                  showSizeChanger: true,
-                  showQuickJumper: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`,
-                  pageSizeOptions: ['10', '20', '50', '100'],
-                }}
+                pagination={false}
                 loading={isLoading}
                 onChange={handleTableChange}
                 className='rounded-md border shadow-sm'
+              />
+
+              <CustomPagination
+                current={page}
+                pageSize={limit}
+                total={data?.count || 0}
+                onChange={(page, pageSize) =>
+                  handleTableChange({ current: page, pageSize })
+                }
+                itemType='users'
               />
             </div>
           )}

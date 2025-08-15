@@ -6,6 +6,7 @@ import { Toast } from '@/libs/toast';
 import { useGetAllCompanys, useDeleteCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
+import { CustomPagination } from '@/components/common';
 import Link from 'next/link';
 import { ArrowUp, Edit, Trash } from 'lucide-react';
 
@@ -236,20 +237,21 @@ export const AdminCompanyList = () => {
           onRow={(record) => ({
             onClick: () => router.push(`/admin/companies/${record.id}`),
           })}
-          pagination={{
-            current: page,
-            pageSize: limit,
-            total: data?.count || 0,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
-            pageSizeOptions: ['10', '20', '50', '100'],
-          }}
+          pagination={false}
           loading={isLoading}
           onChange={handleTableChange}
           size='middle'
           rowClassName={'!cursor-pointer'}
+        />
+
+        <CustomPagination
+          current={page}
+          pageSize={limit}
+          total={data?.count || 0}
+          onChange={(page, pageSize) =>
+            handleTableChange({ current: page, pageSize })
+          }
+          itemType='companies'
         />
       </div>
     </div>

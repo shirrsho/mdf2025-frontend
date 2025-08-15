@@ -8,7 +8,11 @@ export {
 export { AppModal } from './modals';
 export { GoogleIcons } from './svg';
 export { HtmlRenderer } from './renderer';
-export { AppPaginationOne, AppPagination } from './pagination';
+export {
+  AppPaginationOne,
+  AppPagination,
+  CustomPagination,
+} from './pagination';
 export { FillerContent } from './misc';
 export { DarkModeToggle, ActionButton, ViewModeToggle } from './buttons';
 export { BreadCumbHeading } from './breadcumb';
