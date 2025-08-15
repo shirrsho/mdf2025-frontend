@@ -1,12 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Table, Button, Space, Tag, Modal } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Toast } from '@/libs/toast';
 import { useGetAllCompanys, useDeleteCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
-import { AppPagination } from '@/components/common';
 import Link from 'next/link';
 import { ArrowUp, Edit, Trash } from 'lucide-react';
 
@@ -14,22 +13,30 @@ const { confirm } = Modal;
 
 export const AdminCompanyList = () => {
   const router = useRouter();
-  const [searchParams, setSearchParams] = useState({
-    page: 1,
-    limit: 10,
-    name: '',
-    size: '',
-  });
+  const searchParams = useSearchParams();
 
-  const { data, isLoading, refetch } = useGetAllCompanys(searchParams);
+  const page = parseInt(searchParams.get('pageno') || '1', 10);
+  const limit = parseInt(searchParams.get('pagesize') || '10', 10);
+  const name = searchParams.get('name') || '';
+  const size = searchParams.get('size') || '';
+
+  const { data, isLoading, refetch } = useGetAllCompanys({
+    page,
+    limit,
+    name,
+    size,
+  });
   const deleteCompany = useDeleteCompany();
 
+  const updateURLParams = (newPage: number, newPageSize: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('pageno', newPage.toString());
+    params.set('pagesize', newPageSize.toString());
+    router.push(`?${params.toString()}`);
+  };
+
   const handleTableChange = (pagination: any) => {
-    setSearchParams((prev) => ({
-      ...prev,
-      page: pagination.current,
-      limit: pagination.pageSize,
-    }));
+    updateURLParams(pagination.current, pagination.pageSize);
   };
 
   const handleDelete = (company: ICompany) => {
@@ -229,16 +236,21 @@ export const AdminCompanyList = () => {
           onRow={(record) => ({
             onClick: () => router.push(`/admin/companies/${record.id}`),
           })}
-          pagination={false}
+          pagination={{
+            current: page,
+            pageSize: limit,
+            total: data?.count || 0,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+            pageSizeOptions: ['10', '20', '50', '100'],
+          }}
           loading={isLoading}
           onChange={handleTableChange}
           size='middle'
           rowClassName={'!cursor-pointer'}
         />
-
-        <div className='mt-6'>
-          <AppPagination total={data?.count || 0} />
-        </div>
       </div>
     </div>
   );

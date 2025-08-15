@@ -4,6 +4,7 @@ import { Toast } from '@/libs/toast';
 import { Drawer, Form, Table } from 'antd';
 import { Plus } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   useCreateUser,
   useDeleteUser,
@@ -11,22 +12,20 @@ import {
   useUpdateUser,
 } from '@/apis';
 import { IUser } from '@/interfaces';
-import {
-  AppPaginationOne,
-  ActionButton,
-  TableTopButton,
-  Loader,
-} from '@/components/common';
+import { ActionButton, TableTopButton, Loader } from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import { CreateUserForm } from '../form';
 
 export const UserList = () => {
   const [form] = Form.useForm();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+
+  const page = parseInt(searchParams.get('pageno') || '1', 10);
+  const limit = parseInt(searchParams.get('pagesize') || '10', 10);
 
   const { data, isLoading, refetch } = useGetAllUsers({
     query: { page, limit },
@@ -35,6 +34,17 @@ export const UserList = () => {
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
+
+  const updateURLParams = (newPage: number, newPageSize: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('pageno', newPage.toString());
+    params.set('pagesize', newPageSize.toString());
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleTableChange = (pagination: any) => {
+    updateURLParams(pagination.current, pagination.pageSize);
+  };
 
   const handleSubmit = async (values: any) => {
     try {
@@ -122,16 +132,6 @@ export const UserList = () => {
 
         {/* Content area that grows to fill available space */}
         <div className=''>
-          {/* Pagination always at bottom */}
-          {/* <div className='flex justify-center border-t border-background-200 pt-4'> */}
-          <AppPaginationOne
-            pageSize={limit}
-            pageNo={page}
-            total={data?.count || 0}
-            setPageNo={setPage}
-            setPageSize={setLimit}
-          />
-          {/* </div> */}
           {isLoading ? (
             <div className='flex flex-1 items-center justify-center'>
               <Loader />
@@ -143,8 +143,18 @@ export const UserList = () => {
                 columns={columns}
                 dataSource={data?.data}
                 rowKey={(record) => record.id!}
-                pagination={false}
+                pagination={{
+                  current: page,
+                  pageSize: limit,
+                  total: data?.count || 0,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`,
+                  pageSizeOptions: ['10', '20', '50', '100'],
+                }}
                 loading={isLoading}
+                onChange={handleTableChange}
                 className='rounded-md border shadow-sm'
               />
             </div>

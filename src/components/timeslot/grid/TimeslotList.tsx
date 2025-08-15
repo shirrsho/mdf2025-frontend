@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Plus, Edit, Trash2, Grid } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { ITimeslot } from '@/interfaces';
-import { AppPagination } from '@/components/common';
 import { useGetAllWebinars } from '@/apis';
 import {
   useTimeslotUtils,
@@ -31,6 +30,7 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
   timeslots,
   totalCount,
   isLoading,
+  searchParams,
   onTableChange,
   mode,
 }) => {
@@ -238,17 +238,22 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
               onClick: () =>
                 router.push(`${getBaseUrl()}/timeslots/${record.id}`),
             })}
-            pagination={false}
+            pagination={{
+              current: searchParams.page,
+              pageSize: searchParams.limit,
+              total: totalCount || 0,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`,
+              pageSizeOptions: ['10', '20', '50', '100'],
+            }}
             loading={isLoading}
             onChange={onTableChange}
             size='middle'
             rowClassName={'!cursor-pointer'}
           />
         </Card>
-
-        <div className='mt-6'>
-          <AppPagination total={totalCount || 0} />
-        </div>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
-import { AppPagination, HtmlRenderer } from '@/components/common';
+import { HtmlRenderer } from '@/components/common';
 import { handleErrorToast } from '@/utils';
 import {
   getWebinarDisplayStatus,
@@ -63,7 +63,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
   webinars,
   totalCount,
   isLoading,
-  searchParams, // eslint-disable-line @typescript-eslint/no-unused-vars
+  searchParams,
   onTableChange,
   onDelete,
   mode = 'admin',
@@ -406,7 +406,16 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             columns={columns}
             dataSource={webinars}
             loading={isLoading}
-            pagination={false}
+            pagination={{
+              current: searchParams.page,
+              pageSize: searchParams.limit,
+              total: totalCount,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${total} webinars`,
+              pageSizeOptions: ['10', '20', '30', '50'],
+            }}
             rowKey={(record) => record.id!}
             onChange={onTableChange}
             onRow={(record) => ({
@@ -416,11 +425,6 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             scroll={{ x: 1000 }}
             rowClassName={'!cursor-pointer'}
           />
-
-          {/* Pagination */}
-          <div className='border-t border-gray-600 px-6 py-4'>
-            <AppPagination total={totalCount} />
-          </div>
         </Card>
       </div>
     </div>

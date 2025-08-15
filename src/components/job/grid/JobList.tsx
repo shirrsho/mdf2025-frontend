@@ -16,7 +16,6 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { IJob, JobType, JobStatus } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
-import { AppPagination } from '@/components/common';
 
 const { confirm } = Modal;
 
@@ -41,7 +40,7 @@ export const JobList: React.FC<JobListViewProps> = ({
   jobs,
   totalCount,
   isLoading,
-  // searchParams,
+  searchParams,
   onTableChange,
   onDelete,
   mode,
@@ -373,7 +372,16 @@ export const JobList: React.FC<JobListViewProps> = ({
             onRow={(record) => ({
               onClick: () => router.push(`${getBaseUrl()}/jobs/${record.id}`),
             })}
-            pagination={false}
+            pagination={{
+              current: searchParams.page,
+              pageSize: searchParams.limit,
+              total: totalCount,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${total} jobs`,
+              pageSizeOptions: ['10', '20', '30', '50'],
+            }}
             loading={isLoading}
             onChange={onTableChange}
             size='middle'
@@ -388,10 +396,6 @@ export const JobList: React.FC<JobListViewProps> = ({
             }
           />
         </Card>
-
-        <div className='mt-6'>
-          <AppPagination total={totalCount || 0} />
-        </div>
       </div>
     </div>
   );

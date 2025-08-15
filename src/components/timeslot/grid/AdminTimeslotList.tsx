@@ -1,23 +1,32 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useGetAllTimeslots } from '@/apis';
 import { TimeslotList } from './TimeslotList';
 
 export const AdminTimeslotList = () => {
-  const [searchParams, setSearchParams] = useState({
-    page: 1,
-    limit: 10,
-    timeslotName: '',
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const page = parseInt(searchParams.get('pageno') || '1', 10);
+  const limit = parseInt(searchParams.get('pagesize') || '10', 10);
+  const timeslotName = searchParams.get('timeslotName') || '';
+
+  const { data, isLoading } = useGetAllTimeslots({
+    page,
+    limit,
+    timeslotName,
   });
 
-  const { data, isLoading } = useGetAllTimeslots(searchParams);
+  const updateURLParams = (newPage: number, newPageSize: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('pageno', newPage.toString());
+    params.set('pagesize', newPageSize.toString());
+    router.push(`?${params.toString()}`);
+  };
 
   const handleTableChange = (pagination: any) => {
-    setSearchParams((prev) => ({
-      ...prev,
-      page: pagination.current,
-      limit: pagination.pageSize,
-    }));
+    updateURLParams(pagination.current, pagination.pageSize);
   };
 
   return (
@@ -25,7 +34,7 @@ export const AdminTimeslotList = () => {
       timeslots={data?.data || []}
       totalCount={data?.count || 0}
       isLoading={isLoading}
-      searchParams={searchParams}
+      searchParams={{ page, limit, timeslotName }}
       onTableChange={handleTableChange}
       mode='admin'
     />
