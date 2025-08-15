@@ -48,7 +48,7 @@ export const ParticipantMenu = () => {
       icon: <Briefcase />,
     },
     {
-      label: <Link href='/p /webinars'>Webinars</Link>,
+      label: <Link href='/p/webinars'>Webinars</Link>,
       key: 'webinars',
       icon: <MonitorPlay />,
     },

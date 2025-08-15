@@ -12,8 +12,6 @@ export interface IWebinar {
   id?: string;
   title: string;
   description: string;
-  hostId: string;
-  timeslotId: string;
   duration: number; // Duration in minutes
   scheduledStartTime?: Date | string;
   maxParticipants?: number;

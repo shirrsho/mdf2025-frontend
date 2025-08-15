@@ -53,7 +53,7 @@ export const TimeslotList: React.FC<TimeslotListViewProps> = ({
 
     const map: Record<string, number> = {};
     webinars.forEach((webinar) => {
-      const timeslotId = webinar.timeslotId || webinar.timeslot?.id;
+      const timeslotId = webinar.timeslot?.id;
       if (timeslotId) {
         map[timeslotId] = (map[timeslotId] || 0) + 1;
       }
