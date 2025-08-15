@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { signin, useIsLoggedInQuery } from '@/apis';
 
 export const SignInForm: React.FC = () => {
@@ -20,7 +20,7 @@ export const SignInForm: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       await signin(data);
-      toast.success('Login successful');
+      Toast.success('Login successful');
       const redirectTo = redirect ? decodeURIComponent(redirect) : HOME_PATH;
       router.push(redirectTo);
     } catch (error: any) {

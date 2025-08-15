@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Button, Drawer, Form, Table, Tooltip } from 'antd';
 import { CircleCheck, Plus, Verified } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -33,10 +33,10 @@ export const EmailCredentialsList = () => {
     try {
       if (values._id) {
         await updateMailCredential.mutateAsync(values);
-        toast.success('Mail Credential updated successfully');
+        Toast.success('Mail Credential updated successfully');
       } else {
         await createMailCredential.mutateAsync(values);
-        toast.success('Mail Credential created successfully');
+        Toast.success('Mail Credential created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -51,7 +51,7 @@ export const EmailCredentialsList = () => {
     if (!id) return;
     try {
       await setDefaultMailCredential.mutateAsync(id);
-      toast.success('Default Mail Credential set successfully');
+      Toast.success('Default Mail Credential set successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);
@@ -62,7 +62,7 @@ export const EmailCredentialsList = () => {
     if (!id) return;
     try {
       await deleteMailCredential.mutateAsync(id);
-      toast.success('Mail Credential deleted successfully');
+      Toast.success('Mail Credential deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

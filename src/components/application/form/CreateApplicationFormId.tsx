@@ -7,7 +7,7 @@ import {
   useGetApplicationById,
   useUpdateApplication,
 } from '@/apis';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { IApplication } from '@/interfaces';
 import { useRouter } from 'next/navigation';
 
@@ -33,10 +33,10 @@ export const CreateApplicationFormId: React.FC<ICreateApplicationForm> = ({
     try {
       if (data.id) {
         await updateApplication.mutateAsync(data);
-        toast.success('Application updated successfully!');
+        Toast.success('Application updated successfully!');
       } else {
         const ret = await createApplication.mutateAsync(data);
-        toast.success('Application created successfully!');
+        Toast.success('Application created successfully!');
         router.push(`/admin/application/create/${ret.id}`);
       }
     } catch (error: any) {

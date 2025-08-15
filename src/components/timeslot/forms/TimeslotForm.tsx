@@ -1,7 +1,8 @@
 'use client';
 import React from 'react';
-import { Form, Input, Button, DatePicker, message } from 'antd';
+import { Form, Input, Button, DatePicker } from 'antd';
 import { Save, X } from 'lucide-react';
+import { Toast } from '@/libs/toast';
 import {
   ITimeslot,
   ITimeslotCreateRequest,
@@ -34,7 +35,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
       const { timeRange, ...rest } = values;
 
       if (!timeRange || timeRange.length !== 2) {
-        message.error('Please select start and end time');
+        Toast.error('Please select start and end time');
         return;
       }
 
@@ -46,7 +47,7 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
 
       await onSubmit(formData);
     } catch {
-      message.error('Please check your input and try again');
+      Toast.error('Please check your input and try again');
     }
   };
 

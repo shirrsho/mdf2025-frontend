@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Form, Input } from 'antd';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Key, ArrowLeft } from 'lucide-react';
 import { forgotPasswordOtpNewPassword } from '@/apis';
 import { HOME_PATH } from '@/constants';
@@ -30,12 +30,12 @@ export const SetPasswordForm: React.FC<Props> = ({ email }) => {
 
   const onSubmit = async (data: any) => {
     if (!otp) {
-      toast.error('OTP not found');
+      Toast.error('OTP not found');
       return;
     }
     try {
       const ret = await forgotPasswordOtpNewPassword(email, otp, data.password);
-      toast.success(ret?.message ?? 'Password updated successfuly');
+      Toast.success(ret?.message ?? 'Password updated successfuly');
       localStorage.removeItem('userotp');
       router.push(
         `/success?redirect=${encodeURIComponent(redirect || HOME_PATH)}`

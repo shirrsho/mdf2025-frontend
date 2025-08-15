@@ -7,7 +7,7 @@ import {
   useGetTemplateById,
   useUpdateTemplate,
 } from '@/apis';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { ITemplate } from '@/interfaces';
 import { useRouter } from 'next/navigation';
 
@@ -33,10 +33,10 @@ export const CreateTemplateFormId: React.FC<ICreateTemplateForm> = ({
     try {
       if (data.id) {
         await updateTemplate.mutateAsync(data);
-        toast.success('Template updated successfully!');
+        Toast.success('Template updated successfully!');
       } else {
         const ret = await createTemplate.mutateAsync(data);
-        toast.success('Template created successfully!');
+        Toast.success('Template created successfully!');
         router.push(`/admin/template/create/${ret.id}`);
       }
     } catch (error: any) {

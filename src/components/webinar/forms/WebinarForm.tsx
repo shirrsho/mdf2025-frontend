@@ -6,7 +6,6 @@ import {
   Button,
   Select,
   InputNumber,
-  message,
   Card,
   Row,
   Col,
@@ -22,6 +21,7 @@ import {
   Clock,
   Calendar,
 } from 'lucide-react';
+import { Toast } from '@/libs/toast';
 import {
   IWebinar,
   IWebinarCreateRequest,
@@ -121,7 +121,7 @@ export const WebinarForm: React.FC<WebinarFormProps> = ({
 
   const handleSubmit = async (values: any) => {
     if (!timeSlotData?.scheduledStartTime || !timeSlotData?.duration) {
-      message.error('Please select time slots for the webinar');
+      Toast.error('Please select time slots for the webinar');
       return;
     }
     await onSubmit({ ...values, ...timeSlotData });

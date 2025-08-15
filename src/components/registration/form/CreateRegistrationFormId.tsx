@@ -7,7 +7,7 @@ import {
   useGetRegistrationById,
   useUpdateRegistration,
 } from '@/apis';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { IRegistration } from '@/interfaces';
 import { useRouter } from 'next/navigation';
 
@@ -33,10 +33,10 @@ export const CreateRegistrationFormId: React.FC<ICreateRegistrationForm> = ({
     try {
       if (data.id) {
         await updateRegistration.mutateAsync(data);
-        toast.success('Registration updated successfully!');
+        Toast.success('Registration updated successfully!');
       } else {
         const ret = await createRegistration.mutateAsync(data);
-        toast.success('Registration created successfully!');
+        Toast.success('Registration created successfully!');
         router.push(`/admin/registration/create/${ret.id}`);
       }
     } catch (error: any) {

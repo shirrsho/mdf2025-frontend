@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Form, Input, Typography } from 'antd';
 import { Key, MoveLeft } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { forgetPassword } from '@/apis';
 import { HOME_PATH } from '@/constants';
 import { handleErrorToast } from '@/utils';
@@ -21,7 +21,7 @@ export const ForgotPasswordForm: React.FC<object> = () => {
     try {
       setLoading(true);
       const res = await forgetPassword(values.email);
-      toast.success(res.message);
+      Toast.success(res.message);
       router.push(
         `/otp?email=${values.email}&redirect=${encodeURIComponent(redirect || HOME_PATH)}`
       );

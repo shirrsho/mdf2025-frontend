@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button, Upload, UploadProps } from 'antd';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { UploadIcon } from 'lucide-react';
 
 interface ViedoUploaderProps {
@@ -15,11 +15,11 @@ export const VideoUploader: React.FC<ViedoUploaderProps> = ({
 }) => {
   const handleChange: UploadProps['onChange'] = ({ file }) => {
     if (file.status === 'done') {
-      toast.success(`${file.name} file uploaded successfully`);
+      Toast.success(`${file.name} file uploaded successfully`);
       onChange && onChange(file.response);
     }
     if (file.status === 'error') {
-      toast.error(`${file.name} file upload failed`);
+      Toast.error(`${file.name} file upload failed`);
     }
   };
 

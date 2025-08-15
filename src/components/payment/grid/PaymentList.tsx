@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Drawer, Form, Table } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -119,10 +119,10 @@ export const PaymentList = () => {
     try {
       if (values.id) {
         await updatePayment.mutateAsync(values);
-        toast.success('Payment updated successfully');
+        Toast.success('Payment updated successfully');
       } else {
         await createPayment.mutateAsync(values);
-        toast.success('Payment created successfully');
+        Toast.success('Payment created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -137,7 +137,7 @@ export const PaymentList = () => {
     if (!id) return;
     try {
       await deletePayment.mutateAsync(id);
-      toast.success('Payment deleted successfully');
+      Toast.success('Payment deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

@@ -1,7 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import { Table, Button, Space, Tag, Modal, notification } from 'antd';
+import { Table, Button, Space, Tag, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
+import { Toast } from '@/libs/toast';
 import { useGetAllCompanys, useDeleteCompany } from '@/apis';
 import { ICompany, CompanySize } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
@@ -41,11 +42,7 @@ export const AdminCompanyList = () => {
       onOk: async () => {
         try {
           await deleteCompany.mutateAsync(company.id!);
-          notification.success({
-            message: 'Success',
-            description: 'Company deleted successfully!',
-            placement: 'topRight',
-          });
+          Toast.success('Company deleted successfully!');
           refetch();
         } catch (error) {
           handleErrorToast(error);

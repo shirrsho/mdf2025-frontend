@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { message } from 'antd';
+import { Toast } from '@/libs/toast';
 import { WebinarForm } from './WebinarForm';
 import { useCreateWebinar, useUpdateWebinar, useGetWebinarById } from '@/apis';
 import { IWebinarCreateRequest, IWebinarUpdateRequest } from '@/interfaces';
@@ -39,10 +39,10 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
           id: webinarId,
           ...data,
         });
-        message.success('Webinar updated successfully!');
+        Toast.success('Webinar updated successfully!');
       } else {
         await createWebinarMutation.mutateAsync(data as IWebinarCreateRequest);
-        message.success('Webinar created successfully!');
+        Toast.success('Webinar created successfully!');
       }
       router.push(`${getBaseUrl()}/webinars`);
     } catch (error: any) {
@@ -50,7 +50,7 @@ export const CreateWebinarFormId: React.FC<CreateWebinarFormIdProps> = ({
         error?.response?.data?.message ||
         error?.message ||
         `Failed to ${webinarId ? 'update' : 'create'} webinar`;
-      message.error(errorMessage);
+      Toast.error(errorMessage);
     }
   };
 

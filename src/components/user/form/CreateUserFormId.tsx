@@ -3,7 +3,7 @@ import React from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { handleErrorToast } from '@/utils';
 import { useCreateUser, useGetUserById, useUpdateUser } from '@/apis';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { IUser } from '@/interfaces';
 import { useRouter } from 'next/navigation';
 
@@ -27,10 +27,10 @@ export const CreateUserFormId: React.FC<ICreateUserForm> = ({ userId }) => {
     try {
       if (data.id) {
         await updateUser.mutateAsync(data);
-        toast.success('User updated successfully!');
+        Toast.success('User updated successfully!');
       } else {
         const ret = await createUser.mutateAsync(data);
-        toast.success('User created successfully!');
+        Toast.success('User created successfully!');
         router.push(`/admin/users/create/${ret.id}`);
       }
     } catch (error: any) {

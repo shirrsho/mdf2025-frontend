@@ -1,10 +1,11 @@
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 
 export const handleErrorToast = (error: any) => {
-  toast.error(
+  const errorMessage =
     error?.response?.data?.message ||
-      error?.response?.message ||
-      error?.message ||
-      'An error occurred, please try again later'
-  );
+    error?.response?.message ||
+    error?.message ||
+    'An error occurred, please try again later';
+
+  Toast.error(errorMessage);
 };

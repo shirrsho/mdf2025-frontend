@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Typography, Steps, Alert } from 'antd';
 import { Key, Mail, Shield } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import {
   forgetPassword,
   forgotPasswordOtp,
@@ -34,7 +34,7 @@ export const ChangePasswordForm: React.FC = () => {
 
   const sendOTP = async () => {
     if (!userData?.user?.email) {
-      toast.error('User email not found');
+      Toast.error('User email not found');
       return;
     }
 
@@ -42,7 +42,7 @@ export const ChangePasswordForm: React.FC = () => {
       setLoading(true);
       const response = await forgetPassword(userData.user.email);
       setUserEmail(userData.user.email);
-      toast.success(response.message);
+      Toast.success(response.message);
       setCurrentStep(1);
     } catch (error: any) {
       handleErrorToast(error);
@@ -55,7 +55,7 @@ export const ChangePasswordForm: React.FC = () => {
     try {
       setLoading(true);
       await forgotPasswordOtp(userEmail, values.otp, false);
-      toast.success('OTP verified successfully');
+      Toast.success('OTP verified successfully');
       setCurrentStep(2);
     } catch (error: any) {
       handleErrorToast(error);
@@ -67,14 +67,14 @@ export const ChangePasswordForm: React.FC = () => {
   const changePassword = async (values: ChangePasswordFormData) => {
     const otpValue = otpForm.getFieldValue('otp');
     if (!otpValue) {
-      toast.error('OTP verification required');
+      Toast.error('OTP verification required');
       return;
     }
 
     try {
       setLoading(true);
       await forgotPasswordOtpNewPassword(userEmail, otpValue, values.password);
-      toast.success('Password changed successfully');
+      Toast.success('Password changed successfully');
 
       // Reset all forms and go back to step 0
       form.resetFields();

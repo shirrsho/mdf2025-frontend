@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button, Tooltip, Upload, UploadProps } from 'antd';
 import { getAccessToken } from '@/utils';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { UploadIcon } from 'lucide-react';
 
 interface FileUploaderProps {
@@ -19,11 +19,11 @@ export const FileUploaderV2: React.FC<FileUploaderProps> = ({
   const token = getAccessToken();
   const handleChange: UploadProps['onChange'] = ({ file }) => {
     if (file.status === 'done') {
-      toast.success(`${file.name} file uploaded successfully`);
+      Toast.success(`${file.name} file uploaded successfully`);
       onChange && onChange(file.response);
     }
     if (file.status === 'error') {
-      toast.error(`${file.name} file upload failed`);
+      Toast.error(`${file.name} file upload failed`);
     }
   };
 

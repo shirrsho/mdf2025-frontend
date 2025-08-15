@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Drawer, Form, Spin } from 'antd';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Plus } from 'lucide-react';
 import {
   useGetAllMailAutomations,
@@ -34,10 +34,10 @@ export const MailAutomationList = () => {
     try {
       if (values.id) {
         await updateMailAutomation.mutateAsync(values);
-        toast.success('Automation updated successfully');
+        Toast.success('Automation updated successfully');
       } else {
         await addMailAutomationWithBlueprint.mutateAsync(values);
-        toast.success('Automation created successfully');
+        Toast.success('Automation created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -52,7 +52,7 @@ export const MailAutomationList = () => {
     if (!id) return;
     try {
       await deleteMailAutomation.mutateAsync(id);
-      toast.success('Automation deleted successfully');
+      Toast.success('Automation deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

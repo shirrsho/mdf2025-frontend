@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { notification } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Toast } from '@/libs/toast';
 import {
   useGetJobById,
   useCreateJob,
@@ -52,18 +52,10 @@ export const CreateJobFormId: React.FC<ICreateJobFormId> = ({
           ...jobDataPayload,
           id: jobData.id,
         });
-        notification.success({
-          message: 'Success',
-          description: 'Job updated successfully!',
-          placement: 'topRight',
-        });
+        Toast.success('Job updated successfully!');
       } else {
         result = await createJob.mutateAsync(jobDataPayload);
-        notification.success({
-          message: 'Success',
-          description: 'Job created successfully!',
-          placement: 'topRight',
-        });
+        Toast.success('Job created successfully!');
       }
 
       // Redirect based on mode

@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Table, Button, Card, Space, Typography } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -107,7 +107,7 @@ export const CompanyList = () => {
     if (!id) return;
     try {
       await deleteCompany.mutateAsync(id);
-      toast.success('Company deleted successfully');
+      Toast.success('Company deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

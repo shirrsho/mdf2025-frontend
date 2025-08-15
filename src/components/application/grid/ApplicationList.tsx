@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Drawer, Form, Table } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -119,10 +119,10 @@ export const ApplicationList = () => {
     try {
       if (values.id) {
         await updateApplication.mutateAsync(values);
-        toast.success('Application updated successfully');
+        Toast.success('Application updated successfully');
       } else {
         await createApplication.mutateAsync(values);
-        toast.success('Application created successfully');
+        Toast.success('Application created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -137,7 +137,7 @@ export const ApplicationList = () => {
     if (!id) return;
     try {
       await deleteApplication.mutateAsync(id);
-      toast.success('Application deleted successfully');
+      Toast.success('Application deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

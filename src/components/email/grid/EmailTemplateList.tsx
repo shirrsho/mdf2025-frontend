@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Drawer, Form, Spin } from 'antd';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { IMailBlueprint } from '@/interfaces';
 import { Plus } from 'lucide-react';
 import {
@@ -34,10 +34,10 @@ export const EmailTemplateList = () => {
     try {
       if (values.id) {
         await updateMailBlueprint.mutateAsync(values);
-        toast.success('Template updated successfully');
+        Toast.success('Template updated successfully');
       } else {
         await createEmailTemplate.mutateAsync(values);
-        toast.success('Template created successfully');
+        Toast.success('Template created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -52,7 +52,7 @@ export const EmailTemplateList = () => {
     if (!id) return;
     try {
       await deleteMailBlueprint.mutateAsync(id);
-      toast.success('Template deleted successfully');
+      Toast.success('Template deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

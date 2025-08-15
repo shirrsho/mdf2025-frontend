@@ -1,7 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import { Button, Card, notification, Typography } from 'antd';
+import { Button, Card, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
+import { Toast } from '@/libs/toast';
 import {
   useGetCompanyById,
   useCreateCompany,
@@ -43,18 +44,10 @@ export const CreateCompanyFormId: React.FC<ICreateCompanyFormId> = ({
           id: companyData.id,
           ...values,
         });
-        notification.success({
-          message: 'Success',
-          description: 'Company updated successfully!',
-          placement: 'topRight',
-        });
+        Toast.success('Company updated successfully!');
       } else {
         result = await createCompany.mutateAsync(values);
-        notification.success({
-          message: 'Success',
-          description: 'Company created successfully!',
-          placement: 'topRight',
-        });
+        Toast.success('Company created successfully!');
       }
 
       router.push(

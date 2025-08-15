@@ -26,7 +26,7 @@ import {
 } from '@/apis';
 import { CompanySize } from '@/interfaces';
 import Link from 'next/link';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { handleErrorToast } from '@/utils';
 import { CreateUserForm } from '@/components/user/form';
 import { HtmlRenderer } from '@/components/common';
@@ -88,7 +88,7 @@ export const CompanyDetail: React.FC<CompanyDetailProps> = ({
     try {
       values.companyId = companyId;
       await createUser.mutateAsync(values);
-      toast.success('Company login created successfully');
+      Toast.success('Company login created successfully');
       await refetch();
       setIsModalOpen(false);
       // setIsEditing(false);

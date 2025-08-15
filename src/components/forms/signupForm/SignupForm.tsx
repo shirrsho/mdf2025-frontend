@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import 'react-toastify/dist/ReactToastify.css';
 
 const { Title, Text } = Typography;
@@ -24,7 +24,7 @@ export const SignupForm: React.FC = () => {
     delete values.confirmPassword;
     try {
       await signup(values);
-      toast.success(`An email sent ${values.email}`);
+      Toast.success(`An email sent ${values.email}`);
       router.push(
         `/otp?email=${values.email}&t=new&redirect=${encodeURIComponent(redirect || HOME_PATH)}`
       );

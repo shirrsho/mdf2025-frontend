@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Drawer, Form, Table } from 'antd';
 import { Plus } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -40,10 +40,10 @@ export const UserList = () => {
     try {
       if (values.id) {
         await updateUser.mutateAsync(values);
-        toast.success('User updated successfully');
+        Toast.success('User updated successfully');
       } else {
         await createUser.mutateAsync(values);
-        toast.success('User created successfully');
+        Toast.success('User created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -58,7 +58,7 @@ export const UserList = () => {
     if (!id) return;
     try {
       await deleteUser.mutateAsync(id);
-      toast.success('User deleted successfully');
+      Toast.success('User deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

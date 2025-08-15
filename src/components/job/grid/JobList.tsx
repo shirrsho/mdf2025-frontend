@@ -1,16 +1,8 @@
 'use client';
 import React from 'react';
-import {
-  Button,
-  Card,
-  Table,
-  Tag,
-  Space,
-  Tooltip,
-  Modal,
-  notification,
-} from 'antd';
+import { Button, Card, Table, Tag, Space, Tooltip, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
+import { Toast } from '@/libs/toast';
 import {
   Plus,
   Briefcase,
@@ -68,11 +60,7 @@ export const JobList: React.FC<JobListViewProps> = ({
       onOk: async () => {
         try {
           await onDelete(job);
-          notification.success({
-            message: 'Success',
-            description: 'Job deleted successfully!',
-            placement: 'topRight',
-          });
+          Toast.success('Job deleted successfully!');
         } catch (error) {
           handleErrorToast(error);
         }

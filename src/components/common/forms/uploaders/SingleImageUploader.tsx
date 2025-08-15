@@ -2,7 +2,7 @@
 import React from 'react';
 import NextImage from 'next/image';
 import { Button, FormItemProps, Upload, UploadProps } from 'antd';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { getAccessToken } from '@/utils';
 import { Delete, UploadIcon } from 'lucide-react';
 
@@ -24,11 +24,11 @@ export const SingleImageUploader: React.FC<Props> = ({
   const token = getAccessToken();
   const handleChange: UploadProps['onChange'] = ({ file }) => {
     if (file.status === 'done') {
-      toast.success(`${file.name} file uploaded successfully`);
+      Toast.success(`${file.name} file uploaded successfully`);
       onChange && onChange(file.response);
     }
     if (file.status === 'error') {
-      toast.error(`${file.name} file upload failed`);
+      Toast.error(`${file.name} file upload failed`);
     }
   };
 
@@ -46,7 +46,7 @@ export const SingleImageUploader: React.FC<Props> = ({
             img.height !== recommendedHeight ||
             img.width !== recommendedWidth
           ) {
-            toast.error(
+            Toast.error(
               `Image must be ${recommendedHeight}x${recommendedWidth} pixels`
             );
             reject();

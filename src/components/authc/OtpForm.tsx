@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Form, Input } from 'antd';
 import { Mail } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { forgotPasswordOtp } from '@/apis';
 import { HOME_PATH } from '@/constants';
 import { handleErrorToast } from '@/utils';
@@ -29,7 +29,7 @@ export const OTPForm: React.FC<Props> = ({ email, isVerifyOnly }) => {
     try {
       const otpString = Object.values(data).join('');
       const ret = await forgotPasswordOtp(email, otpString, isVerifyOnly);
-      toast.success(ret?.message ?? 'OTP submitted successfully');
+      Toast.success(ret?.message ?? 'OTP submitted successfully');
       if (isVerifyOnly) {
         router.push(
           `/signin?redirect=${encodeURIComponent(redirect || HOME_PATH)}`

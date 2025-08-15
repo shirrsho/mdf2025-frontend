@@ -3,7 +3,7 @@ import React from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { handleErrorToast } from '@/utils';
 import { useCreatePayment, useGetPaymentById, useUpdatePayment } from '@/apis';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { IPayment } from '@/interfaces';
 import { useRouter } from 'next/navigation';
 
@@ -29,10 +29,10 @@ export const CreatePaymentFormId: React.FC<ICreatePaymentForm> = ({
     try {
       if (data.id) {
         await updatePayment.mutateAsync(data);
-        toast.success('Payment updated successfully!');
+        Toast.success('Payment updated successfully!');
       } else {
         const ret = await createPayment.mutateAsync(data);
-        toast.success('Payment created successfully!');
+        Toast.success('Payment created successfully!');
         router.push(`/admin/payment/create/${ret.id}`);
       }
     } catch (error: any) {

@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { Toast } from '@/libs/toast';
 import { Drawer, Form, Table } from 'antd';
 import { CheckCircle, Plus, Search } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
@@ -119,10 +119,10 @@ export const RegistrationList = () => {
     try {
       if (values.id) {
         await updateRegistration.mutateAsync(values);
-        toast.success('Registration updated successfully');
+        Toast.success('Registration updated successfully');
       } else {
         await createRegistration.mutateAsync(values);
-        toast.success('Registration created successfully');
+        Toast.success('Registration created successfully');
       }
       await refetch();
       setIsModalOpen(false);
@@ -137,7 +137,7 @@ export const RegistrationList = () => {
     if (!id) return;
     try {
       await deleteRegistration.mutateAsync(id);
-      toast.success('Registration deleted successfully');
+      Toast.success('Registration deleted successfully');
       await refetch();
     } catch (error) {
       handleErrorToast(error);

@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import { Clock } from 'lucide-react';
+import { Toast } from '@/libs/toast';
 import { useGetAllWebinars } from '@/apis';
 import { useGetTimeslotById } from '@/apis/timeslot';
 import dayjs from 'dayjs';
@@ -242,7 +243,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
 
   const handleSlotClick = (clickedSlot: TimeSlot) => {
     if (clickedSlot.disabled) {
-      message.warning('This time slot is already booked');
+      Toast.warning('This time slot is already booked');
       return;
     }
 
@@ -288,7 +289,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = ({
     const slotsInRange = timeSlots.slice(startIndex, endIndex + 1);
 
     if (slotsInRange.some((slot) => slot.disabled)) {
-      message.warning('Cannot select range with booked time slots');
+      Toast.warning('Cannot select range with booked time slots');
       return;
     }
 

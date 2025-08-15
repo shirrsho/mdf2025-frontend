@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { message } from 'antd';
+import { Toast } from '@/libs/toast';
 import { TimeslotForm } from './TimeslotForm';
 import {
   useCreateTimeslot,
@@ -43,12 +43,12 @@ export const CreateTimeslotFormId: React.FC<CreateTimeslotFormIdProps> = ({
           id: timeslotId,
           data: data as ITimeslotUpdateRequest,
         });
-        message.success('Timeslot updated successfully!');
+        Toast.success('Timeslot updated successfully!');
       } else {
         await createTimeslotMutation.mutateAsync(
           data as ITimeslotCreateRequest
         );
-        message.success('Timeslot created successfully!');
+        Toast.success('Timeslot created successfully!');
       }
       router.push('/admin/timeslots');
     } catch (error: any) {
@@ -56,7 +56,7 @@ export const CreateTimeslotFormId: React.FC<CreateTimeslotFormIdProps> = ({
         error?.response?.data?.message ||
         error?.message ||
         `Failed to ${isEditMode ? 'update' : 'create'} timeslot`;
-      message.error(errorMessage);
+      Toast.error(errorMessage);
     }
   };
 

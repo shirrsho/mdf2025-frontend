@@ -12,9 +12,9 @@ import {
   Avatar,
   Tooltip,
   Modal,
-  notification,
 } from 'antd';
 import { useRouter } from 'next/navigation';
+import { Toast } from '@/libs/toast';
 import {
   Plus,
   Edit,
@@ -85,11 +85,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
       onOk: async () => {
         try {
           await onDelete?.(webinar);
-          notification.success({
-            message: 'Success',
-            description: 'Webinar deleted successfully!',
-            placement: 'topRight',
-          });
+          Toast.success('Webinar deleted successfully!');
         } catch (error) {
           handleErrorToast(error);
         }
