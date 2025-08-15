@@ -8,14 +8,13 @@ import {
   Briefcase,
   MapPin,
   Calendar,
-  DollarSign,
   Users,
   Edit,
   Trash2,
   Eye,
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
-import { IJob, JobType, ExperienceLevel, JobStatus } from '@/interfaces';
+import { IJob, JobType, JobStatus } from '@/interfaces';
 import { handleErrorToast } from '@/utils';
 import { AppPagination } from '@/components/common';
 
@@ -70,33 +69,21 @@ export const JobList: React.FC<JobListViewProps> = ({
 
   const getJobTypeColor = (type: JobType) => {
     const colors = {
-      [JobType.FULL_TIME]: '#F4612E',
-      [JobType.PART_TIME]: '#bfab25',
-      [JobType.CONTRACT]: '#6a0136',
-      [JobType.INTERNSHIP]: '#395b50',
-      [JobType.REMOTE]: '#1f2f16',
+      [JobType.FULL_TIME]: '#10B981', // Emerald green
+      [JobType.PART_TIME]: '#F59E0B', // Amber
+      [JobType.CONTRACT]: '#8B5CF6', // Violet
+      [JobType.INTERNSHIP]: '#06B6D4', // Cyan
+      [JobType.REMOTE]: '#6366F1', // Indigo
     };
-    return colors[type] || '#F4612E';
+    return colors[type] || '#10B981';
   };
 
   const getStatusColor = (status: JobStatus) => {
     const colors = {
-      [JobStatus.OPEN]: '#395b50',
-      [JobStatus.CLOSED]: '#ef4444',
-      [JobStatus.DRAFT]: '#bfab25',
+      [JobStatus.OPEN]: '#10B981', // Emerald green for active/open
+      [JobStatus.CLOSED]: '#EF4444', // Red for closed
     };
-    return colors[status] || '#F4612E';
-  };
-
-  const getExperienceLevelLabel = (level: ExperienceLevel) => {
-    const labels = {
-      [ExperienceLevel.ENTRY]: 'Entry',
-      [ExperienceLevel.MID]: 'Mid',
-      [ExperienceLevel.SENIOR]: 'Senior',
-      [ExperienceLevel.LEAD]: 'Lead',
-      [ExperienceLevel.EXECUTIVE]: 'Executive',
-    };
-    return labels[level] || level;
+    return colors[status] || '#10B981';
   };
 
   const getBaseUrl = () => {
@@ -123,40 +110,21 @@ export const JobList: React.FC<JobListViewProps> = ({
               {record.location}
             </span>
           </div>
-          <div className='flex gap-2'>
-            <Tag
-              style={{
-                backgroundColor: `${getJobTypeColor(record.type)}20`,
-                color: getJobTypeColor(record.type),
-                border: 'none',
-                fontSize: '11px',
-              }}
-            >
-              {record.type.replace('_', ' ').toUpperCase()}
-            </Tag>
-            <Tag
-              style={{
-                backgroundColor: '#F4612E20',
-                color: '#F4612E',
-                border: 'none',
-                fontSize: '11px',
-              }}
-            >
-              {getExperienceLevelLabel(record.experienceLevel)}
-            </Tag>
-          </div>
+          <div>{record?.company?.name}</div>
         </div>
       ),
     },
     {
       title: 'Compensation',
       key: 'salary',
-      width: '15%',
+      width: '20%',
       render: (record: IJob) => (
-        <div>
+        <div className='whitespace-nowrap'>
           {record.salaryMin && record.salaryMax ? (
             <div className='flex items-center gap-1'>
-              <DollarSign className='h-3 w-3' style={{ color: '#bfab25' }} />
+              {record.currency && record.salaryMin && record.salaryMax && (
+                <div style={{ color: '#AFADB5' }}>{record.currency}</div>
+              )}
               <span
                 className='text-sm font-medium'
                 style={{ color: '#F9FAFB' }}
@@ -170,51 +138,32 @@ export const JobList: React.FC<JobListViewProps> = ({
               Negotiable
             </span>
           )}
-          {record.currency && (
-            <div className='mt-1 text-xs' style={{ color: '#AFADB5' }}>
-              {record.currency}
-            </div>
-          )}
         </div>
       ),
     },
     {
-      title: 'Skills',
-      dataIndex: 'skills',
-      key: 'skills',
-      width: '20%',
-      render: (skills: string[] = []) => (
-        <div className='flex flex-wrap gap-1'>
-          {skills.slice(0, 3).map((skill, index) => (
-            <Tag
-              key={index}
-              style={{
-                backgroundColor: '#313131',
-                color: '#D1D5DB',
-                border: '1px solid #4d4d4d',
-                fontSize: '10px',
-                padding: '2px 6px',
-              }}
-            >
-              {skill}
-            </Tag>
-          ))}
-          {skills.length > 3 && (
-            <Tooltip title={skills.slice(3).join(', ')}>
-              <Tag
-                style={{
-                  backgroundColor: '#F4612E20',
-                  color: '#F4612E',
-                  border: 'none',
-                  fontSize: '10px',
-                }}
-              >
-                +{skills.length - 3}
-              </Tag>
-            </Tooltip>
-          )}
-        </div>
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      width: '10%',
+      render: (type: JobType) => (
+        <Tag
+          style={{
+            backgroundColor: `${getJobTypeColor(type)}20`,
+            color: getJobTypeColor(type),
+            border: 'none',
+            fontSize: '11px',
+          }}
+        >
+          {type.replace('_', ' ').toUpperCase()}
+        </Tag>
       ),
+    },
+    {
+      title: 'Experience',
+      dataIndex: 'experienceLevel',
+      key: 'experienceLevel',
+      width: '10%',
     },
     {
       title: 'Deadline',
@@ -282,7 +231,9 @@ export const JobList: React.FC<JobListViewProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 router.push(
-                  `${getBaseUrl()}/jobs/create/${record.id}?c=${companyId}`
+                  mode == 'company'
+                    ? `${getBaseUrl()}/jobs/create/${record.id}?c=${companyId}`
+                    : `${getBaseUrl()}/jobs/create/${record.id}`
                 );
               }}
             />
@@ -336,7 +287,7 @@ export const JobList: React.FC<JobListViewProps> = ({
         </div>
 
         {/* Stats Cards */}
-        <div className='mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+        <div className='mb-8 grid grid-cols-1 gap-6 sm:grid-cols-3'>
           <Card
             className='border-0 shadow-sm'
             style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
@@ -344,9 +295,9 @@ export const JobList: React.FC<JobListViewProps> = ({
             <div className='flex items-center'>
               <div
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#F4612E20' }}
+                style={{ backgroundColor: '#10B98120' }}
               >
-                <Briefcase className='h-6 w-6' style={{ color: '#F4612E' }} />
+                <Briefcase className='h-6 w-6' style={{ color: '#10B981' }} />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
@@ -366,9 +317,9 @@ export const JobList: React.FC<JobListViewProps> = ({
             <div className='flex items-center'>
               <div
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#395b5020' }}
+                style={{ backgroundColor: '#10B98120' }}
               >
-                <Users className='h-6 w-6' style={{ color: '#395b50' }} />
+                <Users className='h-6 w-6' style={{ color: '#10B981' }} />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
@@ -391,34 +342,9 @@ export const JobList: React.FC<JobListViewProps> = ({
             <div className='flex items-center'>
               <div
                 className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#bfab2520' }}
+                style={{ backgroundColor: '#EF444420' }}
               >
-                <Calendar className='h-6 w-6' style={{ color: '#bfab25' }} />
-              </div>
-              <div>
-                <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>
-                  Draft Jobs
-                </p>
-                <p className='text-2xl font-bold' style={{ color: '#F9FAFB' }}>
-                  {
-                    jobs.filter((job: IJob) => job.status === JobStatus.DRAFT)
-                      .length
-                  }
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='border-0 shadow-sm'
-            style={{ backgroundColor: '#2a2a2a', borderRadius: '12px' }}
-          >
-            <div className='flex items-center'>
-              <div
-                className='mr-4 flex h-12 w-12 items-center justify-center rounded-lg'
-                style={{ backgroundColor: '#ef444420' }}
-              >
-                <Briefcase className='h-6 w-6' style={{ color: '#ef4444' }} />
+                <Briefcase className='h-6 w-6' style={{ color: '#EF4444' }} />
               </div>
               <div>
                 <p className='text-sm font-medium' style={{ color: '#AFADB5' }}>

@@ -21,12 +21,11 @@ import {
   Trash2,
   Users,
   Calendar,
-  Clock,
-  Link,
   Play,
   CheckCircle,
   XCircle,
   Pause,
+  LinkIcon,
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { IWebinar, WebinarStatus } from '@/interfaces';
@@ -39,6 +38,7 @@ import {
   isWebinarScheduled,
 } from '@/utils/webinar.utils';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 
 const { confirm } = Modal;
 
@@ -181,12 +181,8 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
           </div>
           <div className='text-xs' style={{ color: '#9CA3AF' }}>
             {/* {formatWebinarTime(record)} */}
-            {dayjs(record?.scheduledStartTime?.toString()).format(
-              'h:mmA'
-            )} -{' '}
-            {dayjs(record?.scheduledStartTime?.toString())
-              .add(record.duration, 'minute')
-              .format('h:mmA')}
+
+            {getDurationText(record.duration)}
           </div>
         </div>
       ),
@@ -198,10 +194,14 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
       render: (record: IWebinar) => (
         <div>
           <div className='mb-1 flex items-center gap-1'>
-            <Clock className='h-3 w-3' style={{ color: '#f59e0b' }} />
+            {/* <Clock className='h-3 w-3' style={{ color: '#f59e0b' }} />
             <span className='text-xs' style={{ color: '#F9FAFB' }}>
               {getDurationText(record.duration)}
-            </span>
+            </span> */}
+            {dayjs(record?.scheduledStartTime?.toString()).format('h:mmA')} -{' '}
+            {dayjs(record?.scheduledStartTime?.toString())
+              .add(record.duration, 'minute')
+              .format('h:mmA')}
           </div>
           {record.maxParticipants && (
             <div className='mb-1 flex items-center gap-1'>
@@ -212,12 +212,16 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
             </div>
           )}
           {record.meetingLink && (
-            <div className='flex items-center gap-1'>
-              <Link className='h-3 w-3' style={{ color: '#8b5cf6' }} />
+            <Link
+              target='_blank'
+              href={record.meetingLink}
+              className='flex items-center gap-1'
+            >
+              <LinkIcon className='h-3 w-3' style={{ color: '#8b5cf6' }} />
               <span className='truncate text-xs text-blue-400'>
                 Meeting Link
               </span>
-            </div>
+            </Link>
           )}
         </div>
       ),

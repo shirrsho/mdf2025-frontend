@@ -16,7 +16,7 @@ import {
   XCircle,
   FileText,
 } from 'lucide-react';
-import { JobType, ExperienceLevel, JobStatus } from '@/interfaces';
+import { JobType, JobStatus } from '@/interfaces';
 import { useGetJobById } from '@/apis';
 import { HtmlRenderer } from '@/components/common';
 
@@ -89,20 +89,8 @@ export const JobDetail: React.FC<JobDetailProps> = ({ jobId, mode }) => {
     const colors = {
       [JobStatus.OPEN]: '#395b50',
       [JobStatus.CLOSED]: '#ef4444',
-      [JobStatus.DRAFT]: '#bfab25',
     };
     return colors[status] || '#F4612E';
-  };
-
-  const getExperienceLevelLabel = (level: ExperienceLevel) => {
-    const labels = {
-      [ExperienceLevel.ENTRY]: 'Entry Level',
-      [ExperienceLevel.MID]: 'Mid Level',
-      [ExperienceLevel.SENIOR]: 'Senior Level',
-      [ExperienceLevel.LEAD]: 'Lead Level',
-      [ExperienceLevel.EXECUTIVE]: 'Executive Level',
-    };
-    return labels[level] || level;
   };
 
   return (
@@ -177,7 +165,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({ jobId, mode }) => {
                     fontSize: '12px',
                   }}
                 >
-                  {getExperienceLevelLabel(job.experienceLevel)}
+                  {job.experienceLevel}
                 </Tag>
               </div>
             </div>

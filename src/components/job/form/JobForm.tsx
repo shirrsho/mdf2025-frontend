@@ -61,7 +61,7 @@ export const JobForm: React.FC<JobFormProps> = ({
     if (initialData && isEdit) {
       form.setFieldsValue({
         ...initialData,
-        companyId,
+        company: companyId || initialData?.company?.id,
         applicationDeadline: initialData.applicationDeadline
           ? dayjs(initialData.applicationDeadline)
           : null,
@@ -127,17 +127,6 @@ export const JobForm: React.FC<JobFormProps> = ({
       [JobType.REMOTE]: 'Remote',
     };
     return labels[type] || type;
-  };
-
-  const getExperienceLevelLabel = (level: ExperienceLevel) => {
-    const labels = {
-      [ExperienceLevel.ENTRY]: 'Entry Level',
-      [ExperienceLevel.MID]: 'Mid Level',
-      [ExperienceLevel.SENIOR]: 'Senior Level',
-      [ExperienceLevel.LEAD]: 'Lead/Manager',
-      [ExperienceLevel.EXECUTIVE]: 'Executive',
-    };
-    return labels[level] || level;
   };
 
   return (
@@ -215,7 +204,7 @@ export const JobForm: React.FC<JobFormProps> = ({
                 </Col>
                 <Col xs={24} lg={8}>
                   <Form.Item
-                    name='companyId'
+                    name='company'
                     label={
                       <span className='font-medium text-heading dark:text-heading-dark'>
                         Company
@@ -346,7 +335,7 @@ export const JobForm: React.FC<JobFormProps> = ({
                     >
                       {Object.values(ExperienceLevel).map((level) => (
                         <Option key={level} value={level}>
-                          {getExperienceLevelLabel(level)}
+                          {level}
                         </Option>
                       ))}
                     </Select>
@@ -470,7 +459,6 @@ export const JobForm: React.FC<JobFormProps> = ({
                       defaultValue={JobStatus.OPEN}
                       className='border-background-200'
                     >
-                      <Option value={JobStatus.DRAFT}>Draft</Option>
                       <Option value={JobStatus.OPEN}>Open</Option>
                       <Option value={JobStatus.CLOSED}>Closed</Option>
                     </Select>

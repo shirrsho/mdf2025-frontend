@@ -1,3 +1,5 @@
+import { ICompany } from '../company';
+
 export enum JobType {
   FULL_TIME = 'full_time',
   PART_TIME = 'part_time',
@@ -7,24 +9,23 @@ export enum JobType {
 }
 
 export enum ExperienceLevel {
-  ENTRY = 'entry',
-  MID = 'mid',
-  SENIOR = 'senior',
-  LEAD = 'lead',
-  EXECUTIVE = 'executive',
+  ENTRY = '0-2 Years',
+  MID = '3-5 Years',
+  SENIOR = '6-8 Years',
+  LEAD = '9-12 Years',
+  EXECUTIVE = '12+ Years',
 }
 
 export enum JobStatus {
   OPEN = 'open',
   CLOSED = 'closed',
-  DRAFT = 'draft',
 }
 
 export interface IJob {
   id?: string;
   title: string;
   description: string;
-  companyId: string;
+  company: ICompany;
   location: string;
   type: JobType;
   experienceLevel: ExperienceLevel;
