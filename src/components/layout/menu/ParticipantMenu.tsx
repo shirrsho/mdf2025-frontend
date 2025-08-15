@@ -12,6 +12,7 @@ import {
   Building,
   DollarSign,
   LogOut,
+  Settings,
 } from 'lucide-react';
 import { logout } from '@/apis';
 import { LOGIN_PATH } from '@/constants';
@@ -60,6 +61,11 @@ export const ParticipantMenu = () => {
       label: <Link href='/p/payments'>My Payments</Link>,
       key: 'payments',
       icon: <DollarSign />,
+    },
+    {
+      label: <Link href='/p/settings'>Settings</Link>,
+      key: 'settings',
+      icon: <Settings />,
     },
   ];
 

@@ -13,6 +13,7 @@ import {
   VERIFY_EMAIL,
   GET_USER,
   GET_OPTIONAL_USER,
+  UPDATE_USER,
 } from './endpoints';
 import { ACCESS_TOKEN_STORAGE, REFRESH_TOKEN_STORAGE } from '@/constants';
 import { stallQueries } from '@/utils';
@@ -153,5 +154,10 @@ export const getUser = async () => {
 
 export const getOptionalUser = async () => {
   const response = await axios.get(GET_OPTIONAL_USER);
+  return response.data;
+};
+
+export const updateUser = async (data: any) => {
+  const response = await axios.post(UPDATE_USER, data);
   return response.data;
 };

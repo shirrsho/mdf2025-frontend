@@ -11,6 +11,7 @@ import {
   Briefcase,
   Building,
   LogOut,
+  Settings,
 } from 'lucide-react';
 import { logout } from '@/apis';
 import { LOGIN_PATH } from '@/constants';
@@ -54,6 +55,11 @@ export const CompanyMenu = () => {
       label: <Link href='/c/applications'>Applications</Link>,
       key: 'applications',
       icon: <FileText />,
+    },
+    {
+      label: <Link href='/c/settings'>Settings</Link>,
+      key: 'settings',
+      icon: <Settings />,
     },
   ];
 
