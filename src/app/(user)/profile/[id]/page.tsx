@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { useGetUserById } from '@/apis';
+import { Profile } from '@/components/user';
 
 interface ProfilePageProps {
   params: {
@@ -11,7 +12,7 @@ interface ProfilePageProps {
 const ProfilePage = ({ params }: ProfilePageProps) => {
   const userId = params.id;
   const { data } = useGetUserById(userId);
-  return <>profile of {data?.name}</>;
+  return <Profile user={data} />;
 };
 
 export default ProfilePage;

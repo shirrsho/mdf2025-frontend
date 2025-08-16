@@ -55,7 +55,7 @@ export const TimeslotOverview: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-900 py-8'>
+    <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
       <div className='mx-auto max-w-7xl px-6'>
         {/* Header */}
         <div className='mb-8'>
@@ -71,7 +71,7 @@ export const TimeslotOverview: React.FC = () => {
             <div className='flex items-start space-x-6'>
               {/* Overview Icon */}
               <div className='flex-shrink-0'>
-                <div className='flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-3xl font-bold text-white shadow-sm'>
+                <div className='flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br text-3xl font-bold text-white shadow-sm'>
                   <Grid className='h-12 w-12' />
                 </div>
               </div>
@@ -332,7 +332,7 @@ export const TimeslotOverview: React.FC = () => {
                           </div>
                         </div>
                         <div className='text-center'>
-                          <Text className='text-xs text-blue-400 hover:text-blue-300'>
+                          <Text className='text-xs text-white hover:text-blue-300'>
                             Click to schedule webinar →
                           </Text>
                         </div>
