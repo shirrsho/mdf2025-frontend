@@ -33,9 +33,7 @@ export const getWebinarDisplayStatus = (
   }
 
   // Get the timeslot times
-  const timeslotStartTime =
-    webinar.timeslot?.startTime || webinar.scheduledStartTime;
-  const timeslotEndTime = webinar.timeslot?.endTime;
+  const timeslotStartTime = webinar.scheduledStartTime;
 
   if (!timeslotStartTime) {
     // If no timeslot data, assume scheduled
@@ -54,8 +52,8 @@ export const getWebinarDisplayStatus = (
   let endTime: dayjs.Dayjs;
   if (webinar.duration) {
     endTime = startTime.add(webinar.duration, 'minute');
-  } else if (timeslotEndTime) {
-    endTime = dayjs(timeslotEndTime);
+  } else if (webinar.timeslot?.endTime) {
+    endTime = dayjs(webinar.timeslot.endTime);
   } else {
     // Default to 1 hour if no duration or end time
     endTime = startTime.add(60, 'minute');
@@ -150,4 +148,13 @@ export const isWebinarCompleted = (webinar: IWebinar): boolean => {
 export const isWebinarScheduled = (webinar: IWebinar): boolean => {
   const status = getWebinarDisplayStatus(webinar);
   return status.status === WebinarDisplayStatus.SCHEDULED;
+};
+
+export const getWebinarDurationText = (minutes: number) => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours > 0) {
+    return `${hours}h${mins > 0 ? ` ${mins}m` : ''}`;
+  }
+  return `${mins}m`;
 };

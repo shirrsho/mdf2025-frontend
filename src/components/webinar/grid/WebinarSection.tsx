@@ -1,13 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { useGetAllPublicWebinars } from '@/apis';
-import { AppPagination, EmptyState, LogoLoader } from '@/components/common';
+import { CustomPagination, EmptyState, LogoLoader } from '@/components/common';
 import { WebinarCard } from '../card';
+import dayjs from 'dayjs';
 
 export const WebinarSection = () => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const pageNo = parseInt(searchParams.get('pageno') || '1', 10);
   const pageSize = parseInt(
@@ -18,9 +20,10 @@ export const WebinarSection = () => {
   const [query, setQuery] = useState<any>({
     page: pageNo,
     limit: pageSize,
+    currentTime: dayjs().toISOString(),
     where: {},
   });
-
+  const router = useRouter();
   const { data, isLoading } = useGetAllPublicWebinars(query);
 
   useEffect(() => {
@@ -31,6 +34,7 @@ export const WebinarSection = () => {
       searchParams.get('pagesize') || DEFAULT_PAGE_SIZE,
       10
     );
+    newQuery.currentTime = dayjs().toISOString();
 
     const filterKeys = ['webinarName'];
 
@@ -52,8 +56,19 @@ export const WebinarSection = () => {
     setQuery(newQuery);
   }, [searchParams]);
 
+  const datatoShow = data?.data;
+
   return (
     <div className='container mx-auto px-4 py-8'>
+      <div className='mb-6'>
+        <div className='text-4xl font-bold'>
+          <span>Browse</span>{' '}
+          <span className='font-playfair italic text-primary'>Webinars</span>
+        </div>
+        <div className='text-gray-300'>
+          Discover upcoming webinars and grow your knowledge
+        </div>
+      </div>
       {isLoading ? (
         <LogoLoader />
       ) : (
@@ -63,15 +78,29 @@ export const WebinarSection = () => {
           ) : (
             <>
               <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
-                {data?.data?.map((webinar) => (
+                {datatoShow?.map((webinar) => (
                   <WebinarCard key={webinar.id} webinar={webinar} />
                 ))}
               </div>
-              <AppPagination total={data?.count || 0} />
             </>
           )}
         </>
       )}
+      <CustomPagination
+        current={query.page || 1}
+        pageSize={query.limit || parseInt(DEFAULT_PAGE_SIZE, 10)}
+        total={data?.count || 0}
+        onChange={(page, pageSize) => {
+          const params = new URLSearchParams(window.location.search);
+          params.set('pageno', page.toString());
+          if (pageSize) {
+            params.set('pagesize', pageSize.toString());
+          }
+          // window.history.pushState({}, '', `${window.location.pathname}?${params}`);
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        }}
+        itemType='webinars'
+      />
     </div>
   );
 };

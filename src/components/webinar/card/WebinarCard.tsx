@@ -1,13 +1,17 @@
 import { IWebinar } from '@/interfaces';
-import { Calendar, Clock, Building2 } from 'lucide-react';
+import { getWebinarDurationText, isWebinarLive } from '@/utils';
+import { Calendar, Clock, Building2, Circle, Timer } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface WebinarCardProps {
   webinar: IWebinar;
 }
 
 export const WebinarCard: React.FC<WebinarCardProps> = ({ webinar }) => {
+  const router = useRouter();
   // Format date and time
-  const formatDate = (dateString: string | Date) => {
+  const formatDate = (dateString: string | Date | undefined) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       day: 'numeric',
@@ -16,7 +20,8 @@ export const WebinarCard: React.FC<WebinarCardProps> = ({ webinar }) => {
     });
   };
 
-  const formatTime = (dateString: string | Date) => {
+  const formatTime = (dateString: string | Date | undefined) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleTimeString('en-US', {
       hour: 'numeric',
@@ -25,60 +30,100 @@ export const WebinarCard: React.FC<WebinarCardProps> = ({ webinar }) => {
     });
   };
 
-  return (
-    <div className='max-w-sm overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow-md transition-all duration-200 hover:shadow-lg'>
-      {/* Header Section */}
-      <div className='relative h-32 w-full bg-gradient-to-r from-purple-600 to-blue-600'>
-        <div className='absolute right-3 top-3'>
-          <span className='rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white'>
-            Available
-          </span>
-        </div>
+  const isLive = isWebinarLive(webinar);
 
-        {/* Simple centered title */}
-        <div className='absolute inset-0 flex items-center justify-center p-4'>
-          <h2 className='text-center text-lg font-bold leading-tight text-white'>
+  return (
+    <div className='w-full max-w-xs overflow-hidden rounded-lg bg-[#141414] text-white shadow-lg'>
+      {/* Header Image or Title Section */}
+      <div className='relative h-40 w-full'>
+        {webinar.bannerUrl ? (
+          <img
+            src={webinar.bannerUrl}
+            alt={webinar.title}
+            className='h-full w-full object-cover'
+            onError={(e) => {
+              // Hide image and show title background if image fails to load
+              e.currentTarget.style.display = 'none';
+              const titleDiv = e.currentTarget
+                .nextElementSibling as HTMLElement;
+              if (titleDiv) titleDiv.style.display = 'flex';
+            }}
+          />
+        ) : null}
+
+        {/* Title Background - shown when no image or image fails */}
+        <div
+          className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 p-4 ${
+            webinar.bannerUrl ? 'hidden' : 'flex'
+          }`}
+        >
+          <h2 className='text-center text-lg font-bold leading-tight text-white drop-shadow-lg'>
             {webinar.title}
           </h2>
         </div>
+
+        {/* Live Badge Only */}
+        {isLive && (
+          <div className='absolute right-3 top-3'>
+            <div className='flex items-center gap-1 rounded-full bg-red-500 px-2 py-1 text-xs font-medium text-white'>
+              <Circle
+                color='white'
+                fill='white'
+                size={8}
+                className='animate-pulse'
+              />
+              LIVE
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content Section */}
-      <div className='space-y-3 p-4'>
+      <div className='p-4'>
+        {/* Title */}
+        <h3 className='mb-3 truncate text-lg font-semibold'>{webinar.title}</h3>
+
         {/* Company Info */}
-        <div className='flex items-center text-gray-300'>
-          <Building2 className='mr-2 h-4 w-4 flex-shrink-0 text-blue-400' />
-          <span className='truncate text-sm'>
-            {webinar.host?.name || 'Company Name'}
+        <div className='mb-3 flex items-center gap-2'>
+          <Building2 className='h-3 w-3 flex-shrink-0 text-gray-400' />
+          <span className='truncate text-xs text-gray-300'>
+            {webinar.host?.name}
           </span>
         </div>
 
-        {/* Date and Time */}
-        <div className='space-y-2'>
-          <div className='flex items-center text-gray-300'>
-            <Calendar className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400' />
-            <span className='text-sm'>
-              {webinar.scheduledStartTime
-                ? formatDate(webinar.scheduledStartTime)
-                : '27 Jul, 2025'}
-            </span>
-          </div>
-          <div className='flex items-center text-gray-300'>
-            <Clock className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400' />
-            <span className='text-sm'>
-              {webinar.scheduledStartTime
-                ? formatTime(webinar.scheduledStartTime)
-                : '10:00 AM'}
-            </span>
+        {/* Date, Time & Duration - Compact */}
+        <div className='mb-4 space-y-2'>
+          <div className='flex items-center gap-4 text-xs'>
+            <div className='flex items-center gap-1'>
+              <Calendar className='h-3 w-3 text-gray-400' />
+              <span className='text-gray-300'>
+                {formatDate(webinar?.scheduledStartTime)}
+              </span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <Clock className='h-3 w-3 text-gray-400' />
+              <span className='text-gray-300'>
+                {formatTime(webinar.scheduledStartTime)}
+              </span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <Timer className='h-3 w-3 text-gray-400' />
+              <span className='text-xs text-gray-300'>
+                {getWebinarDurationText(webinar.duration)}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className='flex gap-2 pt-2'>
-          <button className='flex-1 rounded bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-orange-600'>
+        <div className='flex gap-2'>
+          <button className='flex flex-1 items-center justify-center gap-1 rounded-lg bg-orange-600 px-3 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-orange-700'>
             Join
           </button>
-          <button className='flex-1 rounded border border-orange-500 px-4 py-2 text-sm font-medium text-orange-500 transition-colors duration-200 hover:bg-orange-500 hover:text-white'>
+          <button
+            onClick={() => router.push(`/p/webinars/${webinar.id}`)}
+            className='flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-500 px-3 py-2 text-xs font-medium text-gray-400 transition-colors duration-200 hover:border-gray-400 hover:text-white'
+          >
             Details
           </button>
         </div>

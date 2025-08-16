@@ -41,7 +41,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
       case 'company':
         return '/c';
       case 'public':
-        return '';
+        return '/p';
       default:
         return '/admin';
     }
@@ -49,8 +49,8 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
-        <div className='mx-auto max-w-5xl px-4 py-8'>
+      <div className='min-h-screen bg-background-100 py-8 dark:bg-background-dark-100'>
+        <div className='mx-auto max-w-6xl px-4 py-8'>
           <div className='animate-pulse space-y-8'>
             <div className='h-6 w-24 rounded bg-gray-200 dark:bg-gray-700'></div>
             <div className='rounded-2xl bg-white p-8 shadow-sm dark:bg-gray-800'>
@@ -231,19 +231,21 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
             </div>
 
             {/* Action Button */}
-            <div className='flex-shrink-0'>
-              <Button
-                type='primary'
-                size='large'
-                icon={<Edit className='h-4 w-4' />}
-                onClick={() =>
-                  router.push(`${getBaseUrl()}/webinars/create/${webinar.id}`)
-                }
-                className='h-12 border-primary bg-primary px-8 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
-              >
-                ✏️ Edit Webinar
-              </Button>
-            </div>
+            {mode != 'public' && (
+              <div className='flex-shrink-0'>
+                <Button
+                  type='primary'
+                  size='large'
+                  icon={<Edit className='h-4 w-4' />}
+                  onClick={() =>
+                    router.push(`${getBaseUrl()}/webinars/create/${webinar.id}`)
+                  }
+                  className='h-12 border-primary bg-primary px-8 font-medium text-white hover:border-primary-600 hover:bg-primary-600'
+                >
+                  ✏️ Edit Webinar
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 

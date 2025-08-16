@@ -112,12 +112,8 @@ export const TimeslotForm: React.FC<TimeslotFormProps> = ({
                   }
 
                   const duration = end.diff(start, 'minutes');
-                  if (duration < 15) {
-                    return Promise.reject('Minimum duration is 15 minutes');
-                  }
-
-                  if (duration > 480) {
-                    return Promise.reject('Maximum duration is 8 hours');
+                  if (duration < 30) {
+                    return Promise.reject('Minimum duration is 30 minutes');
                   }
 
                   return Promise.resolve();

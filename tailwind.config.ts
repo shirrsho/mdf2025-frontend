@@ -34,6 +34,7 @@ const config: Config = {
         nunito: ['Nunito', 'sans-serif'],
         openSans: ['Open Sans', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
+        playfair: ['Playfair Display', 'serif'],
       },
     },
   },

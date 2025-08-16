@@ -37,6 +37,7 @@ import {
   isWebinarLive,
   isWebinarCompleted,
   isWebinarScheduled,
+  getWebinarDurationText,
 } from '@/utils/webinar.utils';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -109,15 +110,6 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
     }
   };
 
-  const getDurationText = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h${mins > 0 ? ` ${mins}m` : ''}`;
-    }
-    return `${mins}m`;
-  };
-
   const columns: ColumnsType<IWebinar> = [
     {
       title: 'Webinar Details',
@@ -183,7 +175,7 @@ export const WebinarList: React.FC<WebinarListViewProps> = ({
           <div className='text-xs' style={{ color: '#9CA3AF' }}>
             {/* {formatWebinarTime(record)} */}
 
-            {getDurationText(record.duration)}
+            {getWebinarDurationText(record.duration)}
           </div>
         </div>
       ),
