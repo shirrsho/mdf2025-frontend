@@ -38,7 +38,7 @@ export const ParticipantMenu = () => {
       icon: <PieChartIcon />,
     },
     {
-      label: <Link href='/p/profile'>Profile</Link>,
+      label: <Link href='/profile'>Profile</Link>,
       key: 'profile',
       icon: <Building />,
     },

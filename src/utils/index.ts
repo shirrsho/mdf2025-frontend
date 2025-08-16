@@ -7,6 +7,7 @@ export * from './isServer';
 export * from './validPhone';
 export * from './validateURL';
 export * from './webinar.utils';
+export * from './job.utils';
 
 export * from './seo';
 export * from './language';

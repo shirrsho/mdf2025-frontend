@@ -56,12 +56,10 @@ export const WebinarSection = () => {
     setQuery(newQuery);
   }, [searchParams]);
 
-  const datatoShow = data?.data;
-
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <div className='container mx-auto px-4'>
       <div className='mb-6'>
-        <div className='text-4xl font-bold'>
+        <div className='text-3xl font-semibold'>
           <span>Browse</span>{' '}
           <span className='font-playfair italic text-primary'>Webinars</span>
         </div>
@@ -78,7 +76,7 @@ export const WebinarSection = () => {
           ) : (
             <>
               <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
-                {datatoShow?.map((webinar) => (
+                {data?.data?.map((webinar) => (
                   <WebinarCard key={webinar.id} webinar={webinar} />
                 ))}
               </div>

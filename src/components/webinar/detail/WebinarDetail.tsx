@@ -53,7 +53,7 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
         <div className='mx-auto max-w-6xl px-4 py-8'>
           <div className='animate-pulse space-y-8'>
             <div className='h-6 w-24 rounded bg-gray-200 dark:bg-gray-700'></div>
-            <div className='rounded-2xl bg-white p-8 shadow-sm dark:bg-gray-800'>
+            <div className='rounded-2xl bg-white p-8 shadow-sm dark:bg-gray-900'>
               <div className='flex flex-col gap-6 lg:flex-row'>
                 <div className='h-32 w-32 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
                 <div className='flex-1 space-y-4'>
@@ -66,13 +66,13 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
             </div>
             <div className='grid gap-8 lg:grid-cols-3'>
               <div className='space-y-8 lg:col-span-2'>
-                <div className='h-64 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
-                <div className='h-48 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
+                <div className='h-64 rounded-xl bg-gray-200 dark:bg-gray-900'></div>
+                <div className='h-48 rounded-xl bg-gray-200 dark:bg-gray-900'></div>
               </div>
               <div className='space-y-6'>
-                <div className='h-32 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
-                <div className='h-40 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
-                <div className='h-36 rounded-xl bg-gray-200 dark:bg-gray-700'></div>
+                <div className='h-32 rounded-xl bg-gray-200 dark:bg-gray-900'></div>
+                <div className='h-40 rounded-xl bg-gray-200 dark:bg-gray-900'></div>
+                <div className='h-36 rounded-xl bg-gray-200 dark:bg-gray-900'></div>
               </div>
             </div>
           </div>
@@ -180,11 +180,11 @@ export const WebinarDetail: React.FC<WebinarDetailProps> = ({
               </div>
 
               {/* Webinar Info */}
-              <div className='flex-1'>
-                <div className='mb-2 flex items-center gap-3'>
+              <div className='mb-2 flex-1'>
+                <div className='flex items-baseline gap-3'>
                   <Title
                     level={2}
-                    className='mb-0 text-heading dark:text-heading-dark'
+                    className='text-heading dark:text-heading-dark'
                   >
                     {webinar.title}
                   </Title>

@@ -1,5 +1,9 @@
 import { IWebinar } from '@/interfaces';
-import { getWebinarDurationText, isWebinarLive } from '@/utils';
+import {
+  getWebinarDurationText,
+  isWebinarLive,
+  isWebinarScheduled,
+} from '@/utils';
 import { Calendar, Clock, Building2, Circle, Timer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -73,6 +77,19 @@ export const WebinarCard: React.FC<WebinarCardProps> = ({ webinar }) => {
                 className='animate-pulse'
               />
               LIVE
+            </div>
+          </div>
+        )}
+        {isWebinarScheduled(webinar) && (
+          <div className='absolute right-3 top-3'>
+            <div className='flex items-center gap-1 rounded-full bg-yellow-500 px-2 py-1 text-xs font-medium text-white'>
+              <Circle
+                color='white'
+                fill='white'
+                size={8}
+                className='animate-pulse'
+              />
+              Upcoming
             </div>
           </div>
         )}

@@ -148,6 +148,10 @@ export const UserList = () => {
                 columns={columns}
                 dataSource={data?.data}
                 rowKey={(record) => record.id!}
+                rowClassName='cursor-pointer'
+                onRow={(record) => ({
+                  onClick: () => router.push(`/profile/${record.id}`),
+                })}
                 pagination={false}
                 loading={isLoading}
                 onChange={handleTableChange}

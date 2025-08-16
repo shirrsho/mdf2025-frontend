@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import { IJob, JobType, JobStatus } from '@/interfaces';
-import { handleErrorToast } from '@/utils';
+import { formatSalary, handleErrorToast } from '@/utils';
 import { CustomPagination } from '@/components/common';
 
 const { confirm } = Modal;
@@ -119,26 +119,7 @@ export const JobList: React.FC<JobListViewProps> = ({
       key: 'salary',
       width: '20%',
       render: (record: IJob) => (
-        <div className='whitespace-nowrap'>
-          {record.salaryMin && record.salaryMax ? (
-            <div className='flex items-center gap-1'>
-              {record.currency && record.salaryMin && record.salaryMax && (
-                <div style={{ color: '#AFADB5' }}>{record.currency}</div>
-              )}
-              <span
-                className='text-sm font-medium'
-                style={{ color: '#F9FAFB' }}
-              >
-                {record.salaryMin.toLocaleString()}-
-                {record.salaryMax.toLocaleString()}
-              </span>
-            </div>
-          ) : (
-            <span className='text-sm' style={{ color: '#AFADB5' }}>
-              Negotiable
-            </span>
-          )}
-        </div>
+        <div className='whitespace-nowrap'>{formatSalary(record)}</div>
       ),
     },
     {

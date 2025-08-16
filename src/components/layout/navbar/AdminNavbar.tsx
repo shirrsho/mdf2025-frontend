@@ -4,10 +4,12 @@ import { Space } from 'antd';
 import { useAdminLayoutContext } from '@/contexts';
 import { useGetUser } from '@/apis';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export const AdminNavbar = () => {
   const { navHeader } = useAdminLayoutContext();
   const { data } = useGetUser();
+  const router = useRouter();
 
   return (
     <div className='border-b-1 sticky top-0 z-50 flex h-[60px] items-center justify-between bg-background-100 px-6 shadow-sm dark:border-gray-700 dark:bg-background-dark-100 md:h-[80px]'>
@@ -21,7 +23,10 @@ export const AdminNavbar = () => {
         </Space>
       </div>
 
-      <div className='flex items-center gap-3'>
+      <div
+        onClick={() => router.push('/profile')}
+        className='flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-black'
+      >
         <Image
           src={
             data?.user?.imageUrl
@@ -33,7 +38,7 @@ export const AdminNavbar = () => {
           height={40}
           className='rounded-md object-cover'
         />
-        <div className='hidden pr-2 md:block'>
+        <div className='hidden md:block'>
           <div className='text-sm font-medium dark:text-white'>
             {data?.user?.name}
           </div>

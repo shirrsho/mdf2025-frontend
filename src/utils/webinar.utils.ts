@@ -39,7 +39,7 @@ export const getWebinarDisplayStatus = (
     // If no timeslot data, assume scheduled
     return {
       status: WebinarDisplayStatus.SCHEDULED,
-      label: 'Scheduled',
+      label: 'Upcoming',
       color: '#3b82f6',
       bgColor: '#eff6ff',
     };
@@ -63,7 +63,7 @@ export const getWebinarDisplayStatus = (
   if (now.isBefore(startTime)) {
     return {
       status: WebinarDisplayStatus.SCHEDULED,
-      label: 'Scheduled',
+      label: 'Upcoming',
       color: '#3b82f6',
       bgColor: '#eff6ff',
     };
